@@ -1,0 +1,42 @@
+[
+  {
+    "name": "Fresh Milk",
+    "image": "milk.png",
+    "description": "Collected fresh from healthy cows, rich in calcium and protein."
+  },
+  {
+    "name": "Organic Curd",
+    "image": "curd.png",
+    "description": "Made by fermenting fresh milk using natural cultures, rich in probiotics."
+  },
+  {
+    "name": "Pure Butter",
+    "image": "butter.png",
+    "description": "Churned from fresh cream, 100% natural with creamy taste."
+  },
+  {
+    "name": "Pure Ghee",
+    "image": "ghee.png",
+    "description": "Clarified butter made by simmering fresh butter, rich in aroma and nutrients."
+  },
+  {
+    "name": "Paneer",
+    "image": "paneer.png",
+    "description": "This byproduct is collected from fresh cow’s milk after making paneer. Rich in protein and nutrients."
+  },
+  {
+    "name": "Milk Powder",
+    "image": "milk-powder.png",
+    "description": "Dehydrated fresh milk, retains nutrients and ideal for long storage."
+  },
+  {
+    "name": "Condensed Milk",
+    "image": "condensed-milk.png",
+    "description": "Fresh milk concentrated with sugar, creamy and sweet for desserts."
+  },
+  {
+    "name": "Butter Milk",
+    "image": "butter-milk.png",
+    "description": "Liquid byproduct after churning butter, refreshing and rich in probiotics."
+  }
+]
