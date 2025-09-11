@@ -20,9 +20,11 @@ public class FarmFreshConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        System.out.println("add Resource handlers method");
+        System.out.println("Configuring resource handlers...");
         registry.addResourceHandler("/images/**").addResourceLocations("/images/");
         registry.addResourceHandler("/css/**").addResourceLocations("/css/");
+        registry.addResourceHandler("/js/**").addResourceLocations("/js/");
+        registry.addResourceHandler("/json/**").addResourceLocations("/json/");
     }
 
     @Bean

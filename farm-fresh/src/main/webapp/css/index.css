@@ -12,3 +12,43 @@
   background-size: cover; 
   background-position: center;
 }
+
+html {
+  scroll-behavior: smooth;
+}
+
+.custom-card {
+  border: 2px solid #99e1c2;
+  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.2);
+}
+
+.custom-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.3);
+}
+.custom-card .card-body {
+  background-color: #e8f5e9;
+}
+
+ .custom-carousel {
+    width: 100%;
+    max-width: 900px;
+    margin: auto;
+  }
+
+
+  .custom-carousel video {
+    display: block;
+    width: 100%;
+    max-height: 500px;       /* keep natural aspect ratio */
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+
+  .carousel-control-prev-icon,
+  .carousel-control-next-icon {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    padding: 10px;
+  }
