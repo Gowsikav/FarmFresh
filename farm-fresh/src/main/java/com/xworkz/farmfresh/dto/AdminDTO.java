@@ -2,7 +2,11 @@ package com.xworkz.farmfresh.dto;
 
 import lombok.Data;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
 
 @Data
 public class AdminDTO {
@@ -29,4 +33,6 @@ public class AdminDTO {
     @Size(min = 5,max = 15)
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{5,15}$")
     private String confirmPassword;
+
+    private String profilePath;
 }

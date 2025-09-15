@@ -8,7 +8,7 @@
     <name>farm-fresh Maven Webapp</name>
     <url>http://maven.apache.org</url>
     <properties>
-        <spring.version>5.3.39</spring.version>
+        <spring.version>5.3.3</spring.version>
         <servelt.version>3.1.0</servelt.version>
         <lombok.version>1.18.38</lombok.version>
         <jpa.version>2.2</jpa.version>

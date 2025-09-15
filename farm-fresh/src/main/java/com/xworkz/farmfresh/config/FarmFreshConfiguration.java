@@ -1,6 +1,7 @@
 package com.xworkz.farmfresh.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +11,8 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -26,6 +29,9 @@ public class FarmFreshConfiguration implements WebMvcConfigurer {
 
     @Autowired
     private Environment environment;
+
+    @Value("${file.upload-dir}")
+    private String uploadDir;
 
     public FarmFreshConfiguration()
     {
@@ -45,6 +51,9 @@ public class FarmFreshConfiguration implements WebMvcConfigurer {
 
         registry.addResourceHandler("/webjars/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
+
+        registry.addResourceHandler("/uploads/**")
+                .addResourceLocations("file:" + uploadDir + "/");
     }
 
     @Bean
@@ -92,5 +101,12 @@ public class FarmFreshConfiguration implements WebMvcConfigurer {
         properties.setProperty("hibernate.show_sql", environment.getProperty("hibernate.show_sql"));
         properties.setProperty("hibernate.format_sql", environment.getProperty("hibernate.format_sql"));
         return properties;
+    }
+
+    @Bean
+    public MultipartResolver multipartResolver()
+    {
+        System.out.println("MultipartResolver method");
+        return new StandardServletMultipartResolver();
     }
 }
