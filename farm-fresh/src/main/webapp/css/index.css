@@ -52,3 +52,9 @@ html {
     border-radius: 50%;
     padding: 10px;
   }
+
+  .admin-bg2{
+  background-image: url("../images/admin-login-bg.png"); 
+  background-size: cover; 
+  background-position: center;
+}
