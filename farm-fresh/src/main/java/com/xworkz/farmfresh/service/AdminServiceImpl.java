@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Slf4j
 @Service
 public class AdminServiceImpl implements AdminService{
@@ -19,47 +22,79 @@ public class AdminServiceImpl implements AdminService{
     @Autowired
     private AdminRepository adminRepository;
 
+    private final Map<String, Integer> loginAttempts = new HashMap<>();
+
+    @Autowired
+    private EmailSender emailSender;
+
     public AdminServiceImpl()
     {
-        System.out.println("AdminService implementation constructor");
+        log.info("AdminService implementation constructor");
     }
 
     @Override
     public boolean save(AdminDTO adminDTO) {
-        System.out.println("save method in service");
-        System.out.println("service data: "+adminDTO);
+        log.info("save method in service");
+        log.info("service data: {} ",adminDTO);
         if(adminDTO.getPassword().equals(adminDTO.getConfirmPassword()))
         {
-            System.out.println("password matched");
+            log.info("password matched");
             AdminEntity adminEntity=new AdminEntity();
             BeanUtils.copyProperties(adminDTO,adminEntity);
             adminEntity.setPassword(passwordEncoder.encode(adminEntity.getPassword()));
+            adminEntity.setIsBlocked(false);
             return adminRepository.save(adminEntity);
         }
-        System.out.println("password not matched");
+        log.warn("password not matched");
         return false;
     }
 
     @Override
     public AdminDTO checkAdminLoginPassword(String email, String password) {
-        System.out.println("checkAdminLoginPassword method in service");
-        AdminEntity adminEntity=adminRepository.getPasswordByEmail(email);
+        log.info("checkAdminLoginPassword method in service");
+        AdminEntity adminEntity=adminRepository.getDetailsByEmail(email);
         if(adminEntity==null)
             return null;
-        if(passwordEncoder.matches(password,adminEntity.getPassword()))
-        {
-            AdminDTO adminDTO=new AdminDTO();
-            BeanUtils.copyProperties(adminEntity,adminDTO);
-            System.out.println("Password match");
+        if (adminEntity.getIsBlocked()) {
+            log.warn("Account is blocked for email: {}", email);
+            throw new RuntimeException("Account is blocked have to reset password");
+        }
+        if (passwordEncoder.matches(password, adminEntity.getPassword())) {
+            loginAttempts.remove(email);
+            if(!adminRepository.updateIsBlockedByEmail(email,false)) {
+                log.error("IsBlocked not changed");
+                return null;
+            }else {
+                log.info("IsBlocked changed for unlock");
+            }
+            AdminDTO adminDTO = new AdminDTO();
+            BeanUtils.copyProperties(adminEntity, adminDTO);
+            log.info("Password match for {}", email);
             return adminDTO;
-        }else System.out.println("password mismatch");
-        return null;
+        } else {
+            int attempts = loginAttempts.getOrDefault(email, 0) + 1;
+            loginAttempts.put(email, attempts);
+
+            if (attempts >= 3) {
+                if(!adminRepository.updateIsBlockedByEmail(email,true)) {
+                    log.error("IsBlocked not changed");
+                    return null;
+                }else {
+                    log.info("IsBlocked changed after 3 attempts");
+                }
+                log.warn("Account blocked for {} after {} failed attempts", email, attempts);
+                throw new RuntimeException("Account is blocked have to reset password. Click forgot Password");
+            } else {
+                log.warn("Password mismatch for {}. Attempt {}/3", email, attempts);
+                throw new RuntimeException("Password mismatch for "+email+" Attempt "+attempts+"/3");
+            }
+        }
     }
 
     @Override
     public AdminDTO getAdminDetailsByEmail(String email) {
         log.info("getAdminDetailsByEmail method in service");
-        AdminEntity adminEntity=adminRepository.getPasswordByEmail(email);
+        AdminEntity adminEntity=adminRepository.getDetailsByEmail(email);
         if(adminEntity!=null)
         {
             AdminDTO adminDTO=new AdminDTO();
@@ -74,13 +109,42 @@ public class AdminServiceImpl implements AdminService{
 
         log.info("updateAdminProfileByEmail method in service");
         if (adminName == null || !adminName.matches("^[A-Za-z ]{2,50}$")) {
-            log.error("Invalid Name: " ,adminName);
+            log.error("Invalid Name: {} " ,adminName);
             return false;
         }
         if (phoneNumber == null || !phoneNumber.matches("^[0-9]{10}$")) {
-            log.error("Invalid Phone Number: " , phoneNumber);
+            log.error("Invalid Phone Number:{} " , phoneNumber);
             return false;
         }
         return adminRepository.updateAdminProfileByEmail(email,adminName,phoneNumber,profilePath);
+    }
+
+    @Override
+    public boolean checkEmail(String email) {
+        log.info("checkEmail method in service");
+        AdminEntity adminEntity=adminRepository.getDetailsByEmail(email);
+        return adminEntity != null;
+    }
+
+    @Override
+    public boolean sendMailToEmailForSetPassword(String email) {
+        log.info("sendMailToEmailForSetPassword method in admin service");
+        return emailSender.mailSend(email);
+    }
+
+    @Override
+    public boolean resetPasswordByEmail(String email, String password, String confirmPassword) {
+        log.info("resetPasswordByEmail method in admin service");
+        if (!password.equals(confirmPassword)) {
+            log.warn("Passwords do not match for email: {}", email);
+            return false;
+        }
+        String PASSWORD_PATTERN = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&]).{5,}$";
+        if (!password.matches(PASSWORD_PATTERN)) {
+            log.warn("Password does not meet strength requirements for email: {}", email);
+            return false;
+        }
+        password=passwordEncoder.encode(password);
+        return adminRepository.resetPasswordByEmail(email,password,confirmPassword);
     }
 }

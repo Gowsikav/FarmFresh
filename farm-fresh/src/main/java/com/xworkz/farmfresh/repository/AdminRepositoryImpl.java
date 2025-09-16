@@ -19,13 +19,13 @@ public class AdminRepositoryImpl implements AdminRepository{
 
     public AdminRepositoryImpl()
     {
-        System.out.println("AdminRepository implementation constructor");
+        log.info("AdminRepository implementation constructor");
     }
 
     @Override
     public boolean save(AdminEntity adminEntity) {
-        System.out.println("save method in repo");
-        System.out.println("repo data: "+adminEntity);
+        log.info("save method in repo");
+        log.info("repo data: {} ",adminEntity);
         EntityManager entityManager=null;
         EntityTransaction entityTransaction=null;
         try {
@@ -37,41 +37,41 @@ public class AdminRepositoryImpl implements AdminRepository{
             return true;
         }catch (PersistenceException e)
         {
-            System.out.println(e.getMessage());
+            log.error(e.getMessage());
             if(entityTransaction!=null)
             {
                 entityTransaction.rollback();
-                System.out.println("roll backed");
+                log.error("roll backed");
             }
         }
         finally {
             if(entityManager!=null && entityManager.isOpen())
             {
                 entityManager.close();
-                System.out.println("EntityManager is closed");
+                log.info("EntityManager is closed");
             }
         }
         return false;
     }
 
     @Override
-    public AdminEntity getPasswordByEmail(String email) {
-        System.out.println("getPasswordByEmail method in repository");
+    public AdminEntity getDetailsByEmail(String email) {
+        log.info("getDetailsByEmail method in repository");
         EntityManager entityManager=null;
         AdminEntity adminEntity=null;
         try
         {
             entityManager=entityManagerFactory.createEntityManager();
-            adminEntity=(AdminEntity) entityManager.createNamedQuery("getPasswordByEmail").setParameter("email",email).getSingleResult();
+            adminEntity=(AdminEntity) entityManager.createNamedQuery("getDetailsByEmail").setParameter("email",email).getSingleResult();
             return adminEntity;
         }catch (PersistenceException e)
         {
-            System.out.println(e.getMessage());
+            log.error(e.getMessage());
         }finally {
             if(entityManager!=null && entityManager.isOpen())
             {
                 entityManager.close();
-                System.out.println("EntityManager is closed");
+                log.info("EntityManager is closed");
             }
         }
         return adminEntity;
@@ -87,16 +87,89 @@ public class AdminRepositoryImpl implements AdminRepository{
             entityManager=entityManagerFactory.createEntityManager();
             entityTransaction=entityManager.getTransaction();
             entityTransaction.begin();
-            existingEntity=(AdminEntity) entityManager.createNamedQuery("getPasswordByEmail").setParameter("email",email).getSingleResult();
+            existingEntity=(AdminEntity) entityManager.createNamedQuery("getDetailsByEmail").setParameter("email",email).getSingleResult();
             if(existingEntity==null)
             {
                 return false;
             }
             existingEntity.setAdminName(adminName);
             existingEntity.setPhoneNumber(phoneNumber);
-            if(profilePath!=null) {
+            if(profilePath!=null && !profilePath.isEmpty()) {
                 existingEntity.setProfilePath(profilePath);
             }
+            entityManager.merge(existingEntity);
+            entityTransaction.commit();
+            return true;
+        }catch (PersistenceException e)
+        {
+            log.error(e.getMessage());
+            if(entityTransaction!=null)
+            {
+                entityTransaction.rollback();
+                log.error("roll backed");
+            }
+        }finally {
+            if(entityManager!=null && entityManager.isOpen())
+            {
+                entityManager.close();
+                log.info("EntityManager is closed");
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean updateIsBlockedByEmail(String email, boolean isBlocked) {
+        log.info("updateIsBlockedByEmail method in repository");
+        EntityManager entityManager=null;
+        EntityTransaction entityTransaction=null;
+        AdminEntity existingEntity=null;
+        try {
+            entityManager=entityManagerFactory.createEntityManager();
+            entityTransaction=entityManager.getTransaction();
+            entityTransaction.begin();
+            existingEntity=(AdminEntity) entityManager.createNamedQuery("getDetailsByEmail").setParameter("email",email).getSingleResult();
+            if(existingEntity==null)
+                return false;
+            existingEntity.setIsBlocked(isBlocked);
+            entityManager.merge(existingEntity);
+            entityTransaction.commit();
+            return true;
+        }catch (PersistenceException e)
+        {
+            log.error(e.getMessage());
+            if(entityTransaction!=null)
+            {
+                entityTransaction.rollback();
+                log.error("roll backed");
+            }
+        }finally {
+            if(entityManager!=null && entityManager.isOpen())
+            {
+                entityManager.close();
+                log.info("EntityManager is closed");
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean resetPasswordByEmail(String email, String password, String confirmPassword) {
+
+        log.info("resetPasswordByEmail method in repository");
+        EntityManager entityManager=null;
+        EntityTransaction entityTransaction=null;
+        AdminEntity existingEntity=null;
+        try {
+            entityManager=entityManagerFactory.createEntityManager();
+            entityTransaction=entityManager.getTransaction();
+            entityTransaction.begin();
+            existingEntity=(AdminEntity) entityManager.createNamedQuery("getDetailsByEmail").setParameter("email",email).getSingleResult();
+            if(existingEntity==null)
+                return false;
+            existingEntity.setPassword(password);
+            existingEntity.setConfirmPassword(confirmPassword);
+            existingEntity.setIsBlocked(false);
             entityManager.merge(existingEntity);
             entityTransaction.commit();
             return true;

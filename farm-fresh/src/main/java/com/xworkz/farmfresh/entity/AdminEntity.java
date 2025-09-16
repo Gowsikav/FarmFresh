@@ -7,7 +7,7 @@ import javax.persistence.*;
 @Data
 @Entity
 @Table(name = "admin_info")
-@NamedQuery(name = "getPasswordByEmail",query = "select a from AdminEntity a where a.email=:email")
+@NamedQuery(name = "getDetailsByEmail",query = "select a from AdminEntity a where a.email=:email")
 public class AdminEntity {
 
     @Id
@@ -32,4 +32,7 @@ public class AdminEntity {
 
     @Column(name = "profile_path")
     private String profilePath;
+
+    @Column(name = "is_blocked")
+    private Boolean isBlocked;
 }
