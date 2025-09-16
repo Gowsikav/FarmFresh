@@ -4,6 +4,7 @@ import com.xworkz.farmfresh.dto.AdminDTO;
 import com.xworkz.farmfresh.service.AdminService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+@Slf4j
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/")
 @Api(value = "Admin management")
 public class AdminRestController {
 
@@ -42,6 +44,13 @@ public class AdminRestController {
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invalid details");
         }
+    }
+
+    @GetMapping("/checkEmail")
+    public boolean checkEmailForForgotPassword(@RequestParam("email")String email)
+    {
+        log.info("checkEmailForForgotPassword method in admin Rest Controller");
+        return adminService.checkEmail(email);
     }
 
 }

@@ -32,32 +32,38 @@ public class AdminController {
     private String uploadDir;
 
     public AdminController() {
-        System.out.println("AdminController constructor");
+        log.info("AdminController constructor");
     }
 
     @GetMapping("/redirectToAdminLogin")
     public String getAdminLogin(Model model) {
-        System.out.println("getAdminLogin method in AdminController");
+        log.info("getAdminLogin method in AdminController");
         return "AdminLogin";
     }
 
     @PostMapping("/adminLogin")
     public String checkPasswordForAdminLogin(@RequestParam String email, @RequestParam String password, Model model) {
-        System.out.println("checkPasswordForAdminLogin method in adminController");
-        System.out.println("Email: " + email + " password: " + password);
-        AdminDTO adminDTO = adminService.checkAdminLoginPassword(email, password);
-        if (adminDTO != null) {
-            model.addAttribute("dto", adminDTO);
-            return "AdminDashboard";
-        } else {
-            model.addAttribute("errorMessage", "Password / email incorrect");
-            return "AdminLogin";
+        log.info("checkPasswordForAdminLogin method in adminController");
+        log.info("Email: {} password: {}" ,email , password);
+        AdminDTO adminDTO=null;
+        try {
+            adminDTO= adminService.checkAdminLoginPassword(email, password);
+            if (adminDTO != null) {
+                model.addAttribute("dto", adminDTO);
+                return "AdminDashboard";
+            }else {
+                model.addAttribute("errorMessage", "Account not present");
+                return "AdminLogin";
+            }
+        } catch (RuntimeException e) {
+            model.addAttribute("errorMessage",e.getMessage());
         }
+        return "AdminLogin";
     }
 
     @GetMapping("/redirectToUpdateAdminProfile")
     public String redirectToUpdate(@RequestParam("email") String email, Model model) {
-        System.out.println("redirectTo update page in adminController");
+        log.info("redirectTo update page in adminController");
         AdminDTO adminDTO = adminService.getAdminDetailsByEmail(email);
         model.addAttribute("dto", adminDTO);
         return "UpdateAdminProfile";
@@ -83,14 +89,14 @@ public class AdminController {
         String profilePath=null;
         if (profilePicture != null && !profilePicture.isEmpty()) {
             try {
-                System.out.println(uploadDir);
+                log.info(uploadDir);
                 byte[] bytes = profilePicture.getBytes();
                 String fileName = adminName + "_" + System.currentTimeMillis() + "_" + profilePicture.getOriginalFilename();
                 Path path = Paths.get(uploadDir ,fileName);
                 Files.write(path, bytes);
                 profilePath = path.getFileName().toString();
             } catch (IOException e) {
-                System.out.println(e.getMessage());
+                log.error(e.getMessage());
             }
         } else {
             log.warn("No new profile picture uploaded.");
@@ -104,11 +110,44 @@ public class AdminController {
         return redirectToUpdate(email,model);
     }
 
-    @GetMapping("/adminLogout")
-    public String adminLogoutIndexPage()
+    @PostMapping("/forgotPassword")
+    public String sendEmailForSetPassword(@RequestParam("email")String email,Model model)
     {
-        log.info("adminLogoutIndexPage method in adminController");
-        return "index";
+        log.info("sendEmailForSetPassword method in admin controller");
+        if(adminService.sendMailToEmailForSetPassword(email))
+        {
+            log.info("Email send");
+            model.addAttribute("errorMessage","Email send to your mail");
+        }else{
+            log.error("Email not send");
+            model.addAttribute("errorMessage","Email not send to your mail");
+        }
+        return "AdminLogin";
     }
 
+    @GetMapping("/redirectToSetPassword")
+    public String redirectToSetPassword(@RequestParam("email")String email, Model model)
+    {
+        log.info("redirectToSetPassword method in admin controller");
+        model.addAttribute("email",email);
+        return "SetPassword";
+    }
+
+    @PostMapping("/resetPassword")
+    public String resetPassword(@RequestParam String email,@RequestParam String password,
+                                @RequestParam String confirmPassword,Model model)
+    {
+        log.info("resetPassword method in admin controller");
+        if(adminService.resetPasswordByEmail(email,password,confirmPassword))
+        {
+            log.info("password changed");
+            model.addAttribute("email",email);
+            model.addAttribute("errorMessage","Account unblocked");
+            return "AdminLogin";
+        }else {
+            log.error("password not changed");
+            model.addAttribute("errorMessage","Password incorrect");
+            return redirectToSetPassword(email,model);
+        }
+    }
 }

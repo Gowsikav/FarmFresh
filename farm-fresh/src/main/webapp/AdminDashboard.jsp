@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -30,33 +31,40 @@
             <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
                 <ul class="navbar-nav mb-2 mb-lg-0 align-items-center">
                     <li class="nav-item">
-                        <a class="nav-link" href="redirectToIndex">Home</a>
+                        <a class="nav-link" href="redirectToIndex"><i class="fa-solid fa-house me-2"></i> Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="redirectToAdminDashboard?email=${dto.email}">Dashboard</a>
+                        <a class="nav-link active" href="redirectToAdminDashboard?email=${dto.email}"><i class="fa-solid fa-user-shield me-2"></i></i> Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Farmers</a>
+                        <a class="nav-link" href="#"><i class="fa-solid fa-tractor me-2"></i> Farmers</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Customers</a>
+                        <a class="nav-link" href="#"><i class="fa-solid fa-users me-2"></i> Customers</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
                             <c:choose>
                                 <c:when test="${empty dto.profilePath}">
-                                    <img src="images/dummy-profile.png" alt="Profile" class="rounded-circle" width="40" height="40" style="object-fit: cover;">
+                                    <img src="images/dummy-profile.png" alt="Profile" class="rounded-circle" width="40"
+                                        height="40" style="object-fit: cover;">
                                 </c:when>
                                 <c:otherwise>
-                                    <img src="<c:url value='/uploads/${dto.profilePath}'/>" alt="Profile" class="rounded-circle" width="40" height="40" style="object-fit: cover;">
+                                    <img src="<c:url value='/uploads/${dto.profilePath}'/>" alt="Profile"
+                                        class="rounded-circle" width="40" height="40" style="object-fit: cover;">
                                 </c:otherwise>
                             </c:choose>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#adminProfileModal">View Profile</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="adminLogout">Logout</a></li>
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
+                                    data-bs-target="#adminProfileModal"><i class="fa-solid fa-user me-2"></i></i> View Profile</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <a class="dropdown-item text-danger" href="redirectToIndex"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a>
+                            </li>
                         </ul>
                     </li>
                 </ul>
@@ -72,7 +80,8 @@
         </div>
     </main>
 
-    <div class="modal fade" id="adminProfileModal" tabindex="-1" aria-labelledby="adminProfileModalLabel" aria-hidden="true">
+    <div class="modal fade" id="adminProfileModal" tabindex="-1" aria-labelledby="adminProfileModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header" style="background: linear-gradient(90deg, #2e7d32, #f9fbe7);">
@@ -83,24 +92,37 @@
                     <div class="text-center mb-4">
                         <c:choose>
                             <c:when test="${empty dto.profilePath}">
-                                <img src="images/dummy-profile.png" alt="Profile" class="rounded-circle" width="150" height="150" style="object-fit: cover;">
+                                <img src="images/dummy-profile.png" alt="Profile" class="rounded-circle" width="150"
+                                    height="150" style="object-fit: cover;">
                             </c:when>
                             <c:otherwise>
-                                <img src="<c:url value='/uploads/${dto.profilePath}'/>" alt="Profile" class="rounded-circle" width="150" height="150" style="object-fit: cover;">
+                                <img src="<c:url value='/uploads/${dto.profilePath}'/>" alt="Profile"
+                                    class="rounded-circle" width="150" height="150" style="object-fit: cover;">
                             </c:otherwise>
                         </c:choose>
                     </div>
-                    <div class="row mb-2">
-                        <div class="col-sm-4"><strong>Name:</strong></div>
-                        <div class="col-sm-8">${dto.adminName}</div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-sm-4"><strong>Email:</strong></div>
-                        <div class="col-sm-8">${dto.email}</div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-sm-4"><strong>PhoneNumber:</strong></div>
-                        <div class="col-sm-8">${dto.phoneNumber}</div>
+                    <div class="card p-3 shadow-sm">
+                        <ul class="list-group list-group-flush">
+
+                            <div class="row mb-2">
+                                <div class="col-sm-4 fw-bold">
+                                    <i class="fa-solid fa-user me-2"></i>Name:
+                                </div>
+                                <div class="col-sm-8 text-break">${dto.adminName}</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 fw-bold">
+                                    <i class="fa-solid fa-envelope me-2"></i>Email:
+                                </div>
+                                <div class="col-sm-8 text-break">${dto.email}</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 fw-bold">
+                                    <i class="fa-solid fa-phone me-2"></i>Phone:
+                                </div>
+                                <div class="col-sm-8">${dto.phoneNumber}</div>
+                            </div>
+                        </ul>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -178,4 +200,5 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js"
         crossorigin="anonymous"></script>
 </body>
+
 </html>

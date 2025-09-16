@@ -9,4 +9,7 @@ public interface AdminService {
     AdminDTO checkAdminLoginPassword(String email,String password);
     AdminDTO getAdminDetailsByEmail(String email);
     boolean updateAdminProfileByEmail(String email,String adminName,String phoneNumber,String profilePath);
+    boolean checkEmail(String email);
+    boolean sendMailToEmailForSetPassword(String email);
+    boolean resetPasswordByEmail(String email,String password,String confirmPassword);
 }
