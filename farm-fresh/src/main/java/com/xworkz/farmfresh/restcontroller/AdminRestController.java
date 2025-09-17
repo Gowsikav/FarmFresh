@@ -47,10 +47,13 @@ public class AdminRestController {
     }
 
     @GetMapping("/checkEmail")
-    public boolean checkEmailForForgotPassword(@RequestParam("email")String email)
+    public ResponseEntity<Boolean> checkEmailForForgotPassword(@RequestParam("email")String email)
     {
         log.info("checkEmailForForgotPassword method in admin Rest Controller");
-        return adminService.checkEmail(email);
+        if(adminService.checkEmail(email))
+            return ResponseEntity.ok(true);
+        else
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
     }
 
 }

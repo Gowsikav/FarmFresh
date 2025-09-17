@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -33,19 +34,23 @@
                         <a class="nav-link active" href="redirectToIndex"><i class="fa-solid fa-house me-2"></i>Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="redirectToFarmerRegister"><i class="fa-solid fa-tractor me-2"></i>Farmer Register</a>
+                        <a class="nav-link" href="redirectToFarmerRegister"><i
+                                class="fa-solid fa-tractor me-2"></i>Farmer Register</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="loginDropdown" role="button"
-                            data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-right-to-bracket me-2"></i>
+                            data-bs-toggle="dropdown" aria-expanded="false"><i
+                                class="fa-solid fa-right-to-bracket me-2"></i>
                             Login
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="loginDropdown">
                             <li>
-                                <a class="dropdown-item" href="redirectToAdminLogin"><i class="fa-solid fa-user-tie me-2"></i>Admin Login</a>
+                                <a class="dropdown-item" href="redirectToAdminLogin"><i
+                                        class="fa-solid fa-user-tie me-2"></i>Admin Login</a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="redirectToCustomerLogin"><i class="fa-solid fa-user me-2"></i>Customer Login</a>
+                                <a class="dropdown-item" href="redirectToCustomerLogin"><i
+                                        class="fa-solid fa-user me-2"></i>Customer Login</a>
                             </li>
                         </ul>
                     </li>
@@ -57,7 +62,7 @@
     <main class="flex-grow-1 d-flex">
         <div class="container-fluid admin-bg2 d-flex flex-column justify-content-md-start align-items-center w-100">
             <h2 class="mb-4" style="max-width: 600px; color: azure"> Admin Login</h2>
-            
+
             <form action="adminLogin" method="post" class="bg-white bg-opacity-75 p-4 rounded shadow-sm"
                 style="max-width: 600px; width: 60%">
                 <c:if test="${not empty errorMessage}">
@@ -65,57 +70,64 @@
                         ${errorMessage}
                     </div>
                 </c:if>
+                <c:if test="${not empty successMessage}">
+                    <div class="alert alert-success" role="alert">
+                        ${successMessage}
+                    </div>
+                </c:if>
                 <div class="mb-3">
-  <label for="adminEmail" class="form-label">Email <span class="text-danger">*</span></label>
-  <div class="input-group">
-    <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
-    <input type="email" class="form-control" id="adminEmail" name="email" value="${email}" required />
-  </div>
-</div>
+                    <label for="adminEmail" class="form-label">Email <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
+                        <input type="email" class="form-control" id="adminEmail" name="email" value="${email}"
+                            required />
+                    </div>
+                </div>
 
-<div class="mb-3">
-  <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
-  <div class="input-group">
-    <span class="input-group-text"><i class="fa-solid fa-key"></i></span>
-    <input type="password" class="form-control" id="password" name="password"
-           minlength="5"
-           pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{5,}$"
-           required />
-  </div>
-  <div class="form-text text-danger text-small">
-    Password must be at least 5 characters long and include uppercase, lowercase, number, and special character.
-  </div>
-</div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa-solid fa-key"></i></span>
+                        <input type="password" class="form-control" id="password" name="password" minlength="5"
+                            pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{5,}$" required />
+                    </div>
+                    <div class="form-text text-danger text-small">
+                        Password must be at least 5 characters long and include uppercase, lowercase, number, and
+                        special character.
+                    </div>
+                </div>
 
                 <button id="loginBtn" type="submit" class="btn btn-success w-100">Login</button>
-<div class="form-text text-muted text-small">
-    <a href="#" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">Forgot password?</a>
-</div>         
-   </form>
+                <div class="form-text text-muted text-small">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">Forgot password?</a>
+                </div>
+            </form>
         </div>
     </main>
 
-    <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="forgotPasswordLabel">Reset Password</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form action="forgotPassword" method="post" id="forgotForm">
-  <div class="mb-3">
-    <label for="resetEmail" class="form-label">Enter your email</label>
-    <input type="email" class="form-control" id="resetEmail" name="email" required>
-    <div id="emailFeedback" class="form-text text-danger d-none"></div>
-  </div>
-  <button type="submit" id="sendBtn" class="btn btn-primary w-100" disabled>Send Reset Link</button>
-</form>
+    <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="forgotPasswordLabel">Reset Password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="forgotPassword" method="post" id="forgotForm">
+                        <div class="mb-3">
+                            <label for="resetEmail" class="form-label">Enter your email</label>
+                            <input type="email" class="form-control" id="resetEmail" name="email" required>
+                            <div id="emailFeedback" class="form-text text-danger d-none"></div>
+                        </div>
+                        <button type="submit" id="sendBtn" class="btn btn-primary w-100" disabled>Send Reset
+                            Link</button>
+                    </form>
 
-      </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
 
     <footer class="text-lg-start py-3 " style="background: linear-gradient(90deg, #1b5e20, #fffde7); color: #333">
         <div class="container">
@@ -185,4 +197,5 @@
         crossorigin="anonymous"></script>
     <script src="js/admin-login.js"></script>
 </body>
+
 </html>

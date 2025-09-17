@@ -56,7 +56,7 @@ public class AdminRepositoryImpl implements AdminRepository{
 
     @Override
     public AdminEntity getDetailsByEmail(String email) {
-        log.info("getDetailsByEmail method in repository");
+        log.info("getDetailsByEmail method in adminRepository");
         EntityManager entityManager=null;
         AdminEntity adminEntity=null;
         try
@@ -79,7 +79,7 @@ public class AdminRepositoryImpl implements AdminRepository{
 
     @Override
     public boolean updateAdminProfileByEmail(String email, String adminName, String phoneNumber, String profilePath) {
-        log.info("updateAdminProfileByEmail method in repository");
+        log.info("updateAdminProfileByEmail method in adminRepository");
         EntityManager entityManager=null;
         EntityTransaction entityTransaction=null;
         AdminEntity existingEntity;
@@ -120,7 +120,7 @@ public class AdminRepositoryImpl implements AdminRepository{
 
     @Override
     public boolean updateIsBlockedByEmail(String email, boolean isBlocked) {
-        log.info("updateIsBlockedByEmail method in repository");
+        log.info("updateIsBlockedByEmail method in adminRepository");
         EntityManager entityManager=null;
         EntityTransaction entityTransaction=null;
         AdminEntity existingEntity=null;
@@ -156,7 +156,7 @@ public class AdminRepositoryImpl implements AdminRepository{
     @Override
     public boolean resetPasswordByEmail(String email, String password, String confirmPassword) {
 
-        log.info("resetPasswordByEmail method in repository");
+        log.info("resetPasswordByEmail method in adminRepository");
         EntityManager entityManager=null;
         EntityTransaction entityTransaction=null;
         AdminEntity existingEntity=null;

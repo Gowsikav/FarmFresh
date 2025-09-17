@@ -15,12 +15,12 @@ public class EmailSenderImpl implements EmailSender{
 
     public EmailSenderImpl()
     {
-        System.out.println("EmailSenderImpl constructor");
+        log.info("EmailSenderImpl constructor");
     }
 
     @Override
     public boolean mailSend(String email) {
-        System.out.println("mailSend method");
+        log.info("mailSend method");
         try {
             String resetLink = "http://localhost:8081/farm-fresh/redirectToSetPassword?email=" + email;
 

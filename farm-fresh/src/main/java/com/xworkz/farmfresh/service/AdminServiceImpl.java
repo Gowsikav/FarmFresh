@@ -34,7 +34,7 @@ public class AdminServiceImpl implements AdminService{
 
     @Override
     public boolean save(AdminDTO adminDTO) {
-        log.info("save method in service");
+        log.info("save method in adminService");
         log.info("service data: {} ",adminDTO);
         if(adminDTO.getPassword().equals(adminDTO.getConfirmPassword()))
         {
@@ -51,7 +51,7 @@ public class AdminServiceImpl implements AdminService{
 
     @Override
     public AdminDTO checkAdminLoginPassword(String email, String password) {
-        log.info("checkAdminLoginPassword method in service");
+        log.info("checkAdminLoginPassword method in adminService");
         AdminEntity adminEntity=adminRepository.getDetailsByEmail(email);
         if(adminEntity==null)
             return null;
@@ -61,12 +61,7 @@ public class AdminServiceImpl implements AdminService{
         }
         if (passwordEncoder.matches(password, adminEntity.getPassword())) {
             loginAttempts.remove(email);
-            if(!adminRepository.updateIsBlockedByEmail(email,false)) {
-                log.error("IsBlocked not changed");
-                return null;
-            }else {
-                log.info("IsBlocked changed for unlock");
-            }
+
             AdminDTO adminDTO = new AdminDTO();
             BeanUtils.copyProperties(adminEntity, adminDTO);
             log.info("Password match for {}", email);
@@ -93,7 +88,7 @@ public class AdminServiceImpl implements AdminService{
 
     @Override
     public AdminDTO getAdminDetailsByEmail(String email) {
-        log.info("getAdminDetailsByEmail method in service");
+        log.info("getAdminDetailsByEmail method in adminService");
         AdminEntity adminEntity=adminRepository.getDetailsByEmail(email);
         if(adminEntity!=null)
         {
@@ -107,7 +102,7 @@ public class AdminServiceImpl implements AdminService{
     @Override
     public boolean updateAdminProfileByEmail(String email, String adminName, String phoneNumber, String profilePath) {
 
-        log.info("updateAdminProfileByEmail method in service");
+        log.info("updateAdminProfileByEmail method in adminService");
         if (adminName == null || !adminName.matches("^[A-Za-z ]{2,50}$")) {
             log.error("Invalid Name: {} " ,adminName);
             return false;
@@ -121,20 +116,20 @@ public class AdminServiceImpl implements AdminService{
 
     @Override
     public boolean checkEmail(String email) {
-        log.info("checkEmail method in service");
+        log.info("checkEmail method in adminService");
         AdminEntity adminEntity=adminRepository.getDetailsByEmail(email);
         return adminEntity != null;
     }
 
     @Override
     public boolean sendMailToEmailForSetPassword(String email) {
-        log.info("sendMailToEmailForSetPassword method in admin service");
+        log.info("sendMailToEmailForSetPassword method in  adminService");
         return emailSender.mailSend(email);
     }
 
     @Override
     public boolean resetPasswordByEmail(String email, String password, String confirmPassword) {
-        log.info("resetPasswordByEmail method in admin service");
+        log.info("resetPasswordByEmail method in admin adminService");
         if (!password.equals(confirmPassword)) {
             log.warn("Passwords do not match for email: {}", email);
             return false;

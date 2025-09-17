@@ -71,6 +71,7 @@ public class AdminController {
 
     @GetMapping("/redirectToAdminDashboard")
     public String getDashboard(@RequestParam("email") String email, Model model) {
+        log.info("getDashboard method in admin controller");
         AdminDTO adminDTO = adminService.getAdminDetailsByEmail(email);
         model.addAttribute("dto", adminDTO);
         return "AdminDashboard";
@@ -117,7 +118,7 @@ public class AdminController {
         if(adminService.sendMailToEmailForSetPassword(email))
         {
             log.info("Email send");
-            model.addAttribute("errorMessage","Email send to your mail");
+            model.addAttribute("successMessage","Email send to your mail");
         }else{
             log.error("Email not send");
             model.addAttribute("errorMessage","Email not send to your mail");
@@ -142,7 +143,7 @@ public class AdminController {
         {
             log.info("password changed");
             model.addAttribute("email",email);
-            model.addAttribute("errorMessage","Account unblocked");
+            model.addAttribute("successMessage","Account unblocked");
             return "AdminLogin";
         }else {
             log.error("password not changed");
