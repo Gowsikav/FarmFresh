@@ -1,7 +1,9 @@
 package com.xworkz.farmfresh.service;
 
 import com.xworkz.farmfresh.dto.AdminDTO;
+import com.xworkz.farmfresh.entity.AdminAuditEntity;
 import com.xworkz.farmfresh.entity.AdminEntity;
+import com.xworkz.farmfresh.repository.AdminAuditRepository;
 import com.xworkz.farmfresh.repository.AdminRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,6 +24,9 @@ public class AdminServiceImpl implements AdminService{
 
     @Autowired
     private AdminRepository adminRepository;
+
+    @Autowired
+    private AdminAuditRepository adminAuditRepository;
 
     private final Map<String, Integer> loginAttempts = new HashMap<>();
 
@@ -61,6 +67,17 @@ public class AdminServiceImpl implements AdminService{
         }
         if (passwordEncoder.matches(password, adminEntity.getPassword())) {
             loginAttempts.remove(email);
+
+            AdminAuditEntity audit = adminEntity.getAdminAuditEntity();
+            if (audit == null) {
+                audit = new AdminAuditEntity();
+                audit.setAdminEntity(adminEntity);
+            }
+            audit.setLoginTime(LocalDateTime.now());
+            audit.setAuditName(adminEntity.getAdminName());
+            if(adminAuditRepository.save(audit))
+                log.info("Admin audit details updated/created");
+            else log.error("Admin audit details not updated/created");
 
             AdminDTO adminDTO = new AdminDTO();
             BeanUtils.copyProperties(adminEntity, adminDTO);

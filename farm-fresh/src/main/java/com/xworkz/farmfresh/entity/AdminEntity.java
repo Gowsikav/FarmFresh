@@ -1,13 +1,15 @@
 package com.xworkz.farmfresh.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.*;
 
 @Data
 @Entity
 @Table(name = "admin_info")
-@NamedQuery(name = "getDetailsByEmail",query = "select a from AdminEntity a where a.email=:email")
+@NamedQuery(name = "getDetailsByEmail", query = "select a from AdminEntity a where a.email=:email")
 public class AdminEntity {
 
     @Id
@@ -35,4 +37,10 @@ public class AdminEntity {
 
     @Column(name = "is_blocked")
     private Boolean isBlocked;
+
+    @OneToOne(mappedBy = "adminEntity", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private AdminAuditEntity adminAuditEntity;
+
 }
