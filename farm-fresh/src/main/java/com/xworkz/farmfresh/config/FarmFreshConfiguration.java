@@ -42,6 +42,8 @@ public class FarmFreshConfiguration implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         System.out.println("Configuring resource handlers...");
         registry.addResourceHandler("/images/**").addResourceLocations("/images/");
+        registry.addResourceHandler("/productImages/**")
+                .addResourceLocations("file:///E:/farm-fresh/productImages/");
         registry.addResourceHandler("/css/**").addResourceLocations("/css/");
         registry.addResourceHandler("/js/**").addResourceLocations("/js/");
         registry.addResourceHandler("/json/**").addResourceLocations("/json/");
