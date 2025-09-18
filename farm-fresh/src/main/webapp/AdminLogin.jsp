@@ -91,10 +91,6 @@
                         <input type="password" class="form-control" id="password" name="password" minlength="5"
                             pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{5,}$" required />
                     </div>
-                    <div class="form-text text-danger text-small">
-                        Password must be at least 5 characters long and include uppercase, lowercase, number, and
-                        special character.
-                    </div>
                 </div>
 
                 <button id="loginBtn" type="submit" class="btn btn-success w-100">Login</button>

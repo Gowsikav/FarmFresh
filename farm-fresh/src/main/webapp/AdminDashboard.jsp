@@ -37,6 +37,9 @@
                         <a class="nav-link active" href="redirectToAdminDashboard?email=${dto.email}"><i class="fa-solid fa-user-shield me-2"></i></i> Dashboard</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="redirectToManageProducts?email=${dto.email}"><i class="fa-solid fa-box me-2"></i> Manage Products</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="#"><i class="fa-solid fa-tractor me-2"></i> Farmers</a>
                     </li>
                     <li class="nav-item">
@@ -74,11 +77,105 @@
 
     <main class="flex-grow-1 d-flex">
         <div class="container-fluid p-5">
-            <h1>Welcome, ${dto.adminName}!</h1>
-            <p>This is your dashboard. You can manage farmers, customers, and products from here.</p>
-            <%-- Add more dashboard content here --%>
+            <!-- Welcome Message -->
+            <h1 class="fw-bold">Welcome back, ${dto.adminName} </h1>
+            <p class="text-muted">Here's an overview of what's happening in your farm-fresh platform today.</p>
+
+            <!-- Info Cards -->
+            <div class="row mt-4">
+                <div class="col-md-3">
+                    <div class="card text-white bg-primary mb-3 shadow">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Customers</h5>
+                            <p class="card-text fs-4 fw-bold">1,245</p> <%-- dynamic --%>
+                            <small class="text-light">+35 this week</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-success mb-3 shadow">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Farmers</h5>
+                            <p class="card-text fs-4 fw-bold">312</p>
+                            <small class="text-light">+5 new signups</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-warning mb-3 shadow">
+                        <div class="card-body">
+                            <h5 class="card-title">Active Orders</h5>
+                            <p class="card-text fs-4 fw-bold">89</p>
+                            <small class="text-light">12 pending delivery</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-danger mb-3 shadow">
+                        <div class="card-body">
+                            <h5 class="card-title">Revenue</h5>
+                            <p class="card-text fs-4 fw-bold">Rs.4,58,920</p>
+                            <small class="text-light">This month</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="row">
+                <!-- Recent Customers -->
+                <div class="col-md-4">
+                    <div class="card mt-4 shadow">
+                        <div class="card-header bg-dark text-white fw-bold">
+                            Recent Customers
+                        </div>
+                        <div class="card-body p-0">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">Ananya Sharma - ananya@gmail.com</li>
+                                <li class="list-group-item">Ravi Kumar - ravi.kumar@gmail.com</li>
+                                <li class="list-group-item">Megha Singh - megha.singh@gmail.com</li>
+                                <li class="list-group-item">Aman Gupta - aman.gupta@gmail.com</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- New Farmer Requests -->
+                <div class="col-md-4">
+                    <div class="card mt-4 shadow">
+                        <div class="card-header bg-dark text-white fw-bold">
+                            New Farmer Requests
+                        </div>
+                        <div class="card-body p-0">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">Rajesh Patel - Pending Approval</li>
+                                <li class="list-group-item">Kavita Yadav - Pending Approval</li>
+                                <li class="list-group-item">Sunil Verma - Pending Approval</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Latest Orders -->
+                <div class="col-md-4">
+                    <div class="card mt-4 shadow">
+                        <div class="card-header bg-dark text-white fw-bold">
+                            Latest Orders
+                        </div>
+                        <div class="card-body p-0">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">Order #1542 - Completed</li>
+                                <li class="list-group-item">Order #1543 - Out for Delivery</li>
+                                <li class="list-group-item">Order #1544 - Payment Pending</li>
+                                <li class="list-group-item">Order #1545 - Cancelled</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
+
 
     <div class="modal fade" id="adminProfileModal" tabindex="-1" aria-labelledby="adminProfileModalLabel"
         aria-hidden="true">

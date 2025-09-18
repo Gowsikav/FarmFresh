@@ -151,4 +151,13 @@ public class AdminController {
             return redirectToSetPassword(email,model);
         }
     }
+
+    @GetMapping("/redirectToManageProducts")
+    public String getManageProductPage(@RequestParam("email")String email,Model model)
+    {
+        log.info("getManageProductPage method in adminController");
+        AdminDTO adminDTO = adminService.getAdminDetailsByEmail(email);
+        model.addAttribute("dto", adminDTO);
+        return "ManageProducts";
+    }
 }
