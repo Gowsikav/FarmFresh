@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/")
-public class FarmerRegisterController {
+public class CustomerRegisterController {
 
-    public FarmerRegisterController() {
-        System.out.println("FarmerRegisterController constructor");
+    public CustomerRegisterController() {
+        System.out.println("CustomerRegisterController constructor");
     }
 
     @GetMapping("/redirectToIndex")
@@ -19,7 +19,7 @@ public class FarmerRegisterController {
         return "index";
     }
 
-    @GetMapping("/redirectToFarmerRegister")
+    @GetMapping("/redirectToCustomerRegister")
     public String getFarmerRegisterPage()
     {
         System.out.println("redirected to farmer register");

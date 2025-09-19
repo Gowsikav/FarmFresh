@@ -37,7 +37,7 @@
                         <a class="nav-link" href="redirectToManageProducts?email=${dto.email}"><i class="fa-solid fa-box me-2"></i> Manage Products</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fa-solid fa-tractor me-2"></i> Farmers</a>
+                        <a class="nav-link" href="redirectToMilkSuppliersList?email=${dto.email}"><i class="fa-solid fa-bottle-droplet me-2"></i> Milk Suppliers</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#"><i class="fa-solid fa-users me-2"></i> Customers</a>

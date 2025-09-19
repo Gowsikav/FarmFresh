@@ -45,4 +45,33 @@ public class EmailSenderImpl implements EmailSender{
         }
     }
 
+    @Override
+    public boolean mailForSupplierRegisterSuccess(String email, String supplierName) {
+        log.info("mailForSupplierRegisterSuccess method");
+        try {
+            String subject = "Welcome to Farm Fresh - Registration Successful";
+
+            String messageBody = "Dear " + supplierName + ",\n\n"
+                    + "We are thrilled to inform you that your registration as a Milk Supplier with Farm Fresh has been successfully completed.\n\n"
+                    + "You are now officially part of our trusted network of suppliers. "
+                    + "Our team is committed to supporting you in delivering high-quality milk to our customers efficiently.\n\n"
+                    + "If you have any questions or need assistance, please feel free to reach out to us at info@farmfresh.com or call our support line.\n\n"
+                    + "Once again, welcome aboard! We look forward to a fruitful and long-lasting partnership.\n\n"
+                    + "Warm regards,\n"
+                    + "Farm Fresh Team";
+
+            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+            simpleMailMessage.setTo(email);
+            simpleMailMessage.setSubject(subject);
+            simpleMailMessage.setText(messageBody);
+
+            configuration.mailSender().send(simpleMailMessage);
+            log.info("Registration success mail sent to: {}", email);
+            return true;
+        } catch (Exception e) {
+            log.error("Error while sending registration success email: {}", e.getMessage());
+            return false;
+        }
+    }
+
 }

@@ -34,23 +34,21 @@
                         <a class="nav-link active" href="redirectToIndex"><i class="fa-solid fa-house me-2"></i>Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="redirectToFarmerRegister"><i
-                                class="fa-solid fa-tractor me-2"></i>Farmer Register</a>
+                        <a class="nav-link" href="redirectToCustomerRegister"><i class="fa-solid fa-user-plus me-2"></i>Customer Register</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="loginDropdown" role="button"
-                            data-bs-toggle="dropdown" aria-expanded="false"><i
-                                class="fa-solid fa-right-to-bracket me-2"></i>
+                            data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-right-to-bracket me-2"></i>
                             Login
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="loginDropdown">
                             <li>
-                                <a class="dropdown-item" href="redirectToAdminLogin"><i
-                                        class="fa-solid fa-user-tie me-2"></i>Admin Login</a>
+                                <a class="dropdown-item" href="redirectToAdminLogin"><i class="fa-solid fa-user-tie me-2"></i>Admin Login</a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="redirectToCustomerLogin"><i
-                                        class="fa-solid fa-user me-2"></i>Customer Login</a>
+                              <a class="dropdown-item" href="redirectToMilkSupplierLogin"><i class="fa-solid fa-bottle-droplet me-2"></i> Milk Supplier Login</a>
+                            <li>
+                                <a class="dropdown-item" href="redirectToCustomerLogin"><i class="fa-solid fa-user me-2"></i>Customer Login</a>
                             </li>
                         </ul>
                     </li>
