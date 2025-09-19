@@ -1,0 +1,438 @@
+<%@ page isELIgnored="false" %>
+    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Farm Fresh | Milk Suppliers</title>
+    <link rel="shortcut icon" href="images/title-pic.png" type="image/x-icon" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+        crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="css/index.css" />
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-expand-lg" style="background: linear-gradient(90deg, #2e7d32, #f9fbe7)">
+        <div class="container-fluid">
+            <a class="navbar-brand">
+                <img src="images/farm-fresh-logo.png" alt="Farm Fresh Logo" height="80" width="80"
+                    class="d-inline-block align-text-top rounded-circle border border-light p-1 ms-3 me-2" />
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mb-2 mb-lg-0 align-items-center ms-lg-auto me-3">
+                    <li class="nav-item">
+                        <a class="nav-link" href="redirectToAdminDashboard?email=${dto.email}"><i
+                                class="fa-solid fa-user-shield me-2"></i></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="redirectToManageProducts?email=${dto.email}"><i
+                                class="fa-solid fa-box me-2"></i> Manage Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="redirectToMilkSuppliersList?email=${dto.email}"><i
+                                class="fa-solid fa-bottle-droplet me-2"></i> Milk Suppliers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="fa-solid fa-users me-2"></i> Customers</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <c:choose>
+                                <c:when test="${empty dto.profilePath}">
+                                    <img src="images/dummy-profile.png" alt="Profile" class="rounded-circle" width="40"
+                                        height="40" style="object-fit: cover;">
+                                </c:when>
+                                <c:otherwise>
+                                    <img src="<c:url value='/uploads/${dto.profilePath}'/>" alt="Profile"
+                                        class="rounded-circle" width="40" height="40" style="object-fit: cover;">
+                                </c:otherwise>
+                            </c:choose>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
+                                    data-bs-target="#adminProfileModal"><i class="fa-solid fa-user me-2"></i></i> View
+                                    Profile</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <a class="dropdown-item text-danger" href="adminLogout?email=${dto.email}"><i
+                                        class="fa-solid fa-right-from-bracket me-2"></i> Logout</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-wrapper d-flex flex-column min-vh-10"></div>
+    <div class="container mt-4 mb-5 flex-grow-1">
+        <h2 class="mb-4">Milk Suppliers</h2>
+        <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal"
+            data-bs-target="#addMilkSupplierModal">
+            <i class="fa-solid fa-plus me-2"></i>Add Milk Supplier
+        </button>
+        <c:if test="${not empty success}">
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                ${success}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </c:if>
+        <c:if test="${not empty error}">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                ${error}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </c:if>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>FirstName</th>
+                        <th>LastName</th>
+                        <th>Email</th>
+                        <th>Phone Number</th>
+                        <th>Address</th>
+                        <th>Type Of Milk</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <c:forEach var="supplier" items="${milkSuppliers}">
+                        <tr>
+                            <td>${supplier.firstName}</td>
+                            <td>${supplier.lastName}</td>
+                            <td>${supplier.email}</td>
+                            <td>${supplier.phoneNumber}</td>
+                            <td class="text-break">${supplier.address}</td>
+                            <td>${supplier.typeOfMilk}</td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-sm me-2 viewSupplierBtn"
+                                    data-bs-toggle="modal" data-bs-target="#viewSupplierModal"
+                                    data-firstname="${supplier.firstName}" 
+                                    data-lastname="${supplier.lastName}"
+                                    data-email="${supplier.email}" 
+                                    data-phone="${supplier.phoneNumber}"
+                                    data-address="${supplier.address}" 
+                                    data-milk="${supplier.typeOfMilk}">
+                                    <i class="fa-solid fa-eye"></i> View
+                                </button>
+
+                                <button type="button" class="btn btn-primary btn-sm me-2 editSupplierBtn"
+                                    data-bs-toggle="modal" data-bs-target="#editSupplierModal" 
+                                    data-id="${supplier.supplierId}"
+                                    data-firstname="${supplier.firstName}"
+                                    data-lastname="${supplier.lastName}"
+                                    data-email="${supplier.email}" 
+                                    data-phone="${supplier.phoneNumber}"
+                                    data-address="${supplier.address}"
+                                     data-milk="${supplier.typeOfMilk}">
+                                    <i class="fa-solid fa-pen-to-square"></i> Edit
+                                </button>
+
+                                <a href="deleteMilkSupplier?email=${supplier.email}&adminEmail=${dto.email}" class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Are you sure you want to delete this supplier?');">
+                                    <i class="fa-solid fa-trash"></i> Delete
+                                </a>
+
+
+                            </td>
+                        </tr>
+                    </c:forEach>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </div>
+
+    <!-- Add Milk Supplier Modal -->
+    <div class="modal fade" id="addMilkSupplierModal" tabindex="-1" aria-labelledby="addMilkSupplierModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header" style="background: linear-gradient(90deg, #2e7d32, #f9fbe7);">
+                    <h5 class="modal-title" id="addMilkSupplierModalLabel">Add New Milk Supplier</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <c:if test="${not empty error}">
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            ${error}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    </c:if>
+                    <form action="addMilkSupplier?adminEmail=${dto.email}" method="post" id="supplierForm">
+                        <div class="mb-3">
+                            <label for="firstName" class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="firstName" name="firstName"
+                                value="${supplier.firstName}" placeholder="Enter first name" required>
+                            <div id="firstNameError" class="error-msg text-danger small"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="lastName" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="lastName" name="lastName"
+                                value="${supplier.lastName}" placeholder="Enter last name" required>
+                            <div id="lastNameError" class="error-msg text-danger small"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" value="${supplier.email}"
+                                placeholder="Enter email" required>
+                            <div id="emailError" class="error-msg text-danger small"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="phoneNumber" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber"
+                                value="${supplier.phoneNumber}" placeholder="Enter phone number" required>
+                            <div id="phoneNumberError" class="error-msg text-danger small"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Address</label>
+                            <textarea class="form-control" id="address" rows="3" name="address"
+                                placeholder="Enter address">${supplier.address}</textarea>
+                            <div id="addressError" class="error-msg text-danger small"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="typeOfMilk" class="form-label">Type of Milk</label>
+                            <select class="form-select" id="typeOfMilk" name="typeOfMilk" required>
+                                <option selected>Select milk type</option>
+                                <option value="Cow Milk">Cow Milk</option>
+                                <option value="Goat Milk">Goat Milk</option>
+                                <option value="Buffalo Milk">Buffalo Milk</option>
+                                <option value="Donkey Milk">Donkey Milk</option>
+                            </select>
+                            <div id="typeOfMilkError" class="error-msg text-danger small"></div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" id="submitButton" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- view Supplier Modal  -->
+
+    <div class="modal fade" id="viewSupplierModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header" style="background: linear-gradient(90deg, #2e7d32, #f9fbe7);">
+                    <h5 class="modal-title">Supplier Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>First Name:</strong> <span id="modalFirstName"></span></p>
+                    <p><strong>Last Name:</strong> <span id="modalLastName"></span></p>
+                    <p><strong>Email:</strong> <span id="modalEmail"></span></p>
+                    <p><strong>Phone:</strong> <span id="modalPhone"></span></p>
+                    <p><strong>Address:</strong> <span id="modalAddress"></span></p>
+                    <p><strong>Type of Milk:</strong> <span id="modalMilk"></span></p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Supplier Modal  -->
+
+    <div class="modal fade" id="editSupplierModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header" style="background: linear-gradient(90deg, #2e7d32, #f9fbe7);">
+                    <h5 class="modal-title">Edit Supplier</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editSupplierForm" method="post" action="updateMilkSupplier?adminEmail=${dto.email}">
+                        <input type="hidden" name="id" id="editSupplierId">
+                        <div class="mb-3">
+                            <label>First Name</label>
+                            <input type="text" class="form-control" name="firstName" id="editFirstName">
+                        </div>
+                        <div class="mb-3">
+                            <label>Last Name</label>
+                            <input type="text" class="form-control" name="lastName" id="editLastName">
+                        </div>
+                        <div class="mb-3">
+                            <label>Email</label>
+                            <input type="email" class="form-control" name="email" id="editEmail" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label>Phone</label>
+                            <input type="tel" class="form-control" name="phoneNumber" id="editPhone" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label>Address</label>
+                            <textarea class="form-control" name="address" id="editAddress" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label>Type of Milk</label>
+                            <select class="form-select" name="typeOfMilk" id="editMilk">
+                                <option>Select milk type</option>
+                                <option value="Cow Milk">Cow Milk</option>
+                                <option value="Goat Milk">Goat Milk</option>
+                                <option value="Buffalo Milk">Buffalo Milk</option>
+                                <option value="Donkey Milk">Donkey Milk</option>
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" id="submitButton" class="btn btn-primary">Update</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- profile update for admin -->
+
+    <div class="modal fade" id="adminProfileModal" tabindex="-1" aria-labelledby="adminProfileModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header" style="background: linear-gradient(90deg, #2e7d32, #f9fbe7);">
+                    <h5 class="modal-title" id="adminProfileModalLabel">Admin Profile</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <c:choose>
+                            <c:when test="${empty dto.profilePath}">
+                                <img src="images/dummy-profile.png" alt="Profile" class="rounded-circle" width="150"
+                                    height="150" style="object-fit: cover;">
+                            </c:when>
+                            <c:otherwise>
+                                <img src="<c:url value='/uploads/${dto.profilePath}'/>" alt="Profile"
+                                    class="rounded-circle" width="150" height="150" style="object-fit: cover;">
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
+                    <div class="card p-3 shadow-sm">
+                        <ul class="list-group list-group-flush">
+
+                            <div class="row mb-2">
+                                <div class="col-sm-4 fw-bold">
+                                    <i class="fa-solid fa-user me-2"></i>Name:
+                                </div>
+                                <div class="col-sm-8 text-break">${dto.adminName}</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 fw-bold">
+                                    <i class="fa-solid fa-envelope me-2"></i>Email:
+                                </div>
+                                <div class="col-sm-8 text-break">${dto.email}</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 fw-bold">
+                                    <i class="fa-solid fa-phone me-2"></i>Phone:
+                                </div>
+                                <div class="col-sm-8">${dto.phoneNumber}</div>
+                            </div>
+                        </ul>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <a href="redirectToUpdateAdminProfile?email=${dto.email}" class="btn btn-primary">Update
+                        Profile</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-lg-start py-3" style="background: linear-gradient(90deg, #1b5e20, #fffde7); color: #333">
+        <div class="container">
+            <div class="row text-dark align-items-start text-center text-md-start">
+                <div class="col-md-3 mb-3">
+                    <div class="d-flex align-items-center justify-content-center justify-content-md-start">
+                        <span class="me-2" style="font-size: 1.5rem">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </span>
+                        <div>
+                            <strong>Address:</strong><br />
+                            123 Green Valley, Agri Road,<br />
+                            Thanjavur, India
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <div>
+                        <strong>Contact:</strong><br />
+                        <span>
+                            <i class="fa-solid fa-phone me-1"></i>
+                            +91-9876543210 </span><br />
+                        <small>Mon-Sat: 8am - 8pm</small>
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <div>
+                        <strong>Email:</strong><br />
+                        <span>
+                            <i class="fa-solid fa-envelope me-1"></i>
+                            info@farmfresh.com
+                        </span>
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-3 text-center text-md-start">
+                    <div>
+                        <strong>Follow Us:</strong><br />
+                        <a href="#" class="text-dark me-3">
+                            <i class="fa-brands fa-twitter fa-lg"></i>
+                        </a>
+                        <a href="#" class="text-dark me-3">
+                            <i class="fa-brands fa-instagram fa-lg"></i>
+                        </a>
+                        <a href="#" class="text-dark">
+                            <i class="fa-brands fa-facebook fa-lg"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-12">
+                    <div class="text-center text-dark">
+                        &copy; 2025 Farm Fresh. All rights reserved.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js"
+        crossorigin="anonymous"></script>
+    <script src="js/supplier-form-validation.js"></script>
+</body>
+
+</html>
