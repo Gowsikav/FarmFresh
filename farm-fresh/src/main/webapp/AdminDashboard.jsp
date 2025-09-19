@@ -28,11 +28,8 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-                <ul class="navbar-nav mb-2 mb-lg-0 align-items-center">
-                    <li class="nav-item">
-                        <a class="nav-link" href="redirectToIndex"><i class="fa-solid fa-house me-2"></i> Home</a>
-                    </li>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav mb-2 mb-lg-0 align-items-center ms-lg-auto me-3">
                     <li class="nav-item">
                         <a class="nav-link active" href="redirectToAdminDashboard?email=${dto.email}"><i class="fa-solid fa-user-shield me-2"></i></i> Dashboard</a>
                     </li>
@@ -66,7 +63,7 @@
                                 <hr class="dropdown-divider">
                             </li>
                             <li>
-                                <a class="dropdown-item text-danger" href="redirectToIndex"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a>
+                                <a class="dropdown-item text-danger" href="adminLogout?email=${dto.email}"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a>
                             </li>
                         </ul>
                     </li>

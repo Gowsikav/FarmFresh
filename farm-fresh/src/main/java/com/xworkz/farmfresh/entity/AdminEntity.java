@@ -5,6 +5,8 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -38,9 +40,9 @@ public class AdminEntity {
     @Column(name = "is_blocked")
     private Boolean isBlocked;
 
-    @OneToOne(mappedBy = "adminEntity", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "adminEntity", cascade = CascadeType.ALL,orphanRemoval = true, fetch = FetchType.EAGER)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private AdminAuditEntity adminAuditEntity;
+    private List<AdminAuditEntity> auditLogs = new ArrayList<>();
 
 }

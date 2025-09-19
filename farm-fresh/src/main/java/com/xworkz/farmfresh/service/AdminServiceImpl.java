@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -57,50 +58,83 @@ public class AdminServiceImpl implements AdminService{
 
     @Override
     public AdminDTO checkAdminLoginPassword(String email, String password) {
-        log.info("checkAdminLoginPassword method in adminService");
-        AdminEntity adminEntity=adminRepository.getDetailsByEmail(email);
-        if(adminEntity==null)
+        log.info("checkAdminLoginPassword method in AdminServiceImpl");
+
+        AdminEntity adminEntity = adminRepository.getDetailsByEmail(email);
+        if (adminEntity == null) {
+            log.warn("No admin found with email {}", email);
             return null;
+        }
         if (adminEntity.getIsBlocked()) {
             log.warn("Account is blocked for email: {}", email);
-            throw new RuntimeException("Account is blocked have to reset password");
+            throw new RuntimeException("Account is blocked. Please reset password.");
         }
         if (passwordEncoder.matches(password, adminEntity.getPassword())) {
             loginAttempts.remove(email);
 
-            AdminAuditEntity audit = adminEntity.getAdminAuditEntity();
-            if (audit == null) {
-                audit = new AdminAuditEntity();
-                audit.setAdminEntity(adminEntity);
-            }
-            audit.setLoginTime(LocalDateTime.now());
-            audit.setAuditName(adminEntity.getAdminName());
-            if(adminAuditRepository.save(audit))
-                log.info("Admin audit details updated/created");
-            else log.error("Admin audit details not updated/created");
+            Optional<AdminAuditEntity> activeAuditOpt = adminAuditRepository.findActiveSession(adminEntity.getAdminId());
 
+            if (!activeAuditOpt.isPresent()) {
+                AdminAuditEntity audit = new AdminAuditEntity();
+                audit.setAdminEntity(adminEntity);
+                audit.setLoginTime(LocalDateTime.now());
+                audit.setAuditName(adminEntity.getAdminName());
+
+                if (adminAuditRepository.save(audit)) {
+                    log.info("Admin audit record created for login");
+                } else {
+                    log.error("Admin audit record not created");
+                }
+            } else {
+                log.info("Admin already has an active session, skipping duplicate login record");
+            }
             AdminDTO adminDTO = new AdminDTO();
             BeanUtils.copyProperties(adminEntity, adminDTO);
             log.info("Password match for {}", email);
             return adminDTO;
-        } else {
-            int attempts = loginAttempts.getOrDefault(email, 0) + 1;
-            loginAttempts.put(email, attempts);
-
-            if (attempts >= 3) {
-                if(!adminRepository.updateIsBlockedByEmail(email,true)) {
-                    log.error("IsBlocked not changed");
-                    return null;
-                }else {
-                    log.info("IsBlocked changed after 3 attempts");
-                }
-                log.warn("Account blocked for {} after {} failed attempts", email, attempts);
-                throw new RuntimeException("Account is blocked have to reset password. Click forgot Password");
-            } else {
-                log.warn("Password mismatch for {}. Attempt {}/3", email, attempts);
-                throw new RuntimeException("Password mismatch for "+email+" Attempt "+attempts+"/3");
-            }
         }
+        int attempts = loginAttempts.getOrDefault(email, 0) + 1;
+        loginAttempts.put(email, attempts);
+
+        if (attempts >= 3) {
+            if (!adminRepository.updateIsBlockedByEmail(email, true)) {
+                log.error("Failed to block account for {}", email);
+                return null;
+            }
+            log.warn("Account blocked for {} after {} failed attempts", email, attempts);
+            throw new RuntimeException("Account is blocked. Please reset password.");
+        } else {
+            log.warn("Password mismatch for {}. Attempt {}/3", email, attempts);
+            throw new RuntimeException("Password mismatch for " + email + " Attempt " + attempts + "/3");
+        }
+    }
+
+    @Override
+    public boolean updateAdminLogoutTime(String email) {
+        log.info("updateAdminLogoutTime method in AdminServiceImpl");
+
+        AdminEntity adminEntity = adminRepository.getDetailsByEmail(email);
+        if (adminEntity == null) {
+            log.warn("No admin found with email {}", email);
+            return false;
+        }
+        Optional<AdminAuditEntity> activeAuditOpt = adminAuditRepository.findActiveSession(adminEntity.getAdminId());
+
+        if (activeAuditOpt.isPresent()) {
+            AdminAuditEntity lastAudit = activeAuditOpt.get();
+            lastAudit.setLogoutTime(LocalDateTime.now());
+
+            if (adminAuditRepository.save(lastAudit)) {
+                log.info("Logout time updated for admin audit");
+                return true;
+            } else {
+                log.error("Logout time not changed");
+            }
+        } else {
+            log.warn("No active audit session found to update logout for {}", email);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -159,4 +193,5 @@ public class AdminServiceImpl implements AdminService{
         password=passwordEncoder.encode(password);
         return adminRepository.resetPasswordByEmail(email,password,confirmPassword);
     }
+
 }

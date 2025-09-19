@@ -152,6 +152,19 @@ public class AdminController {
         }
     }
 
+    @GetMapping("/adminLogout")
+    public String updateAdminLogout(@RequestParam("email")String email,Model model)
+    {
+        log.info("updateAdminLogout method in admin controller");
+        if(adminService.updateAdminLogoutTime(email))
+        {
+            log.info("logout time changed");
+            return "index";
+        }
+        return getDashboard(email,model);
+    }
+
+
     @GetMapping("/redirectToManageProducts")
     public String getManageProductPage(@RequestParam("email")String email,Model model)
     {
