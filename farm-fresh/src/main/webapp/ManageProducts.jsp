@@ -30,9 +30,7 @@
 
             <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
                 <ul class="navbar-nav mb-2 mb-lg-0 align-items-center">
-                    <li class="nav-item">
-                        <a class="nav-link" href="redirectToIndex"><i class="fa-solid fa-house me-2"></i> Home</a>
-                    </li>
+                    
                     <li class="nav-item">
                         <a class="nav-link" href="redirectToAdminDashboard?email=${dto.email}"><i class="fa-solid fa-user-shield me-2"></i></i> Dashboard</a>
                     </li>

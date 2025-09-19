@@ -20,13 +20,16 @@ public class AdminAuditEntity {
     @Column(name = "audit_name")
     private String auditName;
 
-    @OneToOne
-    @JoinColumn(name = "admin_id",unique = true)
+    @ManyToOne
+    @JoinColumn(name = "admin_id", nullable = false)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private AdminEntity adminEntity;
 
     @Column(name = "login_time")
     private LocalDateTime loginTime;
+
+    @Column(name = "logout_time")
+    private LocalDateTime logoutTime;
 
 }
