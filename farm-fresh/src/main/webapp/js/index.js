@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
             let productsHTML = '';
             products.forEach(product => {
                 productsHTML += `
-                    <div class="col-md-3 col-sm-6 mb-4">
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-4">
                       <div class="card h-100 shadow-sm custom-card">
                         <div class="ratio ratio-1x1">
                           <img src="/farm-fresh/productImages/${product.image}" 

@@ -15,7 +15,7 @@
 </head>
 
 <body class="d-flex flex-column min-vh-100">
-    <nav class="navbar navbar-expand-lg" style="background: linear-gradient(90deg, #2e7d32, #f9fbe7)">
+    <nav class="navbar navbar-expand-lg fixed-top" style="background: linear-gradient(90deg, #2e7d32, #f9fbe7)">
         <div class="container-fluid">
             <a class="navbar-brand">
                 <img src="images/farm-fresh-logo.png" alt="Farm Fresh Logo" height="80" width="80"
@@ -29,9 +29,7 @@
 
             <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
                 <ul class="navbar-nav mb-2 mb-lg-0 align-items-center">
-                    <li class="nav-item">
-                        <a class="nav-link" href="redirectToIndex">Home</a>
-                    </li>
+                
                     <li class="nav-item">
                         <a class="nav-link" href="redirectToAdminDashboard?email=${dto.email}">Dashboard</a>
                     </li>
@@ -48,7 +46,7 @@
                             </c:choose>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                            <li><a class="dropdown-item" href="adminLogout">Logout</a></li>
+                            <li><a class="dropdown-item" href="adminLogout?email=${dto.email}">Logout</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -56,7 +54,7 @@
         </div>
     </nav>
 
-    <main class="flex-grow-1 d-flex">
+    <main class="flex-grow-2 d-flex" style="margin-top: 80px;">
         <div class="container-fluid admin-bg2 d-flex flex-column justify-content-md-start align-items-center w-100 pt-5">
             <h2 class="mb-4" style="max-width: 600px; color: azure">Update Admin Profile</h2>
             

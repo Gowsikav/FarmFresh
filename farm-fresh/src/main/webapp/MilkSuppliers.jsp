@@ -16,7 +16,7 @@
 </head>
 
 <body class="d-flex flex-column min-vh-100">
-    <nav class="navbar navbar-expand-lg" style="background: linear-gradient(90deg, #2e7d32, #f9fbe7)">
+    <nav class="navbar navbar-expand-lg fixed-top" style="background: linear-gradient(90deg, #2e7d32, #f9fbe7)">
         <div class="container-fluid">
             <a class="navbar-brand">
                 <img src="images/farm-fresh-logo.png" alt="Farm Fresh Logo" height="80" width="80"
@@ -32,7 +32,7 @@
                 <ul class="navbar-nav mb-2 mb-lg-0 align-items-center ms-lg-auto me-3">
                     <li class="nav-item">
                         <a class="nav-link" href="redirectToAdminDashboard?email=${dto.email}"><i
-                                class="fa-solid fa-user-shield me-2"></i></i> Dashboard</a>
+                                class="fa-solid fa-user-shield me-2"></i> Dashboard</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="redirectToManageProducts?email=${dto.email}"><i
@@ -77,7 +77,7 @@
         </div>
     </nav>
 
-    <div class="page-wrapper d-flex flex-column min-vh-10"></div>
+    <div class="page-wrapper d-flex flex-column min-vh-10" style="margin-top: 80px;"></div>
     <div class="container mt-4 mb-5 flex-grow-1">
         <h2 class="mb-4">Milk Suppliers</h2>
         <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal"

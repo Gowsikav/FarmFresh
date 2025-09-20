@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 products.forEach(p => {
                     cardContainer.innerHTML += `
-                        <div class="col-md-3 col-sm-6 mb-4">
+                        <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-4">
     <div class="card h-100 shadow-sm custom-card d-flex flex-column">
         <div class="ratio ratio-1x1">
             <img src="/farm-fresh/productImages/${p.image}" 

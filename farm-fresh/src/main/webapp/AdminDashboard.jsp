@@ -16,7 +16,7 @@
 </head>
 
 <body class="d-flex flex-column min-vh-100">
-    <nav class="navbar navbar-expand-lg" style="background: linear-gradient(90deg, #2e7d32, #f9fbe7)">
+    <nav class="navbar navbar-expand-lg fixed-top" style="background: linear-gradient(90deg, #2e7d32, #f9fbe7)">
         <div class="container-fluid">
             <a class="navbar-brand">
                 <img src="images/farm-fresh-logo.png" alt="Farm Fresh Logo" height="80" width="80"
@@ -31,7 +31,7 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="navbar-nav mb-2 mb-lg-0 align-items-center ms-lg-auto me-3">
                     <li class="nav-item">
-                        <a class="nav-link active" href="redirectToAdminDashboard?email=${dto.email}"><i class="fa-solid fa-user-shield me-2"></i></i> Dashboard</a>
+                        <a class="nav-link active" href="redirectToAdminDashboard?email=${dto.email}"><i class="fa-solid fa-user-shield me-2"></i> Dashboard</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="redirectToManageProducts?email=${dto.email}"><i class="fa-solid fa-box me-2"></i> Manage Products</a>
@@ -72,7 +72,7 @@
         </div>
     </nav>
 
-    <main class="flex-grow-1 d-flex">
+    <main class="flex-grow-2 d-flex" style="margin-top: 80px;">
         <div class="container-fluid p-5">
             <!-- Welcome Message -->
             <h1 class="fw-bold">Welcome back, ${dto.adminName} </h1>

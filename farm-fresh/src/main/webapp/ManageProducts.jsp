@@ -16,7 +16,7 @@
 </head>
 
 <body class="d-flex flex-column min-vh-100">
-    <nav class="navbar navbar-expand-lg" style="background: linear-gradient(90deg, #2e7d32, #f9fbe7)">
+    <nav class="navbar navbar-expand-lg fixed-top" style="background: linear-gradient(90deg, #2e7d32, #f9fbe7)">
         <div class="container-fluid">
             <a class="navbar-brand">
                 <img src="images/farm-fresh-logo.png" alt="Farm Fresh Logo" height="80" width="80"
@@ -32,7 +32,7 @@
                 <ul class="navbar-nav mb-2 mb-lg-0 align-items-center">
                     
                     <li class="nav-item">
-                        <a class="nav-link" href="redirectToAdminDashboard?email=${dto.email}"><i class="fa-solid fa-user-shield me-2"></i></i> Dashboard</a>
+                        <a class="nav-link" href="redirectToAdminDashboard?email=${dto.email}"><i class="fa-solid fa-user-shield me-2"></i> Dashboard</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" href="redirectToManageProducts?email=${dto.email}"><i class="fa-solid fa-box me-2"></i> Manage Products</a>
@@ -73,28 +73,28 @@
         </div>
     </nav>
 
-<main class="flex-grow-1 d-flex">
+<main class="flex-grow-2 d-flex " style="margin-top: 80px;">
   <div class="container p-5">
     <h1 class="mb-4">Manage Products</h1>
 
     <!-- Product List Table -->
     <form id="addProductForm" class="row g-3 align-items-end mb-4">
-  <div class="col-md-3">
+  <div class="col-lg-3 col-md-4 col-sm-6 col-12">
     <label for="name" class="form-label">Product Name</label>
     <input type="text" class="form-control" id="name" placeholder="Enter product name" required>
   </div>
 
-  <div class="col-md-2">
+  <div class="col-lg-3 col-md-4 col-sm-6 col-12">
     <label for="price" class="form-label">Price (&#8377;)</label>
     <input type="number" class="form-control" id="price" placeholder="Enter price" required>
   </div>
 
-  <div class="col-md-3">
+  <div class="col-lg-3 col-md-4 col-sm-6 col-12">
     <label for="imageFile" class="form-label">Product Image</label>
     <input type="file" class="form-control" id="imageFile" accept="image/*" required>
   </div>
 
-  <div class="col-md-4">
+  <div class="col-lg-3 col-md-4 col-sm-6 col-12">
     <label for="description" class="form-label">Description</label>
     <input type="text" class="form-control" id="description" placeholder="Enter description" required>
   </div>
