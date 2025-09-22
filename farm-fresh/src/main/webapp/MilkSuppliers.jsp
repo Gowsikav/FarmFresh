@@ -148,7 +148,6 @@
                                     <i class="fa-solid fa-trash"></i> Delete
                                 </a>
 
-
                             </td>
                         </tr>
                     </c:forEach>
@@ -156,7 +155,6 @@
                 </tbody>
             </table>
         </div>
-    </div>
     </div>
 
     <!-- Add Milk Supplier Modal -->
@@ -301,7 +299,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" id="submitButton" class="btn btn-primary">Update</button>
+                            <button type="submit" id="submitButton1" class="btn btn-primary">Update</button>
                         </div>
                     </form>
                 </div>

@@ -241,7 +241,7 @@
     <section class="text-center py-5" style="background:#f9fbe7;">
         <h2>Join the Farm Fresh Family</h2>
         <p>Whether you are a farmer or a customer, we welcome you to be part of our journey.</p>
-        <a href="redirectToFarmerRegister" class="btn btn-success me-3">Register as Farmer</a>
+        <a href="redirectToCustomerRegister" class="btn btn-success me-3">Register as Customer</a>
         <a href="redirectToCustomerLogin" class="btn btn-outline-dark">Order Now</a>
     </section>
 
