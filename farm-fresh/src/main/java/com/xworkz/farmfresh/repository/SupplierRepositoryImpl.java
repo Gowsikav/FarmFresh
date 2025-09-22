@@ -194,4 +194,25 @@ public class SupplierRepositoryImpl implements SupplierRepository {
         return false;
     }
 
+    @Override
+    public Integer getSuppliersCount() {
+        log.info("getSuppliersCount method in supplier repository");
+        EntityManager entityManager=null;
+        int count=0;
+        try {
+            entityManager=entityManagerFactory.createEntityManager();
+            Long count1=(Long) entityManager.createNamedQuery("getSuppliersCount").getSingleResult();
+            count=count1.intValue();
+        }catch (PersistenceException e)
+        {
+            log.error(e.getMessage());
+        }finally {
+            if(entityManager!=null && entityManager.isOpen())
+            {
+                entityManager.close();
+                log.info("EntityManager is closed");
+            }
+        }
+        return count;
+    }
 }
