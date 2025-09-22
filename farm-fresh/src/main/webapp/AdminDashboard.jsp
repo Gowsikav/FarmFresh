@@ -84,17 +84,15 @@
                     <div class="card text-white bg-primary mb-3 shadow">
                         <div class="card-body">
                             <h5 class="card-title">Total Customers</h5>
-                            <p class="card-text fs-4 fw-bold">1,245</p> <%-- dynamic --%>
-                            <small class="text-light">+35 this week</small>
+                            <p class="card-text fs-4 fw-bold">1,245</p>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="card text-white bg-success mb-3 shadow">
                         <div class="card-body">
-                            <h5 class="card-title">Total Farmers</h5>
-                            <p class="card-text fs-4 fw-bold">312</p>
-                            <small class="text-light">+5 new signups</small>
+                            <h5 class="card-title">Total Milk suppliers</h5>
+                            <p class="card-text fs-4 fw-bold">${suppliersCount}</p>
                         </div>
                     </div>
                 </div>

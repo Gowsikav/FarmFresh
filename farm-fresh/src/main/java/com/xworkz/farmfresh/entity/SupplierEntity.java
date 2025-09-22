@@ -14,6 +14,7 @@ import javax.persistence.*;
 @NamedQuery(name = "getAllSuppliers",query = "select a from SupplierEntity a where a.isActive=true")
 @NamedQuery(name = "checkEmail",query = "select a from SupplierEntity a where a.email=:email and a.isActive=true")
 @NamedQuery(name = "checkPhoneNumber",query = "select a from SupplierEntity a where a.phoneNumber=:phoneNumber and a.isActive=true")
+@NamedQuery(name="getSuppliersCount",query = "select count(a) from SupplierEntity a where a.isActive=true")
 public class SupplierEntity {
 
     @Id

@@ -5,6 +5,7 @@ import com.xworkz.farmfresh.entity.AdminAuditEntity;
 import com.xworkz.farmfresh.entity.AdminEntity;
 import com.xworkz.farmfresh.repository.AdminAuditRepository;
 import com.xworkz.farmfresh.repository.AdminRepository;
+import com.xworkz.farmfresh.repository.SupplierRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class AdminServiceImpl implements AdminService{
 
     @Autowired
     private AdminRepository adminRepository;
+
+    @Autowired
+    private SupplierRepository supplierRepository;
 
     @Autowired
     private AdminAuditRepository adminAuditRepository;
@@ -194,4 +198,9 @@ public class AdminServiceImpl implements AdminService{
         return adminRepository.resetPasswordByEmail(email,password,confirmPassword);
     }
 
+    @Override
+    public int getSupplierCount() {
+        log.info("getSupplierCount method in service");
+        return supplierRepository.getSuppliersCount();
+    }
 }

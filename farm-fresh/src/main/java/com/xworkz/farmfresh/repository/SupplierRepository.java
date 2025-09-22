@@ -12,4 +12,5 @@ public interface SupplierRepository {
     boolean checkPhoneNumber(String phoneNumber);
     boolean updateSupplierDetails(SupplierEntity supplierEntity,Boolean isDelete);
     SupplierEntity getSupplierByEmail(String email);
+    Integer getSuppliersCount();
 }

@@ -2,6 +2,7 @@ package com.xworkz.farmfresh.controller;
 
 import com.xworkz.farmfresh.dto.AdminDTO;
 import com.xworkz.farmfresh.service.AdminService;
+import com.xworkz.farmfresh.service.SupplierService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,6 +51,8 @@ public class AdminController {
             adminDTO= adminService.checkAdminLoginPassword(email, password);
             if (adminDTO != null) {
                 model.addAttribute("dto", adminDTO);
+                int count=adminService.getSupplierCount();
+                model.addAttribute("suppliersCount",count);
                 return "AdminDashboard";
             }else {
                 model.addAttribute("errorMessage", "Account not present");
@@ -74,6 +77,8 @@ public class AdminController {
         log.info("getDashboard method in admin controller");
         AdminDTO adminDTO = adminService.getAdminDetailsByEmail(email);
         model.addAttribute("dto", adminDTO);
+        int count=adminService.getSupplierCount();
+        model.addAttribute("suppliersCount",count);
         return "AdminDashboard";
     }
 
