@@ -4,6 +4,8 @@ import com.xworkz.farmfresh.dto.Product;
 import com.xworkz.farmfresh.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,12 +16,14 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/api/products")
+@PropertySource("classpath:application.properties")
 public class ProductRestController {
 
     @Autowired
     private ProductService service;
 
-    private final String IMAGE_DIR = "E:/farm-fresh/productImages/";
+    @Value("${product.image-upload}")
+    private String IMAGE_DIR;
 
     @GetMapping
     public List<Product> getProducts() throws IOException {

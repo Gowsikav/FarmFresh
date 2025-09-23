@@ -3,6 +3,8 @@ package com.xworkz.farmfresh.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xworkz.farmfresh.dto.Product;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -11,9 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@PropertySource("classpath:application.properties")
 public class ProductService {
 
-    private static final String JSON_FILE = "E:/farm-fresh/product.json";
+    @Value("${json.read-details}")
+    private String JSON_FILE;
+
     private final ObjectMapper mapper = new ObjectMapper();
 
     public List<Product> getProducts() throws IOException {
