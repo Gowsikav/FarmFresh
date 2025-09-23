@@ -143,10 +143,14 @@
                                     <i class="fa-solid fa-pen-to-square"></i> Edit
                                 </button>
 
-                                <a href="deleteMilkSupplier?email=${supplier.email}&adminEmail=${dto.email}" class="btn btn-danger btn-sm"
-                                    onclick="return confirm('Are you sure you want to delete this supplier?');">
+                                <a href="#"
+                                   class="btn btn-danger btn-sm"
+                                   data-bs-toggle="modal"
+                                   data-bs-target="#deleteConfirmModal"
+                                   data-delete-url="deleteMilkSupplier?email=${supplier.email}&adminEmail=${dto.email}">
                                     <i class="fa-solid fa-trash"></i> Delete
                                 </a>
+
 
                             </td>
                         </tr>
@@ -302,6 +306,26 @@
                             <button type="submit" id="submitButton1" class="btn btn-primary">Update</button>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!--     delete confirm-->
+
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="deleteConfirmLabel">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this supplier?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <a id="confirmDeleteBtn" href="#" class="btn btn-danger">Delete</a>
                 </div>
             </div>
         </div>

@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function() {
             return;
         }
 
-        fetch('http://localhost:8081/farm-fresh/checkEmail?email=' + encodeURIComponent(email),{method:"GET"})
+        fetch('/farm-fresh/checkEmail?email=' + encodeURIComponent(email),{method:"GET"})
             .then(response => response.text())
             .then(text => (text === "true"))
             .then(exists => {

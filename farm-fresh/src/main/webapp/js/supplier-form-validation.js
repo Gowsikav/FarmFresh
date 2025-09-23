@@ -60,7 +60,7 @@ emailInput.addEventListener("input", function() {
         return;
     }
 
-    fetch('http://localhost:8081/farm-fresh/checkSupplierEmail?email=' + encodeURIComponent(email))
+    fetch('/farm-fresh/checkSupplierEmail?email=' + encodeURIComponent(email))
         .then(response => response.json())
         .then(isTaken => {
             const taken = (typeof isTaken === "string") ? (isTaken === "true") : isTaken;
@@ -100,7 +100,7 @@ phoneInput.addEventListener("input", function() {
         return;
     }
 
-    fetch('http://localhost:8081/farm-fresh/checkPhone?phoneNumber=' + encodeURIComponent(phone))
+    fetch('/farm-fresh/checkPhone?phoneNumber=' + encodeURIComponent(phone))
         .then(response => response.json())
         .then(isTaken => {
             const taken = (typeof isTaken === "string") ? (isTaken === "true") : isTaken;
@@ -186,4 +186,11 @@ document.querySelectorAll(".editSupplierBtn").forEach(button => {
     });
 });
 
+const deleteModal = document.getElementById('deleteConfirmModal');
+  const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
 
+  deleteModal.addEventListener('show.bs.modal', function (event) {
+    const button = event.relatedTarget; // Button/link that opened the modal
+    const deleteUrl = button.getAttribute('data-delete-url');
+    confirmDeleteBtn.setAttribute('href', deleteUrl);
+  });
