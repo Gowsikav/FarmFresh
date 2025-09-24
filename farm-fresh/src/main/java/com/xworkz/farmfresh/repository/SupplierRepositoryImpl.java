@@ -54,13 +54,15 @@ public class SupplierRepositoryImpl implements SupplierRepository {
     }
 
     @Override
-    public List<SupplierEntity> getAllSuppliers() {
+    public List<SupplierEntity> getAllSuppliers(int pageNumber,int pageSize) {
         log.info("getAllSuppliers method in supplier repository");
+        log.info("page number {} page size {}",pageNumber,pageSize);
         EntityManager entityManager=null;
         List<SupplierEntity> supplierEntities=null;
         try {
             entityManager=entityManagerFactory.createEntityManager();
-            supplierEntities=entityManager.createNamedQuery("getAllSuppliers").getResultList();
+            supplierEntities=entityManager.createNamedQuery("getAllSuppliers")
+                    .setFirstResult((pageNumber-1)*pageSize).setMaxResults(pageSize).getResultList();
         }catch (PersistenceException e)
         {
             log.error(e.getMessage());
@@ -78,7 +80,7 @@ public class SupplierRepositoryImpl implements SupplierRepository {
     public boolean checkEmail(String email) {
         log.info("checkEmail method in SupplierRepository");
         EntityManager entityManager=null;
-        SupplierEntity supplierEntity=null;
+        SupplierEntity supplierEntity;
         try {
             entityManager=entityManagerFactory.createEntityManager();
             supplierEntity=(SupplierEntity) entityManager.createNamedQuery("checkEmail").setParameter("email",email).getSingleResult();
@@ -100,7 +102,7 @@ public class SupplierRepositoryImpl implements SupplierRepository {
     public boolean checkPhoneNumber(String phoneNumber) {
         log.info("checkPhoneNumber method in SupplierRepository");
         EntityManager entityManager=null;
-        SupplierEntity supplierEntity=null;
+        SupplierEntity supplierEntity;
         try {
             entityManager=entityManagerFactory.createEntityManager();
             supplierEntity=(SupplierEntity) entityManager.createNamedQuery("checkPhoneNumber").setParameter("phoneNumber",phoneNumber).getSingleResult();
@@ -151,7 +153,7 @@ public class SupplierRepositoryImpl implements SupplierRepository {
             entityTransaction = entityManager.getTransaction();
             entityTransaction.begin();
 
-            SupplierEntity existingEntity = null;
+            SupplierEntity existingEntity;
                 existingEntity = (SupplierEntity) entityManager.createNamedQuery("checkEmail")
                         .setParameter("email", supplierEntity.getEmail())
                         .getSingleResult();

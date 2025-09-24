@@ -34,13 +34,19 @@ public class SupplierController {
     }
 
     @GetMapping("/redirectToMilkSuppliersList")
-    public String getMilkSupplierList(@RequestParam String email, Model model) {
+    public String getMilkSupplierList(@RequestParam String email,@RequestParam(defaultValue = "1") int page,
+                                      @RequestParam(defaultValue = "10") int size, Model model) {
         log.info("getMilkSupplierList method in supplier controller");
 
         AdminDTO adminDTO = adminService.getAdminDetailsByEmail(email);
         model.addAttribute("dto", adminDTO);
-        List<SupplierDTO> list = supplierService.getAllSuppliers();
+        List<SupplierDTO> list = supplierService.getAllSuppliers(page,size);
+        long totalSuppliers = adminService.getSupplierCount();
+        int totalPages = (int) Math.ceil((double) totalSuppliers / size);
         model.addAttribute("milkSuppliers", list);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("pageSize", size);
+        model.addAttribute("totalPages", totalPages);
         return "MilkSuppliers";
     }
 
@@ -54,7 +60,7 @@ public class SupplierController {
                     .forEach(System.out::println);
             model.addAttribute("supplier", supplierDTO);
             model.addAttribute("error", "Details not saved");
-            return getMilkSupplierList(adminEmail, model);
+            return getMilkSupplierList(adminEmail, 1,10,model);
         }
         if (supplierService.addSupplier(supplierDTO, adminEmail)) {
             log.info("supplier added");
@@ -63,7 +69,7 @@ public class SupplierController {
             log.warn("supplier not added");
             model.addAttribute("error", "Supplier details saved");
         }
-        return getMilkSupplierList(adminEmail, model);
+        return getMilkSupplierList(adminEmail, 1,10,model);
     }
 
     @PostMapping("/updateMilkSupplier")
@@ -76,7 +82,7 @@ public class SupplierController {
                     .forEach(System.out::println);
             model.addAttribute("supplier", supplierDTO);
             model.addAttribute("error", "Details not saved");
-            return getMilkSupplierList(adminEmail, model);
+            return getMilkSupplierList(adminEmail, 1,10,model);
         }
         if (supplierService.editSupplierDetails(supplierDTO, adminEmail)) {
             log.info("supplier updated");
@@ -85,7 +91,7 @@ public class SupplierController {
             log.warn("supplier not updated");
             model.addAttribute("error", "Supplier details not updated");
         }
-        return getMilkSupplierList(adminEmail, model);
+        return getMilkSupplierList(adminEmail, 1,10,model);
     }
 
     @GetMapping("/deleteMilkSupplier")
@@ -98,6 +104,6 @@ public class SupplierController {
             log.warn("supplier not deleted");
             model.addAttribute("error", "Supplier details deleted");
         }
-        return getMilkSupplierList(adminEmail, model);
+        return getMilkSupplierList(adminEmail, 1,10,model);
     }
 }

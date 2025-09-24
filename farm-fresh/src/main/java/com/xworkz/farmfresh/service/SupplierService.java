@@ -7,7 +7,7 @@ import java.util.List;
 public interface SupplierService {
 
     boolean addSupplier(SupplierDTO supplierDTO,String adminEmail);
-    List<SupplierDTO> getAllSuppliers();
+    List<SupplierDTO> getAllSuppliers(int pageNumber,int pageSize);
     boolean checkEmail(String email);
     boolean checkPhonNumber(String phoneNumber);
     boolean editSupplierDetails(SupplierDTO supplierDTO,String adminEmail);
