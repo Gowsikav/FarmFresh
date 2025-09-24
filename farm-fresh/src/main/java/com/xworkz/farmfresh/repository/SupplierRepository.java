@@ -7,7 +7,7 @@ import java.util.List;
 public interface SupplierRepository {
 
     boolean addSupplier(SupplierEntity supplierEntity);
-    List<SupplierEntity> getAllSuppliers();
+    List<SupplierEntity> getAllSuppliers(int pageNumber,int pageSize);
     boolean checkEmail(String email);
     boolean checkPhoneNumber(String phoneNumber);
     boolean updateSupplierDetails(SupplierEntity supplierEntity,Boolean isDelete);

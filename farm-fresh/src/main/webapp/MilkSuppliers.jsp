@@ -39,7 +39,8 @@
                                 class="fa-solid fa-box me-2"></i> Manage Products</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="redirectToMilkSuppliersList?email=${dto.email}"><i
+                        <a class="nav-link active"
+                            href="redirectToMilkSuppliersList?email=${dto.email}&page=1&size=10"><i
                                 class="fa-solid fa-bottle-droplet me-2"></i> Milk Suppliers</a>
                     </li>
                     <li class="nav-item">
@@ -122,32 +123,24 @@
                             <td>
                                 <button type="button" class="btn btn-primary btn-sm me-2 viewSupplierBtn"
                                     data-bs-toggle="modal" data-bs-target="#viewSupplierModal"
-                                    data-firstname="${supplier.firstName}" 
-                                    data-lastname="${supplier.lastName}"
-                                    data-email="${supplier.email}" 
-                                    data-phone="${supplier.phoneNumber}"
-                                    data-address="${supplier.address}" 
-                                    data-milk="${supplier.typeOfMilk}">
+                                    data-firstname="${supplier.firstName}" data-lastname="${supplier.lastName}"
+                                    data-email="${supplier.email}" data-phone="${supplier.phoneNumber}"
+                                    data-address="${supplier.address}" data-milk="${supplier.typeOfMilk}">
                                     <i class="fa-solid fa-eye"></i> View
                                 </button>
 
                                 <button type="button" class="btn btn-primary btn-sm me-2 editSupplierBtn"
-                                    data-bs-toggle="modal" data-bs-target="#editSupplierModal" 
-                                    data-id="${supplier.supplierId}"
-                                    data-firstname="${supplier.firstName}"
-                                    data-lastname="${supplier.lastName}"
-                                    data-email="${supplier.email}" 
-                                    data-phone="${supplier.phoneNumber}"
-                                    data-address="${supplier.address}"
-                                     data-milk="${supplier.typeOfMilk}">
+                                    data-bs-toggle="modal" data-bs-target="#editSupplierModal"
+                                    data-id="${supplier.supplierId}" data-firstname="${supplier.firstName}"
+                                    data-lastname="${supplier.lastName}" data-email="${supplier.email}"
+                                    data-phone="${supplier.phoneNumber}" data-address="${supplier.address}"
+                                    data-milk="${supplier.typeOfMilk}">
                                     <i class="fa-solid fa-pen-to-square"></i> Edit
                                 </button>
 
-                                <a href="#"
-                                   class="btn btn-danger btn-sm"
-                                   data-bs-toggle="modal"
-                                   data-bs-target="#deleteConfirmModal"
-                                   data-delete-url="deleteMilkSupplier?email=${supplier.email}&adminEmail=${dto.email}">
+                                <a href="#" class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#deleteConfirmModal"
+                                    data-delete-url="deleteMilkSupplier?email=${supplier.email}&adminEmail=${dto.email}">
                                     <i class="fa-solid fa-trash"></i> Delete
                                 </a>
 
@@ -158,6 +151,15 @@
 
                 </tbody>
             </table>
+            <div>
+                <c:if test="${currentPage > 1}">
+                    <a class="btn btn-outline-secondary" href="?email=${dto.email}&page=${currentPage - 1}&size=${pageSize}">Previous</a>
+                </c:if>
+                <span> Page ${currentPage} of ${totalPages} </span>
+                <c:if test="${currentPage < totalPages}">
+                    <a class="btn btn-outline-secondary" href="?email=${dto.email}&page=${currentPage + 1}&size=${pageSize}">Next</a>
+                </c:if>            
+            </div>
         </div>
     </div>
 
@@ -311,9 +313,10 @@
         </div>
     </div>
 
-<!--     delete confirm-->
+    <!--     delete confirm-->
 
-    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmLabel" aria-hidden="true">
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header bg-danger text-white">
