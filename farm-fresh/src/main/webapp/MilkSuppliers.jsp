@@ -81,10 +81,20 @@
     <div class="page-wrapper d-flex flex-column min-vh-10" style="margin-top: 80px;"></div>
     <div class="container mt-4 mb-5 flex-grow-1">
         <h2 class="mb-4">Milk Suppliers</h2>
-        <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal"
-            data-bs-target="#addMilkSupplierModal">
-            <i class="fa-solid fa-plus me-2"></i>Add Milk Supplier
-        </button>
+        
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addMilkSupplierModal">
+                <i class="fa-solid fa-plus me-2"></i>Add Milk Supplier
+            </button>
+
+            <form action="searchSuppliers" method="get" class="d-flex">
+                <input type="hidden" name="email" value="${dto.email}">
+                <input type="text" name="keyword" class="form-control me-2" placeholder="Search suppliers...">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+        </div>
+
+
         <c:if test="${not empty success}">
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 ${success}
@@ -153,12 +163,14 @@
             </table>
             <div>
                 <c:if test="${currentPage > 1}">
-                    <a class="btn btn-outline-secondary" href="?email=${dto.email}&page=${currentPage - 1}&size=${pageSize}">Previous</a>
+                    <a class="btn btn-outline-secondary"
+                        href="redirectToMilkSuppliersList?email=${dto.email}&page=${currentPage - 1}&size=${pageSize}">Previous</a>
                 </c:if>
                 <span> Page ${currentPage} of ${totalPages} </span>
                 <c:if test="${currentPage < totalPages}">
-                    <a class="btn btn-outline-secondary" href="?email=${dto.email}&page=${currentPage + 1}&size=${pageSize}">Next</a>
-                </c:if>            
+                    <a class="btn btn-outline-secondary"
+                        href="redirectToMilkSuppliersList?email=${dto.email}&page=${currentPage + 1}&size=${pageSize}">Next</a>
+                </c:if>
             </div>
         </div>
     </div>

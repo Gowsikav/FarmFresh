@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -129,4 +130,15 @@ public class SupplierServiceImpl implements SupplierService{
         return supplierRepository.updateSupplierDetails(supplierEntity, true);
     }
 
+    @Override
+    public List<SupplierDTO> searchSuppliers(String keyword) {
+        List<SupplierEntity> supplierEntities=supplierRepository.getSearchSuppliers(keyword);
+        List<SupplierDTO> supplierDTOS=new ArrayList<>();
+        supplierEntities.forEach(supplierEntity -> {
+            SupplierDTO supplierDTO=new SupplierDTO();
+            BeanUtils.copyProperties(supplierEntity,supplierDTO);
+            supplierDTOS.add(supplierDTO);
+        });
+        return supplierDTOS;
+    }
 }
