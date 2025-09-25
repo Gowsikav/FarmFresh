@@ -50,6 +50,22 @@ public class SupplierController {
         return "MilkSuppliers";
     }
 
+    @GetMapping("/searchSuppliers")
+    public String getSearchSuppliers(@RequestParam String keyword,@RequestParam String email, Model model)
+    {
+        log.info("getSearchSuppliers method in supplier controller");
+        AdminDTO adminDTO = adminService.getAdminDetailsByEmail(email);
+        model.addAttribute("dto", adminDTO);
+        List<SupplierDTO> list = supplierService.searchSuppliers(keyword);
+        if(list.isEmpty())
+            model.addAttribute("error","Data not found");
+        model.addAttribute("milkSuppliers", list);
+        model.addAttribute("currentPage", 1);
+        model.addAttribute("totalPages", 1);
+        return "MilkSuppliers";
+
+    }
+
     @PostMapping("/addMilkSupplier")
     public String addMilkSupplier(@Valid SupplierDTO supplierDTO, BindingResult bindingResult, @RequestParam String adminEmail, Model model) {
         log.info("addMilkSupplier in supplierController");

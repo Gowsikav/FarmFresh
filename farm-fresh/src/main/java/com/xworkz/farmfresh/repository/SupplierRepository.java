@@ -13,4 +13,5 @@ public interface SupplierRepository {
     boolean updateSupplierDetails(SupplierEntity supplierEntity,Boolean isDelete);
     SupplierEntity getSupplierByEmail(String email);
     Integer getSuppliersCount();
+    List<SupplierEntity> getSearchSuppliers(String keyword);
 }

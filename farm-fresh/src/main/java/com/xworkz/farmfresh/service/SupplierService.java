@@ -12,4 +12,5 @@ public interface SupplierService {
     boolean checkPhonNumber(String phoneNumber);
     boolean editSupplierDetails(SupplierDTO supplierDTO,String adminEmail);
     boolean deleteSupplierDetails(String email,String adminEmail);
+    List<SupplierDTO> searchSuppliers(String keyword);
 }

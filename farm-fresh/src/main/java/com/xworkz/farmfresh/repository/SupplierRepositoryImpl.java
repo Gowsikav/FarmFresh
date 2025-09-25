@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceException;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -216,5 +217,27 @@ public class SupplierRepositoryImpl implements SupplierRepository {
             }
         }
         return count;
+    }
+
+    @Override
+    public List<SupplierEntity> getSearchSuppliers(String keyword) {
+        log.info("getSearchSuppliers method in supplier repository");
+        EntityManager entityManager=null;
+        List<SupplierEntity> list=null;
+        try
+        {
+            entityManager=entityManagerFactory.createEntityManager();
+            list=entityManager.createNamedQuery("searchSuppliers").setParameter("keyword",keyword).getResultList();
+        }catch (PersistenceException e)
+        {
+            log.error(e.getMessage());
+        }finally {
+            if(entityManager!=null && entityManager.isOpen())
+            {
+                entityManager.close();
+                log.info("EntityManager is closed");
+            }
+        }
+        return list;
     }
 }
