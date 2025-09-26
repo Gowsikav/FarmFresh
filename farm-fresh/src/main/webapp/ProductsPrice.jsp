@@ -1,12 +1,12 @@
 <%@ page isELIgnored="false" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <html lang="en">
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Farm Fresh | Admin Dashboard</title>
+    <title>Farm Fresh | Products Price</title>
     <link rel="shortcut icon" href="images/title-pic.png" type="image/x-icon" />
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -29,18 +29,22 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-              <ul class="navbar-nav mb-2 mb-lg-0 align-items-center ms-lg-auto me-3">
+                <ul class="navbar-nav mb-2 mb-lg-0 align-items-center ms-lg-auto me-3">
                     <li class="nav-item">
-                        <a class="nav-link active" href="redirectToAdminDashboard?email=${dto.email}"><i class="fa-solid fa-user-shield me-2"></i> Dashboard</a>
+                        <a class="nav-link" href="redirectToAdminDashboard?email=${dto.email}"><i
+                                class="fa-solid fa-user-shield me-2"></i> Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="redirectToManageProducts?email=${dto.email}"><i class="fa-solid fa-box me-2"></i> Manage Products</a>
+                        <a class="nav-link" href="redirectToManageProducts?email=${dto.email}"><i
+                                class="fa-solid fa-box me-2"></i> Manage Products</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="redirectToProductsPrice?email=${dto.email}"><i class="fa-solid fa-tag me-2"></i> Products Price</a>
+                        <a class="nav-link active" href="redirectToProductsPrice?email=${dto.email}"><i class="fa-solid fa-tag me-2"></i> Products Price</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="redirectToMilkSuppliersList?email=${dto.email}&page=1&size=10"><i class="fa-solid fa-bottle-droplet me-2"></i> Milk Suppliers</a>
+                        <a class="nav-link"
+                            href="redirectToMilkSuppliersList?email=${dto.email}&page=1&size=10"><i
+                                class="fa-solid fa-bottle-droplet me-2"></i> Milk Suppliers</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#"><i class="fa-solid fa-users me-2"></i> Customers</a>
@@ -61,12 +65,14 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                             <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                    data-bs-target="#adminProfileModal"><i class="fa-solid fa-user me-2"></i></i> View Profile</a></li>
+                                    data-bs-target="#adminProfileModal"><i class="fa-solid fa-user me-2"></i></i> View
+                                    Profile</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
                             <li>
-                                <a class="dropdown-item text-danger" href="adminLogout?email=${dto.email}"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a>
+                                <a class="dropdown-item text-danger" href="adminLogout?email=${dto.email}"><i
+                                        class="fa-solid fa-right-from-bracket me-2"></i> Logout</a>
                             </li>
                         </ul>
                     </li>
@@ -75,105 +81,141 @@
         </div>
     </nav>
 
-    <main class="flex-grow-2 d-flex" style="margin-top: 80px;">
-        <div class="container-fluid p-5">
-            <!-- Welcome Message -->
-            <h1 class="fw-bold">Welcome back, ${dto.adminName} </h1>
-            <p class="text-muted">Here's an overview of what's happening in your farm-fresh platform today.</p>
+    <div class="page-wrapper d-flex flex-column min-vh-10" style="margin-top: 80px;"></div>
+    <div class="container mt-4 mb-5 flex-grow-1">
+        <h2 class="mb-4">Products Price </h2>
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addProductWithPriceModal">
+                <i class="fa-solid fa-plus me-2"></i>Add Products
+            </button>
+        <hr />
 
-            <!-- Info Cards -->
-            <div class="row mt-4">
-                <div class="col-md-3">
-                    <div class="card text-white bg-primary mb-3 shadow">
-                        <div class="card-body">
-                            <h5 class="card-title">Total Customers</h5>
-                            <p class="card-text fs-4 fw-bold">1,245</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card text-white bg-success mb-3 shadow">
-                        <div class="card-body">
-                            <h5 class="card-title">Total Milk suppliers</h5>
-                            <p class="card-text fs-4 fw-bold">${suppliersCount}</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card text-white bg-warning mb-3 shadow">
-                        <div class="card-body">
-                            <h5 class="card-title">Active Orders</h5>
-                            <p class="card-text fs-4 fw-bold">89</p>
-                            <small class="text-light">12 pending delivery</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card text-white bg-danger mb-3 shadow">
-                        <div class="card-body">
-                            <h5 class="card-title">Revenue</h5>
-                            <p class="card-text fs-4 fw-bold">Rs.4,58,920</p>
-                            <small class="text-light">This month</small>
-                        </div>
-                    </div>
-                </div>
+        <c:if test="${not empty success}">
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                ${success}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
+        </c:if>
+        <c:if test="${not empty error}">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                ${error}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </c:if>
 
-            <!-- Recent Activity -->
-            <div class="row">
-                <!-- Recent Customers -->
-                <div class="col-md-4">
-                    <div class="card mt-4 shadow">
-                        <div class="card-header bg-dark text-white fw-bold">
-                            Recent Customers
-                        </div>
-                        <div class="card-body p-0">
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item">Ananya Sharma - ananya@gmail.com</li>
-                                <li class="list-group-item">Ravi Kumar - ravi.kumar@gmail.com</li>
-                                <li class="list-group-item">Megha Singh - megha.singh@gmail.com</li>
-                                <li class="list-group-item">Aman Gupta - aman.gupta@gmail.com</li>
-                            </ul>
-                        </div>
-                    </div>
+       <!-- Products Table -->
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Price (&#8377;)</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <c:forEach var="product" items="${productsPrice}">
+                        <tr>
+                            <td>${product.productName}</td>
+                            <td><i class="fa-solid fa-indian-rupee-sign me-1"></i>${product.price}</td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-sm me-2 editProductBtn"
+                                        data-bs-toggle="modal" data-bs-target="#editProductModal"
+                                        data-id="${product.productId}" data-name="${product.productName}"
+                                        data-price="${product.price}">
+                                    <i class="fa-solid fa-pen-to-square"></i> Edit
+                                </button>
+                                <a href="#" class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                                   data-bs-target="#deleteConfirmModal"
+                                   data-delete-url="deleteProductPrice?productId=${product.productId}&adminEmail=${dto.email}">
+                                    <i class="fa-solid fa-trash"></i> Delete
+                                </a>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Add Product Modal -->
+    <div class="modal fade" id="addProductWithPriceModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header" style="background: linear-gradient(90deg, #2e7d32, #f9fbe7);">
+                    <h5 class="modal-title">Add Product Price</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-
-                <!-- New Farmer Requests -->
-                <div class="col-md-4">
-                    <div class="card mt-4 shadow">
-                        <div class="card-header bg-dark text-white fw-bold">
-                            New Farmer Requests
+                <div class="modal-body">
+                    <form action="addProductWithPrice?adminEmail=${dto.email}" method="post" id="productPriceForm">
+                        <div class="mb-3">
+                            <label for="productName" class="form-label">Product Name</label>
+                            <input type="text" class="form-control" id="productName" name="productName" required>
+                            <div id="productNameError" class="error-msg text-danger small"></div>
                         </div>
-                        <div class="card-body p-0">
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item">Rajesh Patel - Pending Approval</li>
-                                <li class="list-group-item">Kavita Yadav - Pending Approval</li>
-                                <li class="list-group-item">Sunil Verma - Pending Approval</li>
-                            </ul>
+                        <div class="mb-3">
+                            <label for="price" class="form-label">Price (&#8377;)</label>
+                            <input type="number" step="any" class="form-control" id="price" name="price" required>
+                            <div id="priceError" class="error-msg text-danger small"></div>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Latest Orders -->
-                <div class="col-md-4">
-                    <div class="card mt-4 shadow">
-                        <div class="card-header bg-dark text-white fw-bold">
-                            Latest Orders
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" id="submitButton" class="btn btn-primary">Submit</button>
                         </div>
-                        <div class="card-body p-0">
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item">Order #1542 - Completed</li>
-                                <li class="list-group-item">Order #1543 - Out for Delivery</li>
-                                <li class="list-group-item">Order #1544 - Payment Pending</li>
-                                <li class="list-group-item">Order #1545 - Cancelled</li>
-                            </ul>
-                        </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
 
+    <!-- Edit Product Modal -->
+    <div class="modal fade" id="editProductModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header" style="background: linear-gradient(90deg, #2e7d32, #f9fbe7);">
+                    <h5 class="modal-title">Edit Product Price</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editProductForm" method="post" action="updateProductPrice?adminEmail=${dto.email}">
+                        <input type="hidden" name="productId" id="editProductId">
+                        <div class="mb-3">
+                            <label>Product Name</label>
+                            <input type="text" class="form-control" name="productName" id="editProductName">
+                        </div>
+                        <div class="mb-3">
+                            <label>Price (&#8377;)</label>
+                            <input type="number" step="any" class="form-control" name="price" id="editProductPrice">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Update</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Delete Confirm Modal -->
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">Are you sure you want to delete this product price?</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <a id="confirmDeleteBtn" href="#" class="btn btn-danger">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- profile update for admin -->
 
     <div class="modal fade" id="adminProfileModal" tabindex="-1" aria-labelledby="adminProfileModalLabel"
         aria-hidden="true">
@@ -222,7 +264,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <a href="redirectToUpdateAdminProfile?email=${dto.email}" class="btn btn-primary">Update Profile</a>
+                    <a href="redirectToUpdateAdminProfile?email=${dto.email}" class="btn btn-primary">Update
+                        Profile</a>
                 </div>
             </div>
         </div>
@@ -294,6 +337,7 @@
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js"
         crossorigin="anonymous"></script>
+    <script src="js/product-price-form.js"></script>
 </body>
 
 </html>

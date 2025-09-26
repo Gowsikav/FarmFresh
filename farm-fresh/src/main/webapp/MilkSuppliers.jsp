@@ -39,6 +39,9 @@
                                 class="fa-solid fa-box me-2"></i> Manage Products</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="redirectToProductsPrice?email=${dto.email}"><i class="fa-solid fa-tag me-2"></i> Products Price</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link active"
                             href="redirectToMilkSuppliersList?email=${dto.email}&page=1&size=10"><i
                                 class="fa-solid fa-bottle-droplet me-2"></i> Milk Suppliers</a>
