@@ -10,4 +10,5 @@ public interface ProductPriceService {
     List<ProductPriceDTO> getAllDetails();
     boolean updateProduct(ProductPriceDTO productPriceDTO,String adminEmail);
     boolean deleteProduct(Integer productId);
+    List<String> productList();
 }

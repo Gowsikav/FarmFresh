@@ -73,4 +73,17 @@ public class ProductPriceServiceImpl implements ProductPriceService{
 
         return productPriceRepository.deleteProduct(productId);
     }
+
+    @Override
+    public List<String> productList() {
+        log.info("productList method in product price service");
+        List<ProductPriceEntity> productPriceEntities=productPriceRepository.getAllDetails();
+        List<String> products=new ArrayList<>();
+        productPriceEntities.forEach(entity -> {
+            ProductPriceDTO productPriceDTO=new ProductPriceDTO();
+            BeanUtils.copyProperties(entity,productPriceDTO);
+            products.add(productPriceDTO.getProductName());
+        });
+        return products;
+    }
 }
