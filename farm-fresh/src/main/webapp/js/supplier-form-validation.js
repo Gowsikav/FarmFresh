@@ -135,16 +135,40 @@ phoneInput.addEventListener("input", function() {
         updateSubmitButton();
     });
 
-    // Validate milk type
-    milkSelect.addEventListener("input", function() {
-        if (milkSelect.value === "Select milk type" || milkSelect.value === "") {
-            milkError.innerText = "Please select milk type.";
-            milkError.style.color = "red";
-        } else {
-            milkError.innerText = "";
-        }
-        updateSubmitButton();
+    // Load milk types dynamically from backend
+fetch('/farm-fresh/productList')
+    .then(response => response.json())
+    .then(data => {
+        milkSelect.innerHTML = '<option value="">Select milk type</option>';
+        data.forEach(type => {
+            const option = document.createElement("option");
+            option.value = type;
+            option.textContent = type;
+
+            // Preselect supplier’s milk type if editing
+            if (type === "${supplier.typeOfMilk}") {
+                option.selected = true;
+            }
+
+            milkSelect.appendChild(option);
+        });
+    })
+    .catch(() => {
+        milkError.innerText = "Unable to load milk types";
+        milkError.style.color = "orange";
     });
+
+// Validate milk type after fetch
+milkSelect.addEventListener("change", function() {
+    if (milkSelect.value === "") {
+        milkError.innerText = "Please select milk type.";
+        milkError.style.color = "red";
+    } else {
+        milkError.innerText = "";
+    }
+    updateSubmitButton();
+});
+
 
     // Enable/disable submit button based on all checks
     function updateSubmitButton() {
@@ -174,17 +198,6 @@ document.querySelectorAll(".viewSupplierBtn").forEach(button => {
     });
 });
 
-document.querySelectorAll(".editSupplierBtn").forEach(button => {
-    button.addEventListener("click", function () {
-        document.getElementById("editSupplierId").value = this.dataset.id;
-        document.getElementById("editFirstName").value = this.dataset.firstname;
-        document.getElementById("editLastName").value = this.dataset.lastname;
-        document.getElementById("editEmail").value = this.dataset.email;
-        document.getElementById("editPhone").value = this.dataset.phone;
-        document.getElementById("editAddress").value = this.dataset.address;
-        document.getElementById("editMilk").value = this.dataset.milk;
-    });
-});
 
 const deleteModal = document.getElementById('deleteConfirmModal');
   const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
@@ -194,3 +207,50 @@ const deleteModal = document.getElementById('deleteConfirmModal');
     const deleteUrl = button.getAttribute('data-delete-url');
     confirmDeleteBtn.setAttribute('href', deleteUrl);
   });
+
+
+function loadMilkTypes(selectElement, selectedValue = "") {
+    fetch('/farm-fresh/productList')
+        .then(response => response.json())
+        .then(data => {
+            selectElement.innerHTML = '<option value="">Select milk type</option>';
+            data.forEach(type => {
+                const option = document.createElement("option");
+                option.value = type;
+                option.textContent = type;
+
+                // Preselect if matches existing value
+                if (type === selectedValue) {
+                    option.selected = true;
+                }
+
+                selectElement.appendChild(option);
+            });
+        })
+        .catch(() => {
+            const errorDiv = document.getElementById(
+                selectElement.id === "typeOfMilk" ? "typeOfMilkError" : "editMilkError"
+            );
+            errorDiv.innerText = "Unable to load milk types";
+            errorDiv.style.color = "orange";
+        });
+}
+
+// For Add form (preselect from supplier if available)
+loadMilkTypes(document.getElementById("typeOfMilk"), "${supplier.typeOfMilk}");
+
+// For Edit form when modal opens
+document.querySelectorAll(".editSupplierBtn").forEach(button => {
+    button.addEventListener("click", function () {
+        document.getElementById("editSupplierId").value = this.dataset.id;
+        document.getElementById("editFirstName").value = this.dataset.firstname;
+        document.getElementById("editLastName").value = this.dataset.lastname;
+        document.getElementById("editEmail").value = this.dataset.email;
+        document.getElementById("editPhone").value = this.dataset.phone;
+        document.getElementById("editAddress").value = this.dataset.address;
+
+        // Load milk types & preselect supplier’s existing type
+        loadMilkTypes(document.getElementById("editMilk"), this.dataset.milk);
+    });
+});
+

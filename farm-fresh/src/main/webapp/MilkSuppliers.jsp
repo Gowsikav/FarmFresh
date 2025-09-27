@@ -233,13 +233,10 @@
                         <div class="mb-3">
                             <label for="typeOfMilk" class="form-label">Type of Milk</label>
                             <select class="form-select" id="typeOfMilk" name="typeOfMilk" required>
-                                <option selected>Select milk type</option>
-                                <option value="Cow Milk">Cow Milk</option>
-                                <option value="Goat Milk">Goat Milk</option>
-                                <option value="Buffalo Milk">Buffalo Milk</option>
-                                <option value="Donkey Milk">Donkey Milk</option>
+                               <option value="">Select milk type</option>
                             </select>
                             <div id="typeOfMilkError" class="error-msg text-danger small"></div>
+
                         </div>
 
                         <div class="modal-footer">
@@ -309,15 +306,13 @@
                             <textarea class="form-control" name="address" id="editAddress" rows="3"></textarea>
                         </div>
                         <div class="mb-3">
-                            <label>Type of Milk</label>
-                            <select class="form-select" name="typeOfMilk" id="editMilk">
-                                <option>Select milk type</option>
-                                <option value="Cow Milk">Cow Milk</option>
-                                <option value="Goat Milk">Goat Milk</option>
-                                <option value="Buffalo Milk">Buffalo Milk</option>
-                                <option value="Donkey Milk">Donkey Milk</option>
-                            </select>
-                        </div>
+    <label for="editMilk" class="form-label">Type of Milk</label>
+    <select class="form-select" id="editMilk" name="typeOfMilk" required>
+        <option value="">Select milk type</option>
+    </select>
+    <div id="editMilkError" class="error-msg text-danger small"></div>
+</div>
+
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="submit" id="submitButton1" class="btn btn-primary">Update</button>
