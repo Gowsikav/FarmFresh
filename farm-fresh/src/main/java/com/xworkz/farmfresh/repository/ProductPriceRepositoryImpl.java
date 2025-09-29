@@ -80,7 +80,7 @@ public class ProductPriceRepositoryImpl implements ProductPriceRepository{
         log.info("edit{}",productPriceEntity);
         EntityManager entityManager=null;
         EntityTransaction entityTransaction=null;
-        ProductPriceEntity existingEntity=null;
+        ProductPriceEntity existingEntity;
         try {
             entityManager=entityManagerFactory.createEntityManager();
             entityTransaction=entityManager.getTransaction();
@@ -94,6 +94,7 @@ public class ProductPriceRepositoryImpl implements ProductPriceRepository{
             existingEntity.setUpdatedAt(productPriceEntity.getUpdatedAt());
             existingEntity.setPrice(productPriceEntity.getPrice());
             existingEntity.setProductName(productPriceEntity.getProductName());
+            existingEntity.setProductType(productPriceEntity.getProductType());
             entityManager.merge(existingEntity);
             entityTransaction.commit();
             return true;
@@ -120,7 +121,7 @@ public class ProductPriceRepositoryImpl implements ProductPriceRepository{
         log.info("deleteProduct method in product price repository");
         EntityManager entityManager=null;
         EntityTransaction entityTransaction=null;
-        ProductPriceEntity entity=null;
+        ProductPriceEntity entity;
         try {
             entityManager=entityManagerFactory.createEntityManager();
             entityTransaction=entityManager.getTransaction();

@@ -22,6 +22,9 @@ public class ProductPriceEntity {
     @Column(name = "price")
     private Double price;
 
+    @Column(name="product_type")
+    private String productType;
+
     @Column(name = "created_by")
     private String createdBy;
 

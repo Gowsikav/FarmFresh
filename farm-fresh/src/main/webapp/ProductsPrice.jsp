@@ -1,6 +1,5 @@
 <%@ page isELIgnored="false" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
 <html lang="en">
 
 <head>
@@ -39,11 +38,11 @@
                                 class="fa-solid fa-box me-2"></i> Manage Products</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="redirectToProductsPrice?email=${dto.email}"><i class="fa-solid fa-tag me-2"></i> Products Price</a>
+                        <a class="nav-link active" href="redirectToProductsPrice?email=${dto.email}"><i
+                                class="fa-solid fa-tag me-2"></i> Products Price</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link"
-                            href="redirectToMilkSuppliersList?email=${dto.email}&page=1&size=10"><i
+                        <a class="nav-link" href="redirectToMilkSuppliersList?email=${dto.email}&page=1&size=10"><i
                                 class="fa-solid fa-bottle-droplet me-2"></i> Milk Suppliers</a>
                     </li>
                     <li class="nav-item">
@@ -84,9 +83,9 @@
     <div class="page-wrapper d-flex flex-column min-vh-10" style="margin-top: 80px;"></div>
     <div class="container mt-4 mb-5 flex-grow-1">
         <h2 class="mb-4">Products Price </h2>
-            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addProductWithPriceModal">
-                <i class="fa-solid fa-plus me-2"></i>Add Products
-            </button>
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addProductWithPriceModal">
+            <i class="fa-solid fa-plus me-2"></i>Add Products
+        </button>
         <hr />
 
         <c:if test="${not empty success}">
@@ -102,7 +101,7 @@
             </div>
         </c:if>
 
-       <!-- Products Table -->
+        <!-- Products Table -->
         <div class="table-responsive">
             <table class="table table-striped table-bordered">
                 <thead>
@@ -110,6 +109,7 @@
                         <th>Product Name</th>
                         <th>Price (&#8377;)</th>
                         <th>Action</th>
+                        <th>Product Type</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -117,16 +117,18 @@
                         <tr>
                             <td>${product.productName}</td>
                             <td><i class="fa-solid fa-indian-rupee-sign me-1"></i>${product.price}</td>
+                            <td>${product.productType}</td>
                             <td>
                                 <button type="button" class="btn btn-primary btn-sm me-2 editProductBtn"
-                                        data-bs-toggle="modal" data-bs-target="#editProductModal"
-                                        data-id="${product.productId}" data-name="${product.productName}"
-                                        data-price="${product.price}">
+                                    data-bs-toggle="modal" data-bs-target="#editProductModal"
+                                    data-id="${product.productId}" data-name="${product.productName}"
+                                    data-price="${product.price}"
+                                    data-type="${product.productType}">
                                     <i class="fa-solid fa-pen-to-square"></i> Edit
                                 </button>
                                 <a href="#" class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                   data-bs-target="#deleteConfirmModal"
-                                   data-delete-url="deleteProductPrice?productId=${product.productId}&adminEmail=${dto.email}">
+                                    data-bs-target="#deleteConfirmModal"
+                                    data-delete-url="deleteProductPrice?productId=${product.productId}&adminEmail=${dto.email}">
                                     <i class="fa-solid fa-trash"></i> Delete
                                 </a>
                             </td>
@@ -157,6 +159,21 @@
                             <input type="number" step="any" class="form-control" id="price" name="price" required>
                             <div id="priceError" class="error-msg text-danger small"></div>
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label d-block">Product Type</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="productType" id="buyType" value="BUY"
+                                    required>
+                                <label class="form-check-label" for="buyType">Buy</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="productType" id="sellType"
+                                    value="SELL" required>
+                                <label class="form-check-label" for="sellType">Sell</label>
+                            </div>
+                            <div id="productTypeError" class="error-msg text-danger small"></div>
+                        </div>
+
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="submit" id="submitButton" class="btn btn-primary">Submit</button>
@@ -185,6 +202,13 @@
                         <div class="mb-3">
                             <label>Price (&#8377;)</label>
                             <input type="number" step="any" class="form-control" name="price" id="editProductPrice">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProductType">Product Type</label>
+                            <select class="form-select" id="editProductType" name="productType" required>
+                                <option value="BUY">Buy</option>
+                                <option value="SELL">Sell</option>
+                            </select>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

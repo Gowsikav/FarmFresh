@@ -32,6 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("editProductId").value = btn.dataset.id;
             document.getElementById("editProductName").value = btn.dataset.name;
             document.getElementById("editProductPrice").value = btn.dataset.price;
+            document.getElementById("editProductType").value = btn.dataset.type;
         });
     });
 

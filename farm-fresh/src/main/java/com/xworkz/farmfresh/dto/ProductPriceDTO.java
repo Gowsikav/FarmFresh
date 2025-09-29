@@ -19,4 +19,6 @@ public class ProductPriceDTO {
     @DecimalMin(value = "1")
     @Digits(fraction = 2,integer = 5)
     private Double price;
+
+    private String productType;
 }
