@@ -27,7 +27,7 @@ public class ProductListRestController {
     public ResponseEntity<List<String>> getProductList()
     {
         log.info("getProductList method in productListRestController");
-        List<String> list=productPriceService.productList();
+        List<String> list=productPriceService.productListForBuy();
         return ResponseEntity.ok(list);
     }
 }

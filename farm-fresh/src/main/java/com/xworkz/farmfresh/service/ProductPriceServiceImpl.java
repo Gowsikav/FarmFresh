@@ -75,14 +75,16 @@ public class ProductPriceServiceImpl implements ProductPriceService{
     }
 
     @Override
-    public List<String> productList() {
+    public List<String> productListForBuy() {
         log.info("productList method in product price service");
         List<ProductPriceEntity> productPriceEntities=productPriceRepository.getAllDetails();
         List<String> products=new ArrayList<>();
         productPriceEntities.forEach(entity -> {
             ProductPriceDTO productPriceDTO=new ProductPriceDTO();
             BeanUtils.copyProperties(entity,productPriceDTO);
-            products.add(productPriceDTO.getProductName());
+            if(productPriceDTO.getProductType().equalsIgnoreCase("Buy")) {
+                products.add(productPriceDTO.getProductName());
+            }
         });
         return products;
     }
