@@ -88,4 +88,12 @@ public class ProductPriceServiceImpl implements ProductPriceService{
         });
         return products;
     }
+
+    @Override
+    public boolean checkProductName(String product) {
+        log.info("checkProductName method in product price service");
+        List<ProductPriceEntity> productPriceEntities=productPriceRepository.getAllDetails();
+        return productPriceEntities.stream()
+                .anyMatch(entity -> entity.getProductName().equalsIgnoreCase(product));
+    }
 }

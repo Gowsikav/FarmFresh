@@ -11,4 +11,5 @@ public interface ProductPriceService {
     boolean updateProduct(ProductPriceDTO productPriceDTO,String adminEmail);
     boolean deleteProduct(Integer productId);
     List<String> productListForBuy();
+    boolean checkProductName(String product);
 }
