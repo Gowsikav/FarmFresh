@@ -108,8 +108,8 @@
                     <tr>
                         <th>Product Name</th>
                         <th>Price (&#8377;)</th>
-                        <th>Action</th>
                         <th>Product Type</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -197,11 +197,11 @@
                         <input type="hidden" name="productId" id="editProductId">
                         <div class="mb-3">
                             <label>Product Name</label>
-                            <input type="text" class="form-control" name="productName" id="editProductName">
+                            <input type="text" class="form-control" name="productName" id="editProductName" required>
                         </div>
                         <div class="mb-3">
                             <label>Price (&#8377;)</label>
-                            <input type="number" step="any" class="form-control" name="price" id="editProductPrice">
+                            <input type="number" step="any" class="form-control" name="price" id="editProductPrice" required>
                         </div>
                         <div class="mb-3">
                             <label for="editProductType">Product Type</label>

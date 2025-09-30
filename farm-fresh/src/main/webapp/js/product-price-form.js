@@ -2,28 +2,52 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("productPriceForm");
     const productName = document.getElementById("productName");
     const price = document.getElementById("price");
+    const productNameError = document.getElementById("productNameError");
+    const priceError = document.getElementById("priceError");
+
+    productName.addEventListener("input", () => {
+        const name = productName.value.trim();
+
+        if (name === "") {
+            productNameError.innerText = "Product name is required.";
+            return;
+        }
+        if (name.length < 3) {
+            productNameError.innerText = "Product name must be at least 3 characters.";
+            return;
+        }
+
+        fetch('/farm-fresh/checkProductName?productName=' + encodeURIComponent(name))
+            .then(response => response.json())
+            .then(data => {
+                if (data=== true || data === "true") {
+                    productNameError.innerText = "Product name already exists.";
+                } else {
+                    productNameError.innerText = "";
+                }
+            })
+            .catch(error => {
+                console.error("Error checking product name:", error);
+            });
+    });
 
     form?.addEventListener("submit", (e) => {
         let isValid = true;
 
-        // Validate Product Name
-        if (productName.value.trim() === "") {
-            document.getElementById("productNameError").innerText = "Product name is required.";
+        if (productName.value.trim() === "" || productName.value.trim().length < 3 || productNameError.innerText !== "") {
             isValid = false;
-        } else {
-            document.getElementById("productNameError").innerText = "";
         }
 
-        // Validate Price
         if (price.value.trim() === "" || parseFloat(price.value) <= 0) {
-            document.getElementById("priceError").innerText = "Enter a valid price greater than 0.";
+            priceError.innerText = "Enter a valid price greater than 0.";
             isValid = false;
         } else {
-            document.getElementById("priceError").innerText = "";
+            priceError.innerText = "";
         }
 
         if (!isValid) e.preventDefault();
-    });
+    }); 
+
 
     // Edit Modal Prefill
     const editButtons = document.querySelectorAll(".editProductBtn");
