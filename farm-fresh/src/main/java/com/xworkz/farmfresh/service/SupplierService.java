@@ -13,4 +13,5 @@ public interface SupplierService {
     boolean editSupplierDetails(SupplierDTO supplierDTO,String adminEmail);
     boolean deleteSupplierDetails(String email,String adminEmail);
     List<SupplierDTO> searchSuppliers(String keyword);
+    SupplierDTO getSupplierDetails(String phone);
 }

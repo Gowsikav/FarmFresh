@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Farm Fresh | Admin Dashboard</title>
+    <title>Farm Fresh | Collect Milk</title>
     <link rel="shortcut icon" href="images/title-pic.png" type="image/x-icon" />
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -28,10 +28,10 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-              <ul class="navbar-nav mb-2 mb-lg-0 align-items-center ms-lg-auto me-3">
+            <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+                <ul class="navbar-nav mb-2 mb-lg-0 align-items-center">
                     <li class="nav-item">
-                        <a class="nav-link active" href="redirectToAdminDashboard?email=${dto.email}"><i class="fa-solid fa-user-shield me-2"></i> Dashboard</a>
+                        <a class="nav-link" href="redirectToAdminDashboard?email=${dto.email}"><i class="fa-solid fa-user-shield me-2"></i> Dashboard</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="redirectToManageProducts?email=${dto.email}"><i class="fa-solid fa-box me-2"></i> Manage Products</a>
@@ -43,7 +43,7 @@
                         <a class="nav-link" href="redirectToMilkSuppliersList?email=${dto.email}&page=1&size=10"><i class="fa-solid fa-bottle-droplet me-2"></i> Milk Suppliers</a>
                     </li>
                     <li class="nav-item">
-                          <a class="nav-link" href="redirectToCollectMilk?email=${dto.email}"><i class="fa-solid fa-glass-water-droplet me-2"></i> Collect Milk</a>
+                        <a class="nav-link active" href="redirectToCollectMilk?email=${dto.email}"><i class="fa-solid fa-glass-water-droplet me-2"></i> Collect Milk</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#"><i class="fa-solid fa-users me-2"></i> Customers</a>
@@ -64,7 +64,7 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                             <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                    data-bs-target="#adminProfileModal"><i class="fa-solid fa-user me-2"></i></i> View Profile</a></li>
+                                    data-bs-target="#adminProfileModal"><i class="fa-solid fa-user me-2"></i> View Profile</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
@@ -79,104 +79,67 @@
     </nav>
 
     <main class="flex-grow-2 d-flex" style="margin-top: 80px;">
-        <div class="container-fluid p-5">
-            <!-- Welcome Message -->
-            <h1 class="fw-bold">Welcome back, ${dto.adminName} </h1>
-            <p class="text-muted">Here's an overview of what's happening in your farm-fresh platform today.</p>
-
-            <!-- Info Cards -->
-            <div class="row mt-4">
-                <div class="col-md-3">
-                    <div class="card text-white bg-primary mb-3 shadow">
-                        <div class="card-body">
-                            <h5 class="card-title">Total Customers</h5>
-                            <p class="card-text fs-4 fw-bold">1,245</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card text-white bg-success mb-3 shadow">
-                        <div class="card-body">
-                            <h5 class="card-title">Total Milk suppliers</h5>
-                            <p class="card-text fs-4 fw-bold">${suppliersCount}</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card text-white bg-warning mb-3 shadow">
-                        <div class="card-body">
-                            <h5 class="card-title">Active Orders</h5>
-                            <p class="card-text fs-4 fw-bold">89</p>
-                            <small class="text-light">12 pending delivery</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card text-white bg-danger mb-3 shadow">
-                        <div class="card-body">
-                            <h5 class="card-title">Revenue</h5>
-                            <p class="card-text fs-4 fw-bold">Rs.4,58,920</p>
-                            <small class="text-light">This month</small>
-                        </div>
-                    </div>
-                </div>
+        <div class="container p-5">
+            <h1 class="mb-4">Collect Milk</h1>
+            <div class="alert alert-info mb-4" role="alert">
+                <strong>Tip:</strong> Please <b>enter the supplier's phone number first</b>. If the email is registered, the Name, Email, and Type of Milk fields will be filled automatically.
             </div>
 
-            <!-- Recent Activity -->
-            <div class="row">
-                <!-- Recent Customers -->
-                <div class="col-md-4">
-                    <div class="card mt-4 shadow">
-                        <div class="card-header bg-dark text-white fw-bold">
-                            Recent Customers
-                        </div>
-                        <div class="card-body p-0">
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item">Ananya Sharma - ananya@gmail.com</li>
-                                <li class="list-group-item">Ravi Kumar - ravi.kumar@gmail.com</li>
-                                <li class="list-group-item">Megha Singh - megha.singh@gmail.com</li>
-                                <li class="list-group-item">Aman Gupta - aman.gupta@gmail.com</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- New Farmer Requests -->
-                <div class="col-md-4">
-                    <div class="card mt-4 shadow">
-                        <div class="card-header bg-dark text-white fw-bold">
-                            New Farmer Requests
-                        </div>
-                        <div class="card-body p-0">
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item">Rajesh Patel - Pending Approval</li>
-                                <li class="list-group-item">Kavita Yadav - Pending Approval</li>
-                                <li class="list-group-item">Sunil Verma - Pending Approval</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Latest Orders -->
-                <div class="col-md-4">
-                    <div class="card mt-4 shadow">
-                        <div class="card-header bg-dark text-white fw-bold">
-                            Latest Orders
-                        </div>
-                        <div class="card-body p-0">
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item">Order #1542 - Completed</li>
-                                <li class="list-group-item">Order #1543 - Out for Delivery</li>
-                                <li class="list-group-item">Order #1544 - Payment Pending</li>
-                                <li class="list-group-item">Order #1545 - Cancelled</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+            <c:if test="${not empty success}">
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                ${success}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
+        </c:if>
+        <c:if test="${not empty error}">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                ${error}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </c:if>
+            <!-- Collect Milk Form -->
+            <form action="addCollectMilk" method="post" id="collectMilkForm" class="row g-3 align-items-end mb-4">
+                <input type="email" name="email" hidden value="${dto.email}">
+                <div class="col-lg-4 col-md-6 col-12">
+                    <label for="phone" class="form-label">Phone Number</label>
+                    <input type="tel" class="form-control" id="phone" placeholder="Enter phone number" name="phoneNumber" value="${milk.phoneNumber}" required>
+                    <span id="phoneError" class="text small"></span>
+                </div>
+                <div class="col-lg-4 col-md-6 col-12">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="name" placeholder="Enter name" readonly>
+                </div>
+                <div class="col-lg-4 col-md-6 col-12">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" placeholder="Enter email" readonly>
+                </div>
+        
+                <div class="col-lg-4 col-md-6 col-12">
+                    <label for="type" class="form-label">Type of Milk</label>
+                    <select class="form-select" id="typeOfMilk" name="typeOfMilk" required>
+                        <option value="">Select milk type</option>
+                    </select>
+                    <div id="typeOfMilkError" class="error-msg text-danger small"></div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-12">
+                    <label for="quantity" class="form-label">Quantity (litres)</label>
+                    <input type="number" class="form-control" id="quantity" placeholder="Enter quantity" name="quantity" value="${milk.quantity}" min="0.01" step="0.01" required>
+                </div>
+                <div class="col-lg-4 col-md-6 col-12">
+                    <label for="price" class="form-label">Price (per litre)</label>
+                    <input type="number" class="form-control" id="price" placeholder="Enter price" name="price" value="${milk.price}" min="1" readonly>
+                </div>
+                <div class="col-lg-4 col-md-6 col-12">
+                    <label for="totalAmount" class="form-label">Total Amount</label>
+                    <input type="number" class="form-control" id="totalAmount" placeholder="Total amount" name="totalAmount" value="${milk.totalAmount}" readonly>
+                </div>
+                <div class="col-12 text-end">
+                    <button class="btn btn-success mt-2" type="submit">Collect Milk</button>
+                </div>
+            </form>
+
         </div>
     </main>
-
 
     <div class="modal fade" id="adminProfileModal" tabindex="-1" aria-labelledby="adminProfileModalLabel"
         aria-hidden="true">
@@ -297,6 +260,7 @@
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js"
         crossorigin="anonymous"></script>
+    <script src="js/collect-milk.js"></script>
 </body>
 
 </html>
