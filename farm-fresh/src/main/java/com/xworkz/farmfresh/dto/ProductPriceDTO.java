@@ -23,6 +23,4 @@ public class ProductPriceDTO {
     @NotBlank
     private String productType;
 
-    private String productCategory;
-
 }

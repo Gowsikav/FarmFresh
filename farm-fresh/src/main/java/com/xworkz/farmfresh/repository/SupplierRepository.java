@@ -14,4 +14,5 @@ public interface SupplierRepository {
     SupplierEntity getSupplierByEmail(String email);
     Integer getSuppliersCount();
     List<SupplierEntity> getSearchSuppliers(String keyword);
+    SupplierEntity getSupplierByPhone(String phone);
 }

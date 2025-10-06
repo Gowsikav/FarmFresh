@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -140,5 +139,14 @@ public class SupplierServiceImpl implements SupplierService{
             supplierDTOS.add(supplierDTO);
         });
         return supplierDTOS;
+    }
+
+    @Override
+    public SupplierDTO getSupplierDetails(String phone) {
+        log.info("getSupplierDetails method in supplier service");
+        SupplierEntity supplierEntity=supplierRepository.getSupplierByPhone(phone);
+        SupplierDTO supplierDTO=new SupplierDTO();
+        BeanUtils.copyProperties(supplierEntity,supplierDTO);
+        return supplierDTO;
     }
 }

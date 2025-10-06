@@ -46,6 +46,9 @@
                                 class="fa-solid fa-bottle-droplet me-2"></i> Milk Suppliers</a>
                     </li>
                     <li class="nav-item">
+                          <a class="nav-link" href="redirectToCollectMilk?email=${dto.email}"><i class="fa-solid fa-glass-water-droplet me-2"></i> Collect Milk</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="#"><i class="fa-solid fa-users me-2"></i> Customers</a>
                     </li>
                     <li class="nav-item dropdown">

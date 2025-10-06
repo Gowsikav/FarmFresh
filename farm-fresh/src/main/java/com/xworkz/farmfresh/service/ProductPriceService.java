@@ -12,4 +12,5 @@ public interface ProductPriceService {
     boolean deleteProduct(Integer productId);
     List<String> productListForBuy();
     boolean checkProductName(String product);
+    Double getPriceForType(String type);
 }

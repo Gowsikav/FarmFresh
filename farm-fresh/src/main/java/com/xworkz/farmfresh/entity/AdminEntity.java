@@ -45,4 +45,9 @@ public class AdminEntity {
     @EqualsAndHashCode.Exclude
     private List<AdminAuditEntity> auditLogs = new ArrayList<>();
 
+    @OneToMany(mappedBy = "admin")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<CollectMilkEntity> collectedMilkList;
+
 }

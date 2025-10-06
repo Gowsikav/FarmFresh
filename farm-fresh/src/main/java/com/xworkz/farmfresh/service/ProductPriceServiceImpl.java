@@ -96,4 +96,16 @@ public class ProductPriceServiceImpl implements ProductPriceService{
         return productPriceEntities.stream()
                 .anyMatch(entity -> entity.getProductName().equalsIgnoreCase(product));
     }
+
+    @Override
+    public Double getPriceForType(String type) {
+        log.info("getPriceForType method in product price service");
+        List<ProductPriceEntity> productPriceEntities=productPriceRepository.getAllDetails();
+        Double price = productPriceEntities.stream()
+                .filter(e -> e.getProductName().equalsIgnoreCase(type))
+                .map(ProductPriceEntity::getPrice)
+                .findFirst()
+                .orElse(0.0D); //
+        return price;
+    }
 }

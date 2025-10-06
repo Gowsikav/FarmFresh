@@ -37,6 +37,12 @@ public class ProductListRestController {
     {
         log.info("checkProduct method in ProductListRestController");
         return ResponseEntity.ok(productPriceService.checkProductName(productName));
+    }
 
+    @GetMapping("/getMilkPrice")
+    public ResponseEntity<Double> getMilkPrice(@RequestParam String type)
+    {
+        log.info("getMilkPrice method in ProductListRestController");
+        return ResponseEntity.ok(productPriceService.getPriceForType(type));
     }
 }
