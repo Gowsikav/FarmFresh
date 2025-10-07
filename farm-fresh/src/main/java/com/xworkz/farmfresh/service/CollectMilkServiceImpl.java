@@ -2,6 +2,7 @@ package com.xworkz.farmfresh.service;
 
 import com.xworkz.farmfresh.dto.AdminDTO;
 import com.xworkz.farmfresh.dto.CollectMilkDTO;
+import com.xworkz.farmfresh.dto.SupplierDTO;
 import com.xworkz.farmfresh.entity.AdminEntity;
 import com.xworkz.farmfresh.entity.CollectMilkAuditEntity;
 import com.xworkz.farmfresh.entity.CollectMilkEntity;
@@ -12,7 +13,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -53,5 +57,22 @@ public class CollectMilkServiceImpl implements CollectMilkService{
         collectMilkEntity.setSupplier(supplierRepository.getSupplierByPhone(collectMilkDTO.getPhoneNumber()));
         return collectMilkRepository.save(collectMilkEntity);
     }
-}
 
+    @Override
+    public List<CollectMilkDTO> getAllDetailsByDate(LocalDate selectDate) {
+        log.info("getAllDetailsByDate method in collect milk service");
+        List<CollectMilkEntity> collectMilkEntityList=collectMilkRepository.getAllDetailsByDate(selectDate);
+        List<CollectMilkDTO> collectMilkDTOS=new ArrayList<>();
+        collectMilkEntityList.forEach(collectMilkEntity -> {
+            CollectMilkDTO collectMilkDTO=new CollectMilkDTO();
+            BeanUtils.copyProperties(collectMilkEntity,collectMilkDTO);
+            if (collectMilkEntity.getSupplier() != null) {
+                SupplierDTO supplierDTO = new SupplierDTO();
+                BeanUtils.copyProperties(collectMilkEntity.getSupplier(), supplierDTO);
+                collectMilkDTO.setSupplier(supplierDTO);
+            }
+            collectMilkDTOS.add(collectMilkDTO);
+        });
+        return collectMilkDTOS;
+    }
+}
