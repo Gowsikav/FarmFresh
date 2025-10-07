@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -64,5 +66,20 @@ public class CollectMilkController {
             model.addAttribute("milk",collectMilkDTO);
         }
         return getCollectMilkPage(email,model);
+    }
+
+    @GetMapping("/redirectToCollectMilkDetails")
+    public String getCollectMilkDetailsPage(@RequestParam String email,@RequestParam(required = false) String searchDate, Model model)
+    {
+        log.info("getCollectMilkDetailsPage method in collect milk controller");
+        LocalDate date = (searchDate != null && !searchDate.isEmpty())
+                ? LocalDate.parse(searchDate)
+                : LocalDate.now();
+        AdminDTO adminDTO=adminService.getAdminDetailsByEmail(email);
+        model.addAttribute("dto",adminDTO);
+        List<CollectMilkDTO> list=collectMilkService.getAllDetailsByDate(date);
+        model.addAttribute("milkList",list);
+        model.addAttribute("searchDate",date);
+        return "CollectMilkDetails";
     }
 }

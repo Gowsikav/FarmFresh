@@ -9,6 +9,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceException;
+import java.time.LocalDate;
+import java.util.List;
 
 @Slf4j
 @Repository
@@ -50,5 +52,26 @@ public class CollectMilkRepositoryImpl implements CollectMilkRepository{
             }
         }
         return false;
+    }
+
+    @Override
+    public List<CollectMilkEntity> getAllDetailsByDate(LocalDate selectDate) {
+        log.info("getAllDetailsByDate method in collectMilkRepository");
+        EntityManager entityManager=null;
+        List<CollectMilkEntity> list=null;
+        try {
+            entityManager=entityManagerFactory.createEntityManager();
+            list=entityManager.createNamedQuery("getAllDetailsByDate").setParameter("selectDate",selectDate).getResultList();
+        }catch (PersistenceException e)
+        {
+            log.error(e.getMessage());
+        }finally {
+            if(entityManager!=null && entityManager.isOpen())
+            {
+                entityManager.close();
+                log.info("EntityManager is closed");
+            }
+        }
+        return list;
     }
 }

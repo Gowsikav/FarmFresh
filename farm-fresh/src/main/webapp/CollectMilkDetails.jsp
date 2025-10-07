@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Farm Fresh | Collect Milk</title>
+    <title>Farm Fresh | Collected Milk Details</title>
     <link rel="shortcut icon" href="images/title-pic.png" type="image/x-icon" />
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -78,69 +78,89 @@
         </div>
     </nav>
 
-<main class="d-flex flex-grow-1" style="margin-top: 80px;">
-    <div class="container p-5">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h1 class="mb-0">Collect Milk</h1>
-            <a href="redirectToCollectMilkDetails?email=${dto.email}" class="btn btn-primary">
-                <i class="fa-solid fa-list me-2"></i> View Collected Milk Details
-            </a>
-        </div>
-
-        <!-- Tip Alert -->
-        <div class="alert alert-info mb-4" role="alert">
-            <strong>Tip:</strong> Please <b>enter the supplier's phone number first</b>. 
-            If the email is registered, the Name and Email fields will be filled automatically.
-        </div>
-        <c:if test="${not empty error}">
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                ${error}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        </c:if>
-            <!-- Collect Milk Form -->
-            <form action="addCollectMilk" method="post" id="collectMilkForm" class="row g-3 align-items-end mb-4">
+    <main class="flex-grow-1 d-flex flex-column min-vh-10" style="margin-top: 80px;">
+        <div class="container p-5">
+            <h1 class="mb-4">Collected Milk Details</h1>
+            <form class="row g-3 mb-4" method="get" action="redirectToCollectMilkDetails">
                 <input type="email" name="email" hidden value="${dto.email}">
-                <div class="col-lg-4 col-md-6 col-12">
-                    <label for="phone" class="form-label">Phone Number <span class="text-danger small">*</span></label>
-                    <input type="tel" class="form-control" id="phone" placeholder="Enter phone number" name="phoneNumber" value="${milk.phoneNumber}" required>
-                    <span id="phoneError" class="text small"></span>
+                <div class="col-auto">
+                    <label for="searchDate" class="form-label">Search by Date:</label>
                 </div>
-                <div class="col-lg-4 col-md-6 col-12">
-                    <label for="name" class="form-label">Name</label>
-                    <input type="text" class="form-control" id="name" placeholder="Will autofill after phone number" readonly>
+                <div class="col-auto">
+                    <input type="date" class="form-control" id="searchDate" name="searchDate"
+                        value="${searchDate}" required>
                 </div>
-                <div class="col-lg-4 col-md-6 col-12">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="email" placeholder="Will autofill after phone number" readonly>
-                </div>
-        
-                <div class="col-lg-4 col-md-6 col-12">
-                    <label for="type" class="form-label">Type of Milk <span class="text-danger small">*</span></label>
-                    <select class="form-select" id="typeOfMilk" name="typeOfMilk" required>
-                        <option value="">Select milk type</option>
-                    </select>
-                    <div id="typeOfMilkError" class="error-msg text-danger small"></div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-12">
-                    <label for="quantity" class="form-label">Quantity (litres) <span class="text-danger small">*</span></label>
-                    <input type="number" class="form-control" id="quantity" placeholder="Enter quantity" name="quantity" value="${milk.quantity}" min="0.01" step="0.01" required>
-                </div>
-                <div class="col-lg-4 col-md-6 col-12">
-                    <label for="price" class="form-label">Price (per litre)</label>
-                    <input type="number" class="form-control" id="price" placeholder="Will be filled after milk type selection" name="price" value="${milk.price}" min="1" readonly>
-                </div>
-                <div class="col-lg-4 col-md-6 col-12">
-                    <label for="totalAmount" class="form-label">Total Amount</label>
-                    <input type="number" class="form-control" id="totalAmount" placeholder="Calculated automatically" name="totalAmount" value="${milk.totalAmount}" readonly>
-                </div>
-                <div class="col-12 text-end">
-                    <button class="btn btn-success mt-2" type="submit">Collect Milk</button>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary">Search</button>
                 </div>
             </form>
-
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle">
+                    <thead class="table-success">
+                        <tr>
+                            <th>Name</th>
+                            <th>Phone Number</th>
+                            <th>Type of Milk</th>
+                            <th>Quantity (litres)</th>
+                            <th>Price (per litre)</th>
+                            <th>Total Amount</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach var="milk" items="${milkList}">
+                                        <tr>
+                                            <td>${milk.supplier.firstName} ${milk.supplier.lastName}</td>
+                                            <td>${milk.supplier.phoneNumber}</td>
+                                            <td>${milk.typeOfMilk}</td>
+                                            <td>${milk.quantity}</td>
+                                            <td>${milk.price}</td>
+                                            <td>${milk.totalAmount}</td>
+                                            <td>
+                                                
+                                                <button type="button"
+                                                        class="btn btn-info btn-sm view-details-btn"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#milkDetailsModal"
+                                                        data-name="${milk.supplier.firstName} ${milk.supplier.lastName}"
+                                                        data-email="${milk.supplier.email}"
+                                                        data-phone="${milk.supplier.phoneNumber}"
+                                                        data-address="${milk.supplier.address}"
+                                                        data-milk="${milk.supplier.typeOfMilk}"
+                                                        data-quantity="${milk.quantity}"
+                                                        data-typeMilk="${milk.typeOfMilk}"
+                                                        data-price="${milk.price}"
+                                                        data-total="${milk.totalAmount}"
+                                                        data-date="${milk.collectedDate}"
+                                                    <i class="fa fa-eye"></i> View
+                                                </button>
+                                            </td>
+                                        </tr>      
+                        </c:forEach>
+                        <c:if test="${empty milkList}">
+                            <tr>
+                                <td colspan="8" class="text-center text-muted">No records found for the selected date.</td>
+                            </tr>
+                        </c:if>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </main>
+    
+    <div class="modal fade" id="milkDetailsModal" tabindex="-1" aria-labelledby="milkDetailsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="milkDetailsModalLabel">Collected Milk & Supplier Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="milkDetailsModalBody">
+        <!-- Details will be loaded here by JS -->
+      </div>
+    </div>
+  </div>
+</div>
 
     <div class="modal fade" id="adminProfileModal" tabindex="-1" aria-labelledby="adminProfileModalLabel"
         aria-hidden="true">
@@ -261,7 +281,7 @@
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js"
         crossorigin="anonymous"></script>
-    <script src="js/collect-milk.js"></script>
+        <script src="js/collect-milk-details.js"></script>
 </body>
 
 </html>

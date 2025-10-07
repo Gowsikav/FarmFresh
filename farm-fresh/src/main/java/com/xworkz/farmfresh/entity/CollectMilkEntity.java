@@ -10,6 +10,8 @@ import java.time.LocalDate;
 @Data
 @Entity
 @Table(name = "collect_milk_details")
+@NamedQuery(name = "getAllDetailsByDate",query = "select a from CollectMilkEntity a " +
+        "JOIN FETCH a.supplier where a.collectedDate=:selectDate")
 public class CollectMilkEntity {
 
     @Id
