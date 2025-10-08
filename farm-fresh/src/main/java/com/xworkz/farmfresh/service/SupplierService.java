@@ -14,4 +14,9 @@ public interface SupplierService {
     boolean deleteSupplierDetails(String email,String adminEmail);
     List<SupplierDTO> searchSuppliers(String keyword);
     SupplierDTO getSupplierDetails(String phone);
+
+    boolean sendOtpTOSupplierForLogin(String email);
+    boolean checkOTPForSupplierLogin(String email,String otp);
+    void setOtpAndTimeNull(String email);
+    SupplierDTO getDetailsByEmail(String email);
 }

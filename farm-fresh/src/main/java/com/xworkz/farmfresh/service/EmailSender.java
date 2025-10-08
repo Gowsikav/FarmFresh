@@ -4,4 +4,5 @@ public interface EmailSender {
 
     boolean mailSend(String email);
     boolean mailForSupplierRegisterSuccess(String email,String supplierName);
+    boolean mailForSupplierLoginOtp(String email,String otp);
 }

@@ -5,11 +5,13 @@ import com.xworkz.farmfresh.dto.SupplierDTO;
 import com.xworkz.farmfresh.entity.SupplierAuditEntity;
 import com.xworkz.farmfresh.entity.SupplierEntity;
 import com.xworkz.farmfresh.repository.SupplierRepository;
+import com.xworkz.farmfresh.util.OTPUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -145,6 +147,62 @@ public class SupplierServiceImpl implements SupplierService{
     public SupplierDTO getSupplierDetails(String phone) {
         log.info("getSupplierDetails method in supplier service");
         SupplierEntity supplierEntity=supplierRepository.getSupplierByPhone(phone);
+        SupplierDTO supplierDTO=new SupplierDTO();
+        BeanUtils.copyProperties(supplierEntity,supplierDTO);
+        return supplierDTO;
+    }
+
+    @Override
+    public boolean sendOtpTOSupplierForLogin(String email) {
+        log.info("sendOtpTOSupplierForLogin method in supplier service");
+        String otp= OTPUtil.generateNumericOtp(6);
+        if(supplierRepository.setOTPAndTime(email,otp,LocalDateTime.now()))
+        {
+            return emailSender.mailForSupplierLoginOtp(email, otp);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean checkOTPForSupplierLogin(String email, String otp) {
+        log.info("checkOTPForSupplierLogin method in supplier service");
+        SupplierEntity supplierEntity = supplierRepository.getSupplierByEmail(email);
+
+        if (supplierEntity == null) {
+            log.warn("No supplier found with email: {}", email);
+            return false;
+        }
+
+        String savedOtp = supplierEntity.getLoginOTP();
+        LocalDateTime savedTime = supplierEntity.getExpiryTime();
+
+        if (savedOtp == null || !savedOtp.equals(otp)) {
+            log.warn("Invalid OTP entered for email: {}", email);
+            throw new RuntimeException("Invalid OTP");
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        Duration duration = Duration.between(savedTime, now);
+        if (duration.toMinutes() >= 5) {
+            log.warn("OTP expired for email: {}", email);
+            throw new RuntimeException("Time is expiry.Goto Login");
+        }
+
+        log.info("OTP verified successfully for email: {}", email);
+
+        return supplierRepository.setOTPAndTime(email,null,null);
+    }
+
+    @Override
+    public void setOtpAndTimeNull(String email) {
+        log.info("setOtpAndTimeNull method in supplier service");
+        supplierRepository.setOTPAndTime(email,null,null);
+    }
+
+    @Override
+    public SupplierDTO getDetailsByEmail(String email) {
+        log.info("getDetailsBy email method in supplier service");
+        SupplierEntity supplierEntity= supplierRepository.getSupplierByEmail(email);
         SupplierDTO supplierDTO=new SupplierDTO();
         BeanUtils.copyProperties(supplierEntity,supplierDTO);
         return supplierDTO;

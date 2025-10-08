@@ -6,6 +6,7 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -55,4 +56,10 @@ public class SupplierEntity {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<CollectMilkEntity> collectedMilkList;
+
+    @Column(name = "login_otp")
+    private String loginOTP;
+
+    @Column(name = "expiry_time")
+    private LocalDateTime expiryTime;
 }

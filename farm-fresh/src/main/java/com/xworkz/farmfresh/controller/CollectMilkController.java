@@ -60,6 +60,7 @@ public class CollectMilkController {
         {
             log.info("successfully saved");
             model.addAttribute("success","Details saved");
+            return getCollectMilkDetailsPage(email,String.valueOf(LocalDate.now()),model);
         }else {
             log.info("Not saved");
             model.addAttribute("error","Details not saved");
