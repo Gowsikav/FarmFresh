@@ -122,4 +122,57 @@ public class SupplierController {
         }
         return getMilkSupplierList(adminEmail, 1,10,model);
     }
+
+    @GetMapping("/redirectToMilkSupplierLogin")
+    public String getMilkSupplierLogin(@RequestParam(required = false) String email)
+    {
+        log.info("getMilkSupplierLogin method in supplier controller");
+        if(email!=null)
+        {
+           supplierService.setOtpAndTimeNull(email);
+        }
+        return "MilkSupplierLogin";
+    }
+
+    @GetMapping("/sendOTPToSupplier")
+    public String supplierLoginOtp(@RequestParam String email,Model model)
+    {
+        log.info("supplierLoginOtp method in supplier controller");
+        if(supplierService.sendOtpTOSupplierForLogin(email))
+        {
+            model.addAttribute("successMessage","OTP send to your Email");
+        }else {
+            model.addAttribute("errorMessage","OTP Not Sent");
+        }
+        model.addAttribute("email",email);
+        return "MilkSupplierLogin";
+    }
+
+    @PostMapping("/verifySupplierOTP")
+    public String checkOtpForSupplierLogin(@RequestParam String email,@RequestParam String otp,Model model)
+    {
+        log.info("checkOtpForSupplierLogin method in supplier controller");
+        try {
+            if (supplierService.checkOTPForSupplierLogin(email, otp)) {
+                model.addAttribute("errorMessage", "successfully login");
+                model.addAttribute("dto",supplierService.getDetailsByEmail(email));
+                return "SupplierDashboard";
+            } else {
+                model.addAttribute("errorMessage", "not login");
+            }
+        }catch (RuntimeException e)
+        {
+            model.addAttribute("error",e.getMessage());
+            model.addAttribute("email",email);
+        }
+        return "MilkSupplierLogin";
+    }
+
+    @GetMapping("/redirectToSupplierDashboard")
+    public String getSupplierDashboardPage(@RequestParam String email,Model model)
+    {
+        log.info("getSupplierDashboardPage method in supplier controller");
+        model.addAttribute("dto",supplierService.getDetailsByEmail(email));
+        return "SupplierDashboard";
+    }
 }

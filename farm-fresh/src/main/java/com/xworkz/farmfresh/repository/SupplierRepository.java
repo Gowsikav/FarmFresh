@@ -2,6 +2,7 @@ package com.xworkz.farmfresh.repository;
 
 import com.xworkz.farmfresh.entity.SupplierEntity;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface SupplierRepository {
@@ -15,4 +16,6 @@ public interface SupplierRepository {
     Integer getSuppliersCount();
     List<SupplierEntity> getSearchSuppliers(String keyword);
     SupplierEntity getSupplierByPhone(String phone);
+
+    boolean setOTPAndTime(String email, String otp,LocalDateTime expiryTime);
 }

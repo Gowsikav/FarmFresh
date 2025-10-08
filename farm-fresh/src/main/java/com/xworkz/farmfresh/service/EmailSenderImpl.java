@@ -74,4 +74,33 @@ public class EmailSenderImpl implements EmailSender{
         }
     }
 
+    @Override
+    public boolean mailForSupplierLoginOtp(String email, String otp) {
+        log.info("mailForSupplierLoginOtp method in email sender");
+        try {
+            String subject = "Farm Fresh - Your OTP for Login";
+
+            String messageBody = "Dear Supplier,\n\n"
+                    + "We have received a request to log in to your Farm Fresh account.\n\n"
+                    + "Your One-Time Password (OTP) is: " + otp + "\n\n"
+                    + "Please use this OTP to complete your login. This code is valid for the next 5 minutes.\n\n"
+                    + "If you did not request this OTP, please ignore this email or contact our support team immediately at info@farmfresh.com.\n\n"
+                    + "Thank you for being a valued member of the Farm Fresh supplier community.\n\n"
+                    + "Warm regards,\n"
+                    + "Farm Fresh Team";
+
+            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+            simpleMailMessage.setTo(email);
+            simpleMailMessage.setSubject(subject);
+            simpleMailMessage.setText(messageBody);
+
+            configuration.mailSender().send(simpleMailMessage);
+            log.info("OTP mail sent successfully to: {} and OTP: {}", email,otp);
+            return true;
+        } catch (Exception e) {
+            log.error("Error while sending OTP email: {}", e.getMessage());
+            return false;
+        }
+
+    }
 }

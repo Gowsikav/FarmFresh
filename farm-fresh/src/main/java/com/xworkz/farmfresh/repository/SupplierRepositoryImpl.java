@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -260,5 +261,46 @@ public class SupplierRepositoryImpl implements SupplierRepository {
             }
         }
         return supplierEntity;
+    }
+
+    @Override
+    public boolean setOTPAndTime(String email, String otp,LocalDateTime expiryTime) {
+        log.info("setOTPAndTime method in supplier Repository");
+        EntityManager entityManager=null;
+        EntityTransaction entityTransaction=null;
+        SupplierEntity existingEntity=null;
+        try{
+            entityManager=entityManagerFactory.createEntityManager();
+            entityTransaction=entityManager.getTransaction();
+            entityTransaction.begin();
+            existingEntity = (SupplierEntity) entityManager.createNamedQuery("checkEmail")
+                    .setParameter("email", email)
+                    .getSingleResult();
+            if(existingEntity==null)
+            {
+                log.error("entity not found");
+                return false;
+            }
+            existingEntity.setLoginOTP(otp);
+            existingEntity.setExpiryTime(expiryTime);
+            entityManager.merge(existingEntity);
+            entityTransaction.commit();
+            return true;
+        }catch (PersistenceException e)
+        {
+            log.error(e.getMessage());
+            if(entityTransaction!=null)
+            {
+                entityTransaction.rollback();
+                log.error("merge rollback");
+            }
+        }finally {
+            if(entityManager!=null && entityManager.isOpen())
+            {
+                entityManager.close();
+                log.info("EntityManager is closed");
+            }
+        }
+        return false;
     }
 }

@@ -58,3 +58,9 @@ html {
   background-size: cover; 
   background-position: center;
 }
+
+.supplier-bg{
+  background-image: url("../images/supplier-login-bg.jpg"); 
+  background-size: cover; 
+  background-position: center;
+}

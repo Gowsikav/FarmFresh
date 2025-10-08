@@ -94,6 +94,12 @@
                     <button type="submit" class="btn btn-primary">Search</button>
                 </div>
             </form>
+            <c:if test="${not empty success}">
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                ${success}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </c:if>
             <div class="table-responsive">
                 <table class="table table-bordered table-hover align-middle">
                     <thead class="table-success">
