@@ -18,4 +18,5 @@ public interface SupplierRepository {
     SupplierEntity getSupplierByPhone(String phone);
 
     boolean setOTPAndTime(String email, String otp,LocalDateTime expiryTime);
+    boolean updateSupplierDetailsBySupplier(SupplierEntity supplierEntity);
 }

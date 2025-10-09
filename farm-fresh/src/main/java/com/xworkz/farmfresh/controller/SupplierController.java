@@ -6,6 +6,8 @@ import com.xworkz.farmfresh.service.AdminService;
 import com.xworkz.farmfresh.service.SupplierService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,14 +15,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 
 @Slf4j
 @Controller
 @RequestMapping("/")
+@PropertySource("classpath:application.properties")
 public class SupplierController {
 
     @Autowired
@@ -28,6 +36,9 @@ public class SupplierController {
 
     @Autowired
     private SupplierService supplierService;
+
+    @Value("${file.upload-dir}")
+    private String uploadDir;
 
     public SupplierController() {
         log.info("SupplierController constructor");
@@ -174,5 +185,49 @@ public class SupplierController {
         log.info("getSupplierDashboardPage method in supplier controller");
         model.addAttribute("dto",supplierService.getDetailsByEmail(email));
         return "SupplierDashboard";
+    }
+
+    @GetMapping("/redirectToUpdateSupplierProfile")
+    public String getUpdateProfilePage(@RequestParam String email,Model model)
+    {
+        log.info("getUpdateProfilePage method in supplier controller");
+        model.addAttribute("dto",supplierService.getDetailsByEmail(email));
+        return "UpdateSupplierProfile";
+    }
+
+    @PostMapping("updateSupplierProfile")
+    public String updateSupplierProfile(@Valid SupplierDTO supplierDTO, BindingResult bindingResult, @RequestParam(required = false)MultipartFile profilePicture, Model model)
+    {
+        log.info("updateSupplierProfile method in supplier controller");
+        if(bindingResult.hasErrors())
+        {
+            log.error("fields has error");
+            bindingResult.getFieldErrors().stream().map(e->e.getField()+" -> "+e.getDefaultMessage())
+                    .forEach(log::error);
+            model.addAttribute("dto",supplierDTO);
+            model.addAttribute("errorMessage","Invalid details");
+            return "UpdateSupplierProfile";
+        }
+        if (profilePicture != null && !profilePicture.isEmpty()) {
+            try {
+                byte[] bytes = profilePicture.getBytes();
+                String fileName = supplierDTO.getFirstName() + "_" + System.currentTimeMillis() + "_" + profilePicture.getOriginalFilename();
+                Path path = Paths.get(uploadDir ,fileName);
+                Files.write(path, bytes);
+                supplierDTO.setProfilePath(path.getFileName().toString());
+            } catch (IOException e) {
+                log.error(e.getMessage());
+            }
+        } else {
+            log.warn("No new profile picture uploaded.");
+        }
+        if(supplierService.updateSupplierDetailsBySupplier(supplierDTO))
+        {
+            return getSupplierDashboardPage(supplierDTO.getEmail(),model);
+        }else {
+            model.addAttribute("errorMessage","Details not updated");
+            model.addAttribute("dto",supplierDTO);
+        }
+        return "UpdateSupplierProfile";
     }
 }

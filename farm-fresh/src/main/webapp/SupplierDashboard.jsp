@@ -30,9 +30,14 @@
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            
-                            <img src="images/dummy-profile.png" alt="Profile" class="rounded-circle" width="40" height="40" style="object-fit: cover;">
-                                
+                            <c:choose>
+                                <c:when test="${empty dto.profilePath}">
+                                    <img src="images/dummy-profile.png" alt="Profile" class="rounded-circle" width="40" height="40" style="object-fit: cover;">
+                                </c:when>
+                                <c:otherwise>
+                                    <img src="<c:url value='/uploads/${dto.profilePath}'/>" alt="Profile" class="rounded-circle" width="40" height="40" style="object-fit: cover;">
+                                </c:otherwise>
+                            </c:choose>                                
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                             <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#supplierProfileModal"><i class="fa-solid fa-user me-2"></i>View Profile</a></li>
@@ -89,8 +94,15 @@
                 </div>
                 <div class="modal-body">
                     <div class="text-center mb-4">                       
-                        <img src="images/dummy-profile.png" alt="Profile" class="rounded-circle" width="150" height="150" style="object-fit: cover;">                        
-                    </div>
+                           <c:choose>
+                                <c:when test="${empty dto.profilePath}">
+                                    <img src="images/dummy-profile.png" alt="Profile" class="rounded-circle" width="150" height="150" style="object-fit: cover;">
+                                </c:when>
+                                <c:otherwise>
+                                    <img src="<c:url value='/uploads/${dto.profilePath}'/>" alt="Profile" class="rounded-circle" width="150" height="150" style="object-fit: cover;">
+                                </c:otherwise>
+                            </c:choose>                    
+                        </div>
                     <div class="card p-3 shadow-sm">
                         <ul class="list-group list-group-flush">
                             <div class="row mb-2">
@@ -109,6 +121,10 @@
                                 <div class="col-sm-4 fw-bold"><i class="fa-solid fa-phone me-2"></i>Phone:</div>
                                 <div class="col-sm-8">${dto.phoneNumber}</div>
                             </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 fw-bold"><i class="fa-solid fa-bottle-water me-2"></i>Type of Milk:</div>
+                                <div class="col-sm-8">${dto.typeOfMilk}</div>
+                            </div>
                         </ul>
                     </div>
                 </div>
@@ -119,6 +135,9 @@
             </div>
         </div>
     </div>
+
+        <!-- Footer -->
+
 
     <footer class="text-lg-start py-3" style="background: linear-gradient(90deg, #1b5e20, #fffde7); color: #333">
         <div class="container">

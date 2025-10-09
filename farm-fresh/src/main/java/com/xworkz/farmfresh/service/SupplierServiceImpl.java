@@ -207,4 +207,35 @@ public class SupplierServiceImpl implements SupplierService{
         BeanUtils.copyProperties(supplierEntity,supplierDTO);
         return supplierDTO;
     }
+
+    @Override
+    public boolean updateSupplierDetailsBySupplier(SupplierDTO supplierDTO) {
+        log.info("updateSupplierDetailsBySupplier method in supplier service");
+        SupplierEntity existingEntity=supplierRepository.getSupplierByEmail(supplierDTO.getEmail());
+        SupplierAuditEntity supplierAuditEntity;
+        if(existingEntity==null)
+        {
+            log.error("Entity not found for update");
+            return false;
+        }
+        supplierAuditEntity=existingEntity.getSupplierAuditEntity();
+        if(supplierAuditEntity==null)
+        {
+            log.error("log not found");
+            return false;
+        }
+        existingEntity.setFirstName(supplierDTO.getFirstName());
+        existingEntity.setLastName(supplierDTO.getLastName());
+        existingEntity.setAddress(supplierDTO.getAddress());
+        if(supplierDTO.getProfilePath()!=null)
+        {
+            existingEntity.setProfilePath(supplierDTO.getProfilePath());
+        }
+        supplierAuditEntity.setUpdatedAt(LocalDateTime.now());
+        supplierAuditEntity.setUpdatedBy(supplierDTO.getFirstName()+" "+supplierDTO.getLastName());
+        existingEntity.setSupplierAuditEntity(supplierAuditEntity);
+        supplierAuditEntity.setSupplierEntity(existingEntity);
+
+        return supplierRepository.updateSupplierDetailsBySupplier(existingEntity);
+    }
 }

@@ -62,4 +62,7 @@ public class SupplierEntity {
 
     @Column(name = "expiry_time")
     private LocalDateTime expiryTime;
+
+    @Column(name="profile_path")
+    private String profilePath;
 }

@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
     window.location.href = "redirectToMilkSupplierLogin?email=" + encodeURIComponent(emailInput.value.trim());
   });
 
-  emailInput.addEventListener("input", function () {
+  emailInput.addEventListener("blur", function () {
     const email = emailInput.value.trim();
     if (email) {
       emailError.textContent = "Checking email...";
