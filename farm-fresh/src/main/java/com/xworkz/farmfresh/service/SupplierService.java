@@ -19,4 +19,5 @@ public interface SupplierService {
     boolean checkOTPForSupplierLogin(String email,String otp);
     void setOtpAndTimeNull(String email);
     SupplierDTO getDetailsByEmail(String email);
+    boolean updateSupplierDetailsBySupplier(SupplierDTO supplierDTO);
 }

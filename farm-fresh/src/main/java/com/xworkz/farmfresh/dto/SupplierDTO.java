@@ -34,4 +34,6 @@ public class SupplierDTO {
 
     private String typeOfMilk;
 
+    private String profilePath;
+
 }
