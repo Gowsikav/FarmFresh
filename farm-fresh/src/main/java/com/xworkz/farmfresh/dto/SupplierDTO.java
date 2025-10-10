@@ -36,4 +36,5 @@ public class SupplierDTO {
 
     private String profilePath;
 
+    private SupplierBankDetailsDTO supplierBankDetails;
 }

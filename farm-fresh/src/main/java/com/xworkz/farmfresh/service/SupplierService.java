@@ -1,5 +1,6 @@
 package com.xworkz.farmfresh.service;
 
+import com.xworkz.farmfresh.dto.SupplierBankDetailsDTO;
 import com.xworkz.farmfresh.dto.SupplierDTO;
 
 import java.util.List;
@@ -20,4 +21,5 @@ public interface SupplierService {
     void setOtpAndTimeNull(String email);
     SupplierDTO getDetailsByEmail(String email);
     boolean updateSupplierDetailsBySupplier(SupplierDTO supplierDTO);
+    boolean updateSupplierBankDetails(SupplierBankDetailsDTO supplierBankDetailsDTO,String email);
 }
