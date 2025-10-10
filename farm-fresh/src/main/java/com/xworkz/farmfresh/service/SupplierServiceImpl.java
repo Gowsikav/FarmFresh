@@ -1,8 +1,11 @@
 package com.xworkz.farmfresh.service;
 
 import com.xworkz.farmfresh.dto.AdminDTO;
+import com.xworkz.farmfresh.dto.SupplierBankDetailsDTO;
 import com.xworkz.farmfresh.dto.SupplierDTO;
 import com.xworkz.farmfresh.entity.SupplierAuditEntity;
+import com.xworkz.farmfresh.entity.SupplierBankDetailsAuditEntity;
+import com.xworkz.farmfresh.entity.SupplierBankDetailsEntity;
 import com.xworkz.farmfresh.entity.SupplierEntity;
 import com.xworkz.farmfresh.repository.SupplierRepository;
 import com.xworkz.farmfresh.util.OTPUtil;
@@ -45,7 +48,7 @@ public class SupplierServiceImpl implements SupplierService{
         if(supplierAuditEntity==null)
         {
             supplierAuditEntity=new SupplierAuditEntity();
-            supplierAuditEntity.setName(supplierEntity.getFirstName()+supplierEntity.getLastName());
+            supplierAuditEntity.setName(supplierEntity.getFirstName()+" "+supplierEntity.getLastName());
             supplierAuditEntity.setCreatedBy(adminDTO.getAdminName());
             supplierAuditEntity.setCreatedAt(LocalDateTime.now());
             supplierAuditEntity.setSupplierEntity(supplierEntity);
@@ -205,6 +208,12 @@ public class SupplierServiceImpl implements SupplierService{
         SupplierEntity supplierEntity= supplierRepository.getSupplierByEmail(email);
         SupplierDTO supplierDTO=new SupplierDTO();
         BeanUtils.copyProperties(supplierEntity,supplierDTO);
+        if(supplierEntity.getSupplierBankDetails()!=null)
+        {
+            SupplierBankDetailsDTO supplierBankDetailsDTO=new SupplierBankDetailsDTO();
+            BeanUtils.copyProperties(supplierEntity.getSupplierBankDetails(),supplierBankDetailsDTO);
+            supplierDTO.setSupplierBankDetails(supplierBankDetailsDTO);
+        }
         return supplierDTO;
     }
 
@@ -237,5 +246,47 @@ public class SupplierServiceImpl implements SupplierService{
         supplierAuditEntity.setSupplierEntity(existingEntity);
 
         return supplierRepository.updateSupplierDetailsBySupplier(existingEntity);
+    }
+
+    @Override
+    public boolean updateSupplierBankDetails(SupplierBankDetailsDTO supplierBankDetailsDTO, String email) {
+        log.info("updateSupplierBankDetails method in supplier service");
+        SupplierEntity supplierEntity=supplierRepository.getSupplierByEmail(email);
+        log.info("dto {}",supplierBankDetailsDTO);
+        if(supplierEntity.getSupplierAuditEntity()==null)
+        {
+            log.error("Entity not found for supplier");
+            return false;
+        }
+        SupplierAuditEntity supplierAuditEntity=supplierEntity.getSupplierAuditEntity();
+        supplierAuditEntity.setUpdatedBy(supplierEntity.getFirstName()+" "+supplierEntity.getLastName());
+        supplierAuditEntity.setUpdatedAt(LocalDateTime.now());
+
+        supplierEntity.setSupplierAuditEntity(supplierAuditEntity);
+        supplierAuditEntity.setSupplierEntity(supplierEntity);
+
+        SupplierBankDetailsEntity supplierBankDetailsEntity = supplierEntity.getSupplierBankDetails();
+        SupplierBankDetailsAuditEntity supplierBankDetailsAuditEntity;
+
+        if (supplierBankDetailsEntity == null) {
+            supplierBankDetailsEntity = new SupplierBankDetailsEntity();
+            BeanUtils.copyProperties(supplierBankDetailsDTO, supplierBankDetailsEntity);
+
+            supplierBankDetailsAuditEntity = new SupplierBankDetailsAuditEntity();
+            supplierBankDetailsAuditEntity.setCreatedAt(LocalDateTime.now());
+            supplierBankDetailsAuditEntity.setCreatedBy(supplierEntity.getFirstName() + " " + supplierEntity.getLastName());
+        } else {
+            BeanUtils.copyProperties(supplierBankDetailsDTO, supplierBankDetailsEntity);
+            supplierBankDetailsAuditEntity = supplierBankDetailsEntity.getSupplierBankDetailsAuditEntity();
+        }
+        supplierBankDetailsAuditEntity.setUpdatedBy(supplierEntity.getFirstName()+" "+supplierEntity.getLastName());
+        supplierBankDetailsAuditEntity.setUpdatedAt(LocalDateTime.now());
+
+        supplierEntity.setSupplierBankDetails(supplierBankDetailsEntity);
+        supplierBankDetailsEntity.setSupplierEntity(supplierEntity);
+        supplierBankDetailsEntity.setSupplierBankDetailsAuditEntity(supplierBankDetailsAuditEntity);
+        supplierBankDetailsAuditEntity.setSupplierBankDetailsEntity(supplierBankDetailsEntity);
+
+        return supplierRepository.updateSupplierDetailsBySupplier(supplierEntity);
     }
 }

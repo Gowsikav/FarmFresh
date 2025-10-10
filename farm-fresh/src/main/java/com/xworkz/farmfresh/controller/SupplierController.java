@@ -1,6 +1,7 @@
 package com.xworkz.farmfresh.controller;
 
 import com.xworkz.farmfresh.dto.AdminDTO;
+import com.xworkz.farmfresh.dto.SupplierBankDetailsDTO;
 import com.xworkz.farmfresh.dto.SupplierDTO;
 import com.xworkz.farmfresh.service.AdminService;
 import com.xworkz.farmfresh.service.SupplierService;
@@ -167,6 +168,7 @@ public class SupplierController {
             if (supplierService.checkOTPForSupplierLogin(email, otp)) {
                 model.addAttribute("errorMessage", "successfully login");
                 model.addAttribute("dto",supplierService.getDetailsByEmail(email));
+                model.addAttribute("success","success");
                 return "SupplierDashboard";
             } else {
                 model.addAttribute("errorMessage", "not login");
@@ -183,7 +185,9 @@ public class SupplierController {
     public String getSupplierDashboardPage(@RequestParam String email,Model model)
     {
         log.info("getSupplierDashboardPage method in supplier controller");
-        model.addAttribute("dto",supplierService.getDetailsByEmail(email));
+        SupplierDTO supplierDTO=supplierService.getDetailsByEmail(email);
+        log.info("dto: {}",supplierDTO);
+        model.addAttribute("dto",supplierDTO);
         return "SupplierDashboard";
     }
 
@@ -229,5 +233,39 @@ public class SupplierController {
             model.addAttribute("dto",supplierDTO);
         }
         return "UpdateSupplierProfile";
+    }
+
+    @GetMapping("redirectToUpdateSupplierBankDetails")
+    public String redirectToUpdateSupplierBankDetailsPage(@RequestParam String email,Model model)
+    {
+        log.info("redirectToUpdateSupplierBankDetailsPage method in supplier controller");
+        model.addAttribute("dto",supplierService.getDetailsByEmail(email));
+        return "UpdateSupplierBankDetails";
+    }
+
+
+    @PostMapping("/updateBankDetails")
+    public String supplierUpdateBankDetails(@Valid SupplierBankDetailsDTO supplierBankDetailsDTO,BindingResult bindingResult,@RequestParam String email,Model model)
+    {
+        log.info("supplierUpdateBankDetailsPage method in supplier controller");
+        if(bindingResult.hasErrors())
+        {
+            log.error("fields has error");
+            bindingResult.getFieldErrors().stream().map(e->e.getField()+" -> "+e.getDefaultMessage())
+                    .forEach(System.out::println);
+            model.addAttribute("bank",supplierBankDetailsDTO);
+            model.addAttribute("dto.email",email);
+            return "UpdateSupplierBankDetails";
+        }
+        if(supplierService.updateSupplierBankDetails(supplierBankDetailsDTO,email))
+        {
+            log.info("bank details updated");
+            return getSupplierDashboardPage(email,model);
+        }else {
+            model.addAttribute("bank",supplierBankDetailsDTO);
+            model.addAttribute("dto.email",email);
+        }
+        return "UpdateSupplierBankDetails";
+
     }
 }

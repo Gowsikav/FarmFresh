@@ -71,13 +71,6 @@
                 Milk Supplier Login
             </h2>
 
-            <c:if test="${not empty errorMessage}">
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    ${errorMessage}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            </c:if>
-
             <form action="sendOTPToSupplier" id="milkSupplierLoginForm"
                 class="bg-white bg-opacity-75 p-4 rounded shadow-sm" style="max-width: 600px; width: 60%">
                 <div class="mb-3">
@@ -111,7 +104,7 @@
                         </div>
                     </c:if>
                     <c:if test="${not empty error}">
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <div id="error" class="alert alert-danger alert-dismissible fade show" role="alert">
                             ${error}
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>

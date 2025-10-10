@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <title>Farm Fresh | Supplier Dashboard</title>
@@ -10,39 +11,60 @@
         crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="css/index.css" />
+    
 </head>
+<c:if test="${not empty success}">
+    <script defer >
+        localStorage.removeItem("otpStartTime");
+    </script>
+</c:if>
 <body class="d-flex flex-column min-vh-100">
     <nav class="navbar navbar-expand-lg fixed-top" style="background: linear-gradient(90deg, #388e3c, #e8f5e9)">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
-                <img src="images/farm-fresh-logo.png" alt="Farm Fresh Logo" height="60" width="60" class="rounded-circle border border-light p-1 ms-3 me-2" />
+                <img src="images/farm-fresh-logo.png" alt="Farm Fresh Logo" height="60" width="60"
+                    class="rounded-circle border border-light p-1 ms-3 me-2" />
             </a>
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav ms-auto me-3">
                     <li class="nav-item">
-                        <a class="nav-link active" href="redirectToSupplierDashboard?email=${dto.email}"><i class="fa-solid fa-user me-2"></i>Dashboard</a>
+                        <a class="nav-link active" href="redirectToSupplierDashboard?email=${dto.email}"><i
+                                class="fa-solid fa-user me-2"></i>Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="redirectToMilkCollection?email=${dto.email}"><i class="fa-solid fa-glass-water-droplet me-2"></i>Milk Collection</a>
+                        <a class="nav-link" href="redirectToMilkCollection?email=${dto.email}"><i
+                                class="fa-solid fa-glass-water-droplet me-2"></i>Milk Collection</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="redirectToPaymentStatus?email=${dto.email}"><i class="fa-solid fa-money-bill me-2"></i>Payment Status</a>
+                        <a class="nav-link" href="redirectToPaymentStatus?email=${dto.email}"><i
+                                class="fa-solid fa-money-bill me-2"></i>Payment Status</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
                             <c:choose>
                                 <c:when test="${empty dto.profilePath}">
-                                    <img src="images/dummy-profile.png" alt="Profile" class="rounded-circle" width="40" height="40" style="object-fit: cover;">
+                                    <img src="images/dummy-profile.png" alt="Profile" class="rounded-circle" width="40"
+                                        height="40" style="object-fit: cover;">
                                 </c:when>
                                 <c:otherwise>
-                                    <img src="<c:url value='/uploads/${dto.profilePath}'/>" alt="Profile" class="rounded-circle" width="40" height="40" style="object-fit: cover;">
+                                    <img src="<c:url value='/uploads/${dto.profilePath}'/>" alt="Profile"
+                                        class="rounded-circle" width="40" height="40" style="object-fit: cover;">
                                 </c:otherwise>
-                            </c:choose>                                
+                            </c:choose>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#supplierProfileModal"><i class="fa-solid fa-user me-2"></i>View Profile</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item text-danger" href="supplierLogout?email=${dto.email}"><i class="fa-solid fa-right-from-bracket me-2"></i>Logout</a></li>
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
+                                    data-bs-target="#supplierProfileModal"><i class="fa-solid fa-user me-2"></i>View
+                                    Profile</a></li>
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
+                                    data-bs-target="#supplierBankModal"><i
+                                        class="fa-solid fa-building-columns me-2"></i>View Bank Details</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item text-danger" href="supplierLogout?email=${dto.email}"><i
+                                        class="fa-solid fa-right-from-bracket me-2"></i>Logout</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -85,7 +107,8 @@
     </main>
 
     <!-- Supplier Profile Modal -->
-    <div class="modal fade" id="supplierProfileModal" tabindex="-1" aria-labelledby="supplierProfileModalLabel" aria-hidden="true">
+    <div class="modal fade" id="supplierProfileModal" tabindex="-1" aria-labelledby="supplierProfileModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header" style="background: linear-gradient(90deg, #388e3c, #e8f5e9);">
@@ -93,16 +116,18 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="text-center mb-4">                       
-                           <c:choose>
-                                <c:when test="${empty dto.profilePath}">
-                                    <img src="images/dummy-profile.png" alt="Profile" class="rounded-circle" width="150" height="150" style="object-fit: cover;">
-                                </c:when>
-                                <c:otherwise>
-                                    <img src="<c:url value='/uploads/${dto.profilePath}'/>" alt="Profile" class="rounded-circle" width="150" height="150" style="object-fit: cover;">
-                                </c:otherwise>
-                            </c:choose>                    
-                        </div>
+                    <div class="text-center mb-4">
+                        <c:choose>
+                            <c:when test="${empty dto.profilePath}">
+                                <img src="images/dummy-profile.png" alt="Profile" class="rounded-circle" width="150"
+                                    height="150" style="object-fit: cover;">
+                            </c:when>
+                            <c:otherwise>
+                                <img src="<c:url value='/uploads/${dto.profilePath}'/>" alt="Profile"
+                                    class="rounded-circle" width="150" height="150" style="object-fit: cover;">
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
                     <div class="card p-3 shadow-sm">
                         <ul class="list-group list-group-flush">
                             <div class="row mb-2">
@@ -122,7 +147,8 @@
                                 <div class="col-sm-8">${dto.phoneNumber}</div>
                             </div>
                             <div class="row mb-2">
-                                <div class="col-sm-4 fw-bold"><i class="fa-solid fa-bottle-water me-2"></i>Type of Milk:</div>
+                                <div class="col-sm-4 fw-bold"><i class="fa-solid fa-bottle-water me-2"></i>Type of Milk:
+                                </div>
                                 <div class="col-sm-8">${dto.typeOfMilk}</div>
                             </div>
                         </ul>
@@ -130,15 +156,78 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <a href="redirectToUpdateSupplierProfile?email=${dto.email}" class="btn btn-primary">Update Profile</a>
+                    <a href="redirectToUpdateSupplierProfile?email=${dto.email}" class="btn btn-primary">Update
+                        Profile</a>
                 </div>
             </div>
         </div>
     </div>
 
-        <!-- Footer -->
+   <!-- Bank Details Modal -->
+   <div class="modal fade" id="supplierBankModal" tabindex="-1" aria-labelledby="supplierBankModalLabel"
+       aria-hidden="true">
+       <div class="modal-dialog modal-dialog-centered modal-lg">
+           <div class="modal-content">
+               <!-- Modal Header -->
+               <div class="modal-header">
+                   <h5 class="modal-title" id="supplierBankModalLabel">
+                       <i class="fa-solid fa-building-columns me-2"></i>Bank Details
+                   </h5>
+                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+               </div>
 
+               <!-- Modal Body -->
+               <div class="modal-body">
+                   <c:choose>
+                       <c:when test="${empty dto.supplierBankDetails}">
+                           <div class="alert alert-warning" role="alert">
+                               No bank details found. Please add your bank details.
+                           </div>
+                       </c:when>
+                       <c:otherwise>
+                           <div class="card p-3 shadow-sm">
+                               <ul class="list-group list-group-flush">
+                                   <div class="row mb-2">
+                                       <div class="col-sm-4 fw-bold"><i class="fa-solid fa-building-columns me-2"></i>Bank Name:</div>
+                                       <div class="col-sm-8 text-break">${dto.supplierBankDetails.bankName}</div>
+                                   </div>
+                                   <div class="row mb-2">
+                                       <div class="col-sm-4 fw-bold"><i class="fa-solid fa-code-branch me-2"></i>Branch Name:</div>
+                                       <div class="col-sm-8 text-break">${dto.supplierBankDetails.bankBranch}</div>
+                                   </div>
+                                   <div class="row mb-2">
+                                       <div class="col-sm-4 fw-bold"><i class="fa-solid fa-hashtag me-2"></i>Account Number:</div>
+                                       <div class="col-sm-8 text-break">${dto.supplierBankDetails.accountNumber}</div>
+                                   </div>
+                                   <div class="row mb-2">
+                                       <div class="col-sm-4 fw-bold"><i class="fa-solid fa-key me-2"></i>IFSC Code:</div>
+                                       <div class="col-sm-8 text-break">${dto.supplierBankDetails.IFSCCode}</div>
+                                   </div>
+                                   <div class="row mb-2">
+                                       <div class="col-sm-4 fw-bold"><i class="fa-solid fa-list-check me-2"></i>Account Type:</div>
+                                       <div class="col-sm-8 text-break">${dto.supplierBankDetails.accountType}</div>
+                                   </div>
+                               </ul>
+                           </div>
+                           <div class="alert alert-warning mt-3" role="alert">
+                               To update bank details, please contact Admin.
+                           </div>
+                       </c:otherwise>
+                   </c:choose>
+               </div>
 
+               <!-- Modal Footer -->
+               <div class="modal-footer">
+                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                   <c:if test="${empty dto.supplierBankDetails}">
+                       <a href="redirectToUpdateSupplierBankDetails?email=${dto.email}" class="btn btn-primary">Fill Bank Details</a>
+                   </c:if>
+               </div>
+           </div>
+       </div>
+   </div>
+
+    <!-- Footer -->
     <footer class="text-lg-start py-3" style="background: linear-gradient(90deg, #1b5e20, #fffde7); color: #333">
         <div class="container">
             <div class="row text-dark align-items-start text-center text-md-start">
@@ -205,5 +294,7 @@
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js"
         crossorigin="anonymous"></script>
+    
 </body>
+
 </html>
