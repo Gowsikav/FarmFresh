@@ -287,6 +287,10 @@ public class SupplierServiceImpl implements SupplierService{
         supplierBankDetailsEntity.setSupplierBankDetailsAuditEntity(supplierBankDetailsAuditEntity);
         supplierBankDetailsAuditEntity.setSupplierBankDetailsEntity(supplierBankDetailsEntity);
 
-        return supplierRepository.updateSupplierDetailsBySupplier(supplierEntity);
+        if(supplierRepository.updateSupplierDetailsBySupplier(supplierEntity))
+        {
+            return emailSender.mailForSupplierBankDetails(supplierEntity.getEmail(), supplierBankDetailsEntity);
+        }
+        return false;
     }
 }

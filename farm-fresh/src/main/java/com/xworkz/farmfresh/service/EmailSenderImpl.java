@@ -1,6 +1,7 @@
 package com.xworkz.farmfresh.service;
 
 import com.xworkz.farmfresh.config.EmailConfiguration;
+import com.xworkz.farmfresh.entity.SupplierBankDetailsEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -101,6 +102,40 @@ public class EmailSenderImpl implements EmailSender{
             log.error("Error while sending OTP email: {}", e.getMessage());
             return false;
         }
-
     }
+
+    @Override
+    public boolean mailForSupplierBankDetails(String email, SupplierBankDetailsEntity bankDetails) {
+        log.info("mailForSupplierBankDetails method in email sender");
+        try {
+            String subject = "Farm Fresh - Bank Details Updated Successfully";
+
+            String messageBody = "Dear Supplier,\n\n"
+                    + "Your bank details have been successfully added/updated in your Farm Fresh account.\n\n"
+                    + "Below are the details we have on record:\n"
+                    + "---------------------------------------\n"
+                    + "Bank Name: " + bankDetails.getBankName() + "\n"
+                    + "Account Number: " + bankDetails.getAccountNumber() + "\n"
+                    + "IFSC Code: " + bankDetails.getIFSCCode() + "\n"
+                    + "Branch Name: " + bankDetails.getBankBranch() + "\n"
+                    + "---------------------------------------\n\n"
+                    + "If you did not make this change, please contact our support team immediately at info@farmfresh.com.\n\n"
+                    + "Thank you for keeping your account information up to date.\n\n"
+                    + "Warm regards,\n"
+                    + "Farm Fresh Team";
+
+            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+            simpleMailMessage.setTo(email);
+            simpleMailMessage.setSubject(subject);
+            simpleMailMessage.setText(messageBody);
+
+            configuration.mailSender().send(simpleMailMessage);
+            log.info("Bank details update mail sent successfully to: {}", email);
+            return true;
+        } catch (Exception e) {
+            log.error("Error while sending bank details email: {}", e.getMessage());
+            return false;
+        }
+    }
+
 }
