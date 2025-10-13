@@ -74,4 +74,50 @@ public class CollectMilkRepositoryImpl implements CollectMilkRepository{
         }
         return list;
     }
+
+    @Override
+    public List<CollectMilkEntity> getAllDetailsBySupplier(String email,int page,int size) {
+        log.info("getAllDetailsBySupplier method in collectMilkRepository");
+        EntityManager entityManager=null;
+        List<CollectMilkEntity> list=null;
+        try {
+            entityManager=entityManagerFactory.createEntityManager();
+            list=entityManager.createNamedQuery("getAllDetailsByEmail").setParameter("email",email)
+                    .setFirstResult((page-1)*size).setMaxResults(size).getResultList();
+        }catch (PersistenceException e)
+        {
+            log.error(e.getMessage());
+        }finally {
+            if(entityManager!=null && entityManager.isOpen())
+            {
+                entityManager.close();
+                log.info("EntityManager is closed");
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public Integer getCountOFMilkDetailsByEmail(String email) {
+        log.info("getCountOFMilkDetailsByEmail method in milk collect repository");
+        EntityManager entityManager=null;
+        int count=0;
+        try {
+            entityManager=entityManagerFactory.createEntityManager();
+            Long count1=(Long) entityManager.createNamedQuery("getMilkDetailsCountByEmail")
+                    .setParameter("email",email)
+                    .getSingleResult();
+            count=count1.intValue();
+        }catch (PersistenceException e)
+        {
+            log.error(e.getMessage());
+        }finally {
+            if(entityManager!=null && entityManager.isOpen())
+            {
+                entityManager.close();
+                log.info("EntityManager is closed");
+            }
+        }
+        return count;
+    }
 }
