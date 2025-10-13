@@ -254,3 +254,89 @@ document.querySelectorAll(".editSupplierBtn").forEach(button => {
     });
 });
 
+// Place this script at the end of your HTML, before </body>
+document.querySelectorAll('.viewSupplierBankBtn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.getElementById('supplierName').textContent = btn.getAttribute('data-supplier-name') || '';
+    document.getElementById('supplierEmail').textContent = btn.getAttribute('data-supplier-email') || '';
+    document.getElementById('bankName').textContent = btn.getAttribute('data-bank-name') || '';
+    document.getElementById('branch').textContent = btn.getAttribute('data-bank-branch') || '';
+    document.getElementById('accountNumber').textContent = btn.getAttribute('data-account-number') || '';
+    document.getElementById('ifscCode').textContent = btn.getAttribute('data-ifsc-code') || '';
+    document.getElementById('accountType').textContent = btn.getAttribute('data-account-type') || '';
+  });
+});
+
+document.querySelectorAll('.editSupplierBankBtn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.getElementById('editBankSupplierId').value = btn.getAttribute('data-supplier-id') || '';
+    document.getElementById('editBankSupplierName').value = btn.getAttribute('data-supplier-name') || '';
+    document.getElementById('editBankSupplierEmail').value = btn.getAttribute('data-supplier-email') || '';
+    document.getElementById('editBankName').value = btn.getAttribute('data-bank-name') || '';
+    document.getElementById('editBankBranch').value = btn.getAttribute('data-bank-branch') || '';
+    document.getElementById('editAccountNumber').value = btn.getAttribute('data-account-number') || '';
+    document.getElementById('editIfscCode').value = btn.getAttribute('data-ifsc-code') || '';
+    document.getElementById('editAccountType').value = btn.getAttribute('data-account-type') || '';
+  });
+});
+
+// Edit Bank Details Form Validation
+// Edit Bank Details Form Validation
+document.getElementById('editBankDetailsForm').addEventListener('input', function (e) {
+    let valid = true;
+
+    // Clear previous errors
+    document.getElementById('bankNameError').textContent = '';
+    document.getElementById('bankBranchError').textContent = '';
+    document.getElementById('accountNumberError').textContent = '';
+    document.getElementById('ifscCodeError').textContent = '';
+    document.getElementById('accountTypeError').textContent = '';
+
+    // Bank Name
+    const bankName = document.getElementById('editBankName').value.trim();
+    if (!bankName) {
+        document.getElementById('bankNameError').textContent = 'Bank name is required';
+        valid = false;
+    } else if (bankName.length < 3) {
+        document.getElementById('bankNameError').textContent = 'Bank name should be at least 3 characters';
+        valid = false;
+    }
+
+    // Branch
+    const bankBranch = document.getElementById('editBankBranch').value.trim();
+    if (!bankBranch) {
+        document.getElementById('bankBranchError').textContent = 'Branch is required';
+        valid = false;
+    } else if (bankBranch.length < 3) {
+        document.getElementById('bankBranchError').textContent = 'Branch name should be at least 3 characters';
+        valid = false;
+    }
+
+    // Account Number
+    const accountNumber = document.getElementById('editAccountNumber').value.trim();
+    if (!/^\d{9,18}$/.test(accountNumber)) {
+        document.getElementById('accountNumberError').textContent = 'Enter a valid account number (9-18 digits)';
+        valid = false;
+    }
+
+    // IFSC Code
+    const ifscCode = document.getElementById('editIfscCode').value.trim();
+    if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(ifscCode)) {
+        document.getElementById('ifscCodeError').textContent = 'Invalid IFSC code format';
+        valid = false;
+    }
+
+    // Account Type
+    const accountType = document.getElementById('editAccountType').value;
+    if (!accountType) {
+        document.getElementById('accountTypeError').textContent = 'Please select an account type.';
+        valid = false;
+    }
+
+    if (!valid) {
+        e.preventDefault();
+    }
+});
+
+
+
