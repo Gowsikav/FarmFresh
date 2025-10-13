@@ -75,4 +75,28 @@ public class CollectMilkServiceImpl implements CollectMilkService{
         });
         return collectMilkDTOS;
     }
+
+    @Override
+    public List<CollectMilkDTO> getAllDetailsBySupplier(String email, int page, int size) {
+        log.info("getAllDetailsBySupplier method in collect milk service");
+        List<CollectMilkEntity> collectMilkEntityList=collectMilkRepository.getAllDetailsBySupplier(email,page,size);
+        List<CollectMilkDTO> collectMilkDTOS=new ArrayList<>();
+        collectMilkEntityList.forEach(collectMilkEntity -> {
+            CollectMilkDTO collectMilkDTO=new CollectMilkDTO();
+            BeanUtils.copyProperties(collectMilkEntity,collectMilkDTO);
+            if (collectMilkEntity.getSupplier() != null) {
+                SupplierDTO supplierDTO = new SupplierDTO();
+                BeanUtils.copyProperties(collectMilkEntity.getSupplier(), supplierDTO);
+                collectMilkDTO.setSupplier(supplierDTO);
+            }
+            collectMilkDTOS.add(collectMilkDTO);
+        });
+        return collectMilkDTOS;
+    }
+
+    @Override
+    public Integer getCountOFMilkDetailsByEmail(String email) {
+        log.info("getCountOFMilkDetailsByEmail method in collectMilk service");
+        return collectMilkRepository.getCountOFMilkDetailsByEmail(email);
+    }
 }

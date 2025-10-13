@@ -9,4 +9,7 @@ public interface CollectMilkService {
 
     boolean save(CollectMilkDTO collectMilkDTO,String email);
     List<CollectMilkDTO> getAllDetailsByDate(LocalDate selectDate);
+    List<CollectMilkDTO> getAllDetailsBySupplier(String email,int page,int size);
+    Integer getCountOFMilkDetailsByEmail(String email);
+
 }

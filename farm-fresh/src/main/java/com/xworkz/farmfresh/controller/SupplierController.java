@@ -186,7 +186,6 @@ public class SupplierController {
     {
         log.info("getSupplierDashboardPage method in supplier controller");
         SupplierDTO supplierDTO=supplierService.getDetailsByEmail(email);
-        log.info("dto: {}",supplierDTO);
         model.addAttribute("dto",supplierDTO);
         return "SupplierDashboard";
     }
@@ -233,6 +232,13 @@ public class SupplierController {
             model.addAttribute("dto",supplierDTO);
         }
         return "UpdateSupplierProfile";
+    }
+
+    @GetMapping("supplierLogout")
+    public String supplierLogout(@RequestParam String email)
+    {
+        log.info("supplier log out");
+        return "index";
     }
 
     @GetMapping("redirectToUpdateSupplierBankDetails")
