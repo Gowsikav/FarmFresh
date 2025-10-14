@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceException;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Slf4j
@@ -53,8 +54,11 @@ public class AdminAuditRepositoryImpl implements AdminAuditRepository {
     public Optional<AdminAuditEntity> findActiveSession(Integer adminId) {
         log.info("findActiveSession method in AdminAuditRepositoryImpl for adminId {}", adminId);
         EntityManager entityManager = null;
+        EntityTransaction entityTransaction=null;
         try {
             entityManager = entityManagerFactory.createEntityManager();
+            entityTransaction=entityManager.getTransaction();
+            entityTransaction.begin();
             AdminAuditEntity result = entityManager.createQuery(
                             "SELECT a FROM AdminAuditEntity a " +
                                     "WHERE a.adminEntity.id = :adminId " +
@@ -65,10 +69,20 @@ public class AdminAuditRepositoryImpl implements AdminAuditRepository {
                     .getResultStream()
                     .findFirst()
                     .orElse(null);
-
+            if (result != null) {
+                log.info("Active session found, updating logoutTime to now");
+                result.setLogoutTime(LocalDateTime.now());
+                entityManager.merge(result);
+            }
+            entityTransaction.commit();
             return Optional.ofNullable(result);
         } catch (Exception e) {
             log.error("Error in findActiveSession: {}", e.getMessage(), e);
+            if(entityTransaction!=null)
+            {
+                entityTransaction.rollback();
+                log.error("logout time set roll back");
+            }
             return Optional.empty();
         } finally {
             if (entityManager != null && entityManager.isOpen()) {
