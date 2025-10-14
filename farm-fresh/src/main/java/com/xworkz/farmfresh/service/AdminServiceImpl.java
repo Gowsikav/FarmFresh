@@ -19,7 +19,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-public class AdminServiceImpl implements AdminService{
+public class AdminServiceImpl implements AdminService {
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
@@ -38,20 +38,17 @@ public class AdminServiceImpl implements AdminService{
     @Autowired
     private EmailSender emailSender;
 
-    public AdminServiceImpl()
-    {
+    public AdminServiceImpl() {
         log.info("AdminService implementation constructor");
     }
 
     @Override
     public boolean save(AdminDTO adminDTO) {
         log.info("save method in adminService");
-        log.info("service data: {} ",adminDTO);
-        if(adminDTO.getPassword().equals(adminDTO.getConfirmPassword()))
-        {
+        if (adminDTO.getPassword().equals(adminDTO.getConfirmPassword())) {
             log.info("password matched");
-            AdminEntity adminEntity=new AdminEntity();
-            BeanUtils.copyProperties(adminDTO,adminEntity);
+            AdminEntity adminEntity = new AdminEntity();
+            BeanUtils.copyProperties(adminDTO, adminEntity);
             adminEntity.setPassword(passwordEncoder.encode(adminEntity.getPassword()));
             adminEntity.setIsBlocked(false);
             return adminRepository.save(adminEntity);
@@ -76,22 +73,19 @@ public class AdminServiceImpl implements AdminService{
         if (passwordEncoder.matches(password, adminEntity.getPassword())) {
             loginAttempts.remove(email);
 
-            Optional<AdminAuditEntity> activeAuditOpt = adminAuditRepository.findActiveSession(adminEntity.getAdminId());
+            adminAuditRepository.findActiveSession(adminEntity.getAdminId());
 
-            if (!activeAuditOpt.isPresent()) {
-                AdminAuditEntity audit = new AdminAuditEntity();
-                audit.setAdminEntity(adminEntity);
-                audit.setLoginTime(LocalDateTime.now());
-                audit.setAuditName(adminEntity.getAdminName());
+            AdminAuditEntity audit = new AdminAuditEntity();
+            audit.setAdminEntity(adminEntity);
+            audit.setLoginTime(LocalDateTime.now());
+            audit.setAuditName(adminEntity.getAdminName());
 
-                if (adminAuditRepository.save(audit)) {
-                    log.info("Admin audit record created for login");
-                } else {
-                    log.error("Admin audit record not created");
-                }
+            if (adminAuditRepository.save(audit)) {
+                log.info("Admin audit record created for login");
             } else {
-                log.info("Admin already has an active session, skipping duplicate login record");
+                log.error("Admin audit record not created");
             }
+
             AdminDTO adminDTO = new AdminDTO();
             BeanUtils.copyProperties(adminEntity, adminDTO);
             log.info("Password match for {}", email);
@@ -144,11 +138,10 @@ public class AdminServiceImpl implements AdminService{
     @Override
     public AdminDTO getAdminDetailsByEmail(String email) {
         log.info("getAdminDetailsByEmail method in adminService");
-        AdminEntity adminEntity=adminRepository.getDetailsByEmail(email);
-        if(adminEntity!=null)
-        {
-            AdminDTO adminDTO=new AdminDTO();
-            BeanUtils.copyProperties(adminEntity,adminDTO);
+        AdminEntity adminEntity = adminRepository.getDetailsByEmail(email);
+        if (adminEntity != null) {
+            AdminDTO adminDTO = new AdminDTO();
+            BeanUtils.copyProperties(adminEntity, adminDTO);
             return adminDTO;
         }
         return null;
@@ -159,20 +152,20 @@ public class AdminServiceImpl implements AdminService{
 
         log.info("updateAdminProfileByEmail method in adminService");
         if (adminName == null || !adminName.matches("^[A-Za-z ]{2,50}$")) {
-            log.error("Invalid Name: {} " ,adminName);
+            log.error("Invalid Name: {} ", adminName);
             return false;
         }
         if (phoneNumber == null || !phoneNumber.matches("^[0-9]{10}$")) {
-            log.error("Invalid Phone Number:{} " , phoneNumber);
+            log.error("Invalid Phone Number:{} ", phoneNumber);
             return false;
         }
-        return adminRepository.updateAdminProfileByEmail(email,adminName,phoneNumber,profilePath);
+        return adminRepository.updateAdminProfileByEmail(email, adminName, phoneNumber, profilePath);
     }
 
     @Override
     public boolean checkEmail(String email) {
         log.info("checkEmail method in adminService");
-        AdminEntity adminEntity=adminRepository.getDetailsByEmail(email);
+        AdminEntity adminEntity = adminRepository.getDetailsByEmail(email);
         return adminEntity != null;
     }
 
@@ -194,8 +187,8 @@ public class AdminServiceImpl implements AdminService{
             log.warn("Password does not meet strength requirements for email: {}", email);
             return false;
         }
-        password=passwordEncoder.encode(password);
-        return adminRepository.resetPasswordByEmail(email,password,confirmPassword);
+        password = passwordEncoder.encode(password);
+        return adminRepository.resetPasswordByEmail(email, password, confirmPassword);
     }
 
     @Override
