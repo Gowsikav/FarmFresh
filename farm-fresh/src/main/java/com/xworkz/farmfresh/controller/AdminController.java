@@ -1,8 +1,9 @@
 package com.xworkz.farmfresh.controller;
 
 import com.xworkz.farmfresh.dto.AdminDTO;
+import com.xworkz.farmfresh.entity.NotificationEntity;
 import com.xworkz.farmfresh.service.AdminService;
-import com.xworkz.farmfresh.service.SupplierService;
+import com.xworkz.farmfresh.service.PaymentNotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -28,6 +30,9 @@ public class AdminController {
 
     @Autowired
     private AdminService adminService;
+
+    @Autowired
+    private PaymentNotificationService notificationService;
 
     @Value("${file.upload-dir}")
     private String uploadDir;
@@ -79,6 +84,19 @@ public class AdminController {
         model.addAttribute("dto", adminDTO);
         int count=adminService.getSupplierCount();
         model.addAttribute("suppliersCount",count);
+        List<NotificationEntity> notifications = notificationService.getNotificationsByAdminEmail(email);
+        long unreadCount = notifications.size();
+// In your controller method
+        log.info("Notifications count: {}", notifications.size());
+        log.info("Unread count: {}", unreadCount);
+
+        for (NotificationEntity notification : notifications) {
+            log.info("Notification: id={}, message={}, isRead={}",
+                    notification.getId(), notification.getMessage(), notification.getIsRead());
+        }
+
+        model.addAttribute("notifications", notifications);
+        model.addAttribute("unreadCount", unreadCount);
         return "AdminDashboard";
     }
 

@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceException;
+import java.util.List;
 
 @Slf4j
 @Repository
@@ -189,5 +190,26 @@ public class AdminRepositoryImpl implements AdminRepository{
             }
         }
         return false;
+    }
+
+    @Override
+    public List<AdminEntity> findAll() {
+        log.info("findAll method in Admin repository");
+        EntityManager entityManager=null;
+        List<AdminEntity> list=null;
+        try{
+            entityManager=entityManagerFactory.createEntityManager();
+            list=entityManager.createNamedQuery("getAll").getResultList();
+        }catch (PersistenceException e)
+        {
+            log.error(e.getMessage());
+        }finally {
+            if(entityManager!=null && entityManager.isOpen())
+            {
+                entityManager.close();
+                log.info("Entity manager is closed");
+            }
+        }
+        return list;
     }
 }
