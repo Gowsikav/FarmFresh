@@ -7,6 +7,6 @@ import java.util.List;
 public interface PaymentNotificationService {
     void generateAdvanceNotifications();
     List<NotificationEntity> getNotificationsByAdminEmail(String email);
-    void markAsRead(Long notificationId);
+    boolean markAsRead(Long notificationId);
 
 }

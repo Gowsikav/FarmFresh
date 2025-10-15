@@ -106,8 +106,8 @@ public class PaymentNotificationServiceImpl implements PaymentNotificationServic
     }
 
     @Override
-    public void markAsRead(Long notificationId) {
+    public boolean markAsRead(Long notificationId) {
         log.info("markAsRead method in payment notification service");
-        notificationRepository.markAsRead(notificationId);
+        return notificationRepository.markAsRead(notificationId);
     }
 }

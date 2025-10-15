@@ -9,5 +9,5 @@ public interface NotificationRepository {
     boolean save(NotificationEntity entity);
     boolean existsAdvanceForPaymentDateByAdmin(Integer adminId, LocalDate paymentDate);
     List<NotificationEntity> findByAdminOrderByCreatedAtDesc(Integer adminId);
-    void markAsRead(Long notificationId);
+    boolean markAsRead(Long notificationId);
 }

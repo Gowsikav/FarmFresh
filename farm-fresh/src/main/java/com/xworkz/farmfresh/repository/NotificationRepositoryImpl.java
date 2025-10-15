@@ -105,7 +105,7 @@ public class NotificationRepositoryImpl implements NotificationRepository {
     }
 
     @Override
-    public void markAsRead(Long notificationId) {
+    public boolean markAsRead(Long notificationId) {
         log.info("mark as read method in notification repo");
         EntityManager entityManager = null;
         EntityTransaction entityTransaction=null;
@@ -117,6 +117,7 @@ public class NotificationRepositoryImpl implements NotificationRepository {
               .setParameter("id", notificationId)
               .executeUpdate();
             entityTransaction.commit();
+            return true;
         } catch (Exception e) {
             log.error(e.getMessage());
             if (entityTransaction!=null) {
@@ -129,5 +130,6 @@ public class NotificationRepositoryImpl implements NotificationRepository {
                 log.info("Entity Manager is closed");
             }
         }
+        return false;
     }
 }

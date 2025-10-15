@@ -62,13 +62,11 @@ public class AdminRestController {
 
     @PostMapping("/markNotificationAsRead")
     public ResponseEntity<String> markNotificationAsRead(@RequestParam Long notificationId) {
-        try {
-            notificationService.markAsRead(notificationId);
-            return ResponseEntity.ok("Notification marked as read");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                               .body("Failed to mark notification as read");
-        }
+        log.info("markNotificationAsRead method in admin rest controller");
+            if(notificationService.markAsRead(notificationId))
+                 return ResponseEntity.ok("Notification marked as read");
+             else
+                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                         .body("Failed to mark notification as read");
     }
-
 }
