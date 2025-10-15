@@ -12,6 +12,7 @@ import java.util.List;
 @Entity
 @Table(name = "admin_info")
 @NamedQuery(name = "getDetailsByEmail", query = "select a from AdminEntity a where a.email=:email")
+@NamedQuery(name ="getAll",query = "select a from AdminEntity a")
 public class AdminEntity {
 
     @Id

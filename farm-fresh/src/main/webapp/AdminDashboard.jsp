@@ -1,5 +1,6 @@
 <%@ page isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <html lang="en">
 
@@ -48,7 +49,44 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#"><i class="fa-solid fa-users me-2"></i> Customers</a>
                     </li>
+                    <!-- Notification dropdown -->
                     <li class="nav-item dropdown">
+                      <a class="nav-link position-relative" href="#" id="notificationDropdown" role="button"
+                         data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-solid fa-bell fa-lg"></i>
+                        <c:if test="${unreadCount > 0}">
+                          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            ${unreadCount}
+                          </span>
+                        </c:if>
+                      </a>
+
+                      <ul class="dropdown-menu dropdown-menu-end"
+                          aria-labelledby="notificationDropdown"
+                          style="width: 350px; max-height: 400px; overflow-y: auto;">
+                        <li><h6 class="dropdown-header">Notifications</h6></li>
+
+                        <c:choose>
+                          <c:when test="${empty notifications}">
+                            <li>
+                              <span class="dropdown-item text-muted">No new notifications</span>
+                            </li>
+                          </c:when>
+                          <c:otherwise>
+                            <c:forEach var="notification" items="${notifications}">
+                                <li data-notification-id="${notification.id}">
+                                    <a class="dropdown-item notification-item" href="#"
+                                       data-notification-id="${notification.id}">
+                                        <i class="fas fa-bell me-2"></i>
+                                        ${notification.message}
+                                        <br/>
+                                    </a>
+                                </li>
+                            </c:forEach>
+                          </c:otherwise>
+                        </c:choose>
+                      </ul>
+                    </li>
                         <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
                             <c:choose>
@@ -62,6 +100,7 @@
                                 </c:otherwise>
                             </c:choose>
                         </a>
+
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                             <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
                                     data-bs-target="#adminProfileModal"><i class="fa-solid fa-user me-2"></i></i> View Profile</a></li>
@@ -297,6 +336,7 @@
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js"
         crossorigin="anonymous"></script>
+    <script src="js/admin-dashboard-notification.js"></script>
 </body>
 
 </html>

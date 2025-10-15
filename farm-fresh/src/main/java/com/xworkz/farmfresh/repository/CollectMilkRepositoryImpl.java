@@ -120,4 +120,33 @@ public class CollectMilkRepositoryImpl implements CollectMilkRepository{
         }
         return count;
     }
+
+    @Override
+    public int countSuppliersWithCollections(LocalDate startDate, LocalDate endDate) {
+        log.info("countSuppliersWithCollections method in collect milk repository");
+        EntityManager entityManager=null;
+        try{
+            entityManager=entityManagerFactory.createEntityManager();
+            Long count = entityManager.createQuery(
+                            "SELECT COUNT(DISTINCT c.supplier.supplierId) " +
+                                    "FROM CollectMilkEntity c " +
+                                    "WHERE c.collectedDate BETWEEN :start AND :end",
+                            Long.class
+                    )
+                    .setParameter("start", startDate)
+                    .setParameter("end", endDate)
+                    .getSingleResult();
+            return (count == null) ? 0 : count.intValue();
+        }catch (PersistenceException e)
+        {
+            log.error(e.getMessage());
+        }finally {
+            if(entityManager!=null && entityManager.isOpen())
+            {
+                entityManager.close();
+                log.info("EntityManager is closed");
+            }
+        }
+        return 0;
+    }
 }

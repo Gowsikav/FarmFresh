@@ -10,6 +10,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
@@ -25,6 +26,7 @@ import java.util.Properties;
 @ComponentScan("com.xworkz.farmfresh")
 @EnableWebMvc
 @PropertySource("classpath:application.properties")
+@EnableScheduling
 public class FarmFreshConfiguration implements WebMvcConfigurer {
 
     @Autowired

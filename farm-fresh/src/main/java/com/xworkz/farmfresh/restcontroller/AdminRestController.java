@@ -2,6 +2,7 @@ package com.xworkz.farmfresh.restcontroller;
 
 import com.xworkz.farmfresh.dto.AdminDTO;
 import com.xworkz.farmfresh.service.AdminService;
+import com.xworkz.farmfresh.service.PaymentNotificationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,9 @@ public class AdminRestController {
 
     @Autowired
     private AdminService adminService;
+
+    @Autowired
+    private PaymentNotificationService notificationService;
 
     public AdminRestController()
     {
@@ -54,6 +58,17 @@ public class AdminRestController {
             return ResponseEntity.ok(true);
         else
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
+    }
+
+    @PostMapping("/markNotificationAsRead")
+    public ResponseEntity<String> markNotificationAsRead(@RequestParam Long notificationId) {
+        try {
+            notificationService.markAsRead(notificationId);
+            return ResponseEntity.ok("Notification marked as read");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                               .body("Failed to mark notification as read");
+        }
     }
 
 }
