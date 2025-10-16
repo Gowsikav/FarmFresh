@@ -30,88 +30,100 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-              <ul class="navbar-nav mb-2 mb-lg-0 align-items-center ms-lg-auto me-3">
+                <ul class="navbar-nav mb-2 mb-lg-0 align-items-center ms-lg-auto me-3">
                     <li class="nav-item">
-                        <a class="nav-link active" href="redirectToAdminDashboard?email=${dto.email}"><i class="fa-solid fa-user-shield me-2"></i> Dashboard</a>
+                        <a class="nav-link active" href="redirectToAdminDashboard?email=${dto.email}"><i
+                                class="fa-solid fa-user-shield me-2"></i> Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="redirectToManageProducts?email=${dto.email}"><i class="fa-solid fa-box me-2"></i> Manage Products</a>
+                        <a class="nav-link" href="redirectToManageProducts?email=${dto.email}"><i
+                                class="fa-solid fa-box me-2"></i> Manage Products</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="redirectToProductsPrice?email=${dto.email}"><i class="fa-solid fa-tag me-2"></i> Products Price</a>
+                        <a class="nav-link" href="redirectToProductsPrice?email=${dto.email}"><i
+                                class="fa-solid fa-tag me-2"></i> Products Price</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="redirectToMilkSuppliersList?email=${dto.email}&page=1&size=10"><i class="fa-solid fa-bottle-droplet me-2"></i> Milk Suppliers</a>
+                        <a class="nav-link" href="redirectToMilkSuppliersList?email=${dto.email}&page=1&size=10"><i
+                                class="fa-solid fa-bottle-droplet me-2"></i> Milk Suppliers</a>
                     </li>
                     <li class="nav-item">
-                          <a class="nav-link" href="redirectToCollectMilk?email=${dto.email}"><i class="fa-solid fa-glass-water-droplet me-2"></i> Collect Milk</a>
+                        <a class="nav-link" href="redirectToCollectMilk?email=${dto.email}"><i
+                                class="fa-solid fa-glass-water-droplet me-2"></i> Collect Milk</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#"><i class="fa-solid fa-users me-2"></i> Customers</a>
                     </li>
                     <!-- Notification dropdown -->
                     <li class="nav-item dropdown">
-                      <a class="nav-link position-relative" href="#" id="notificationDropdown" role="button"
-                         data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fa-solid fa-bell fa-lg"></i>
-                        <c:if test="${unreadCount > 0}">
-                          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                            ${unreadCount}
-                          </span>
-                        </c:if>
-                      </a>
-
-                      <ul class="dropdown-menu dropdown-menu-end"
-                          aria-labelledby="notificationDropdown"
-                          style="width: 350px; max-height: 400px; overflow-y: auto;">
-                        <li><h6 class="dropdown-header">Notifications</h6></li>
-
-                        <c:choose>
-                          <c:when test="${empty notifications}">
-                            <li>
-                              <span class="dropdown-item text-muted">No new notifications</span>
-                            </li>
-                          </c:when>
-                          <c:otherwise>
-                            <c:forEach var="notification" items="${notifications}">
-                                <li data-notification-id="${notification.id}">
-                                    <a class="dropdown-item notification-item" href="#"
-                                       data-notification-id="${notification.id}">
-                                        <i class="fas fa-bell me-2"></i>
-                                        ${notification.message}
-                                        <br/>
-                                    </a>
-                                </li>
-                            </c:forEach>
-                          </c:otherwise>
-                        </c:choose>
-                      </ul>
-                    </li>
-                        <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button"
+                        <a class="nav-link position-relative" href="#" id="notificationDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
-                            <c:choose>
-                                <c:when test="${empty dto.profilePath}">
-                                    <img src="images/dummy-profile.png" alt="Profile" class="rounded-circle" width="40"
-                                        height="40" style="object-fit: cover;">
-                                </c:when>
-                                <c:otherwise>
-                                    <img src="<c:url value='/uploads/${dto.profilePath}'/>" alt="Profile"
-                                        class="rounded-circle" width="40" height="40" style="object-fit: cover;">
-                                </c:otherwise>
-                            </c:choose>
+                            <i class="fa-solid fa-bell fa-lg"></i>
+                            <c:if test="${unreadCount > 0}">
+                                <span
+                                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    ${unreadCount}
+                                </span>
+                            </c:if>
                         </a>
 
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                    data-bs-target="#adminProfileModal"><i class="fa-solid fa-user me-2"></i></i> View Profile</a></li>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown"
+                            style="width: 350px; max-height: 400px; overflow-y: auto;">
                             <li>
-                                <hr class="dropdown-divider">
+                                <h6 class="dropdown-header">Notifications</h6>
                             </li>
-                            <li>
-                                <a class="dropdown-item text-danger" href="adminLogout?email=${dto.email}"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a>
-                            </li>
+
+                            <c:choose>
+                                <c:when test="${empty notifications}">
+                                    <li>
+                                        <span class="dropdown-item text-muted">No new notifications</span>
+                                    </li>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:forEach var="notification" items="${notifications}">
+                                        <li data-notification-id="${notification.id}" data-admin-email="${dto.email}"
+                                            data-notification-type="${notification.notificationType}">
+                                            <a class="dropdown-item notification-item" href="#"
+                                                data-notification-id="${notification.id}"
+                                                data-admin-email="${dto.email}"
+                                                data-notification-type="${notification.notificationType}">
+                                                <i class="fas fa-bell me-2"></i>
+                                                ${notification.message}
+                                                <br />
+                                            </a>
+                                        </li>
+                                    </c:forEach>
+                                </c:otherwise>
+                            </c:choose>
                         </ul>
                     </li>
+
+                    <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <c:choose>
+                            <c:when test="${empty dto.profilePath}">
+                                <img src="images/dummy-profile.png" alt="Profile" class="rounded-circle" width="40"
+                                    height="40" style="object-fit: cover;">
+                            </c:when>
+                            <c:otherwise>
+                                <img src="<c:url value='/uploads/${dto.profilePath}'/>" alt="Profile"
+                                    class="rounded-circle" width="40" height="40" style="object-fit: cover;">
+                            </c:otherwise>
+                        </c:choose>
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
+                                data-bs-target="#adminProfileModal"><i class="fa-solid fa-user me-2"></i>View
+                                Profile</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <a class="dropdown-item text-danger" href="adminLogout?email=${dto.email}"><i
+                                    class="fa-solid fa-right-from-bracket me-2"></i> Logout</a>
+                        </li>
+                    </ul>
                 </ul>
             </div>
         </div>
@@ -336,7 +348,7 @@
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js"
         crossorigin="anonymous"></script>
-    <script src="js/admin-dashboard-notification.js"></script>
+    <script src="js/admin-notification.js"></script>
 </body>
 
 </html>

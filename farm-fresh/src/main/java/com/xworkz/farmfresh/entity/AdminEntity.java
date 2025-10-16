@@ -51,4 +51,14 @@ public class AdminEntity {
     @EqualsAndHashCode.Exclude
     private List<CollectMilkEntity> collectedMilkList;
 
+    @OneToMany(mappedBy = "admin")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<NotificationEntity> notificationEntities;
+
+    @OneToMany(mappedBy = "admin")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<PaymentDetailsEntity> paymentDetailsEntities;
+
 }

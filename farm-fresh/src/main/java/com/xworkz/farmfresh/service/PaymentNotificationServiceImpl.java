@@ -2,9 +2,9 @@ package com.xworkz.farmfresh.service;
 
 import com.xworkz.farmfresh.entity.AdminEntity;
 import com.xworkz.farmfresh.entity.NotificationEntity;
-import com.xworkz.farmfresh.repository.AdminRepository;
-import com.xworkz.farmfresh.repository.CollectMilkRepository;
-import com.xworkz.farmfresh.repository.NotificationRepository;
+import com.xworkz.farmfresh.entity.PaymentDetailsEntity;
+import com.xworkz.farmfresh.entity.SupplierEntity;
+import com.xworkz.farmfresh.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,8 +26,13 @@ public class PaymentNotificationServiceImpl implements PaymentNotificationServic
     @Autowired
     private AdminRepository adminRepository;
 
-    public PaymentNotificationServiceImpl()
-    {
+    @Autowired
+    private SupplierRepository supplierRepository;
+
+    @Autowired
+    private PaymentDetailsRepository paymentDetailsRepository;
+
+    public PaymentNotificationServiceImpl() {
         log.info("PaymentNotificationServiceImpl constructor");
     }
 
@@ -89,8 +94,8 @@ public class PaymentNotificationServiceImpl implements PaymentNotificationServic
             n.setPaymentDate(paymentDate);
             n.setMessage(supplierCount + " suppliers need to be paid on " + dayStr);
 
-            if(notificationRepository.save(n))
-            log.info("Created notification for admin {} for payment date {}", admin.getAdminId(), paymentDate);
+            if (notificationRepository.save(n))
+                log.info("Created notification for admin {} for payment date {}", admin.getAdminId(), paymentDate);
             else log.error("notification not created");
         }
     }
@@ -109,5 +114,112 @@ public class PaymentNotificationServiceImpl implements PaymentNotificationServic
     public boolean markAsRead(Long notificationId) {
         log.info("markAsRead method in payment notification service");
         return notificationRepository.markAsRead(notificationId);
+    }
+
+    @Override
+    public void generatePaymentNotifications() {
+        log.info("generate payment notifications method in PaymentNotificationServiceImpl");
+        LocalDate today = LocalDate.now();
+        int dayOfMonth = today.getDayOfMonth();
+
+        if (dayOfMonth != 15 && dayOfMonth != 30) {
+            log.info("Not the 15th or 30th, skipping payment notification generation");
+            return;
+        }
+
+        LocalDate periodStart;
+        LocalDate periodEnd;
+
+        if (dayOfMonth == 15) {
+            periodStart = today.minusMonths(1).withDayOfMonth(30);
+            periodEnd = today.withDayOfMonth(14);
+        } else {
+            periodStart = today.withDayOfMonth(15);
+            periodEnd = today.withDayOfMonth(29);
+        }
+
+        List<Object[]> supplierList = collectMilkRepository.getEntityForPaymentNotification(periodStart, periodEnd);
+        List<AdminEntity> admins = adminRepository.findAll();
+        log.error("size {} {}",supplierList.size(),admins.size());
+
+        for (Object[] row : supplierList) {
+            SupplierEntity supplier = (SupplierEntity) row[0];
+            Double totalAmount = row[1] != null ? ((Number) row[1]).doubleValue() : 0.0;
+            log.error("supplier {} , total amount {}",supplier,totalAmount);
+
+            PaymentDetailsEntity paymentDetailsEntity = new PaymentDetailsEntity();
+            paymentDetailsEntity.setSupplier(supplier);
+            paymentDetailsEntity.setAdmin(null);
+            paymentDetailsEntity.setPeriodStart(periodStart);
+            paymentDetailsEntity.setPeriodEnd(periodEnd);
+            paymentDetailsEntity.setTotalAmount(totalAmount);
+            paymentDetailsEntity.setPaymentDate(today);
+
+            if (paymentDetailsRepository.save(paymentDetailsEntity))
+                log.info("payment details saved for " + supplier.getSupplierId());
+            else log.error("payment details not saved for " + supplier.getSupplierId());
+
+            for (AdminEntity admin : admins) {
+                NotificationEntity n = new NotificationEntity();
+                n.setAdmin(admin);
+                n.setSupplier(supplier);
+                n.setNotificationType("PAYMENT");
+                n.setIsRead(false);
+                n.setMessage("Pay Rs." + totalAmount + " to " + supplier.getFirstName() + " " + supplier.getLastName() + " (" + periodStart + " to " + periodEnd + ")");
+                n.setPaymentDate(today);
+                n.setAmount(totalAmount);
+
+                if (notificationRepository.save(n))
+                    log.info("Payment notification created for admin {}", admin.getAdminId());
+                 else log.error("Failed to create payment notification for admin {}", admin.getAdminId());
+            }
+        }
+
+    }
+
+    @Override
+    public Double getAmountById(Long notificationId) {
+        log.info("getAmountById method in notification service");
+        NotificationEntity notification=notificationRepository.getNotificationById(notificationId);
+        return notification!=null?notification.getAmount():0.0;
+    }
+
+    @Override
+    public boolean markAsReadForPayment(Long notificationId, String supplierEmail,String adminEmail) {
+        log.info("markAsReadForPayment method in notification service");
+        NotificationEntity notification=notificationRepository.getNotificationById(notificationId);
+        if(notification==null)
+        {
+            log.error("notification not found");
+            return false;
+        }
+
+        AdminEntity adminEntity=adminRepository.getDetailsByEmail(adminEmail);
+        SupplierEntity supplierEntity=supplierRepository.getSupplierByEmail(supplierEmail);
+        if(adminEntity==null || supplierEntity==null)
+            return false;
+        PaymentDetailsEntity paymentDetailsEntity=paymentDetailsRepository.
+                getEntityBySupplierIdAndPaymentDate(notification.getPaymentDate(),supplierEntity.getSupplierId());
+        if(paymentDetailsEntity==null)
+        {
+            log.error("payment details not found");
+            return false;
+        }
+        paymentDetailsEntity.setPaymentStatus("PAID");
+        paymentDetailsEntity.setPaymentDate(LocalDate.now());
+        paymentDetailsEntity.setAdmin(adminEntity);
+        if(paymentDetailsRepository.update(paymentDetailsEntity))
+        {
+            log.info("payment details updated");
+            if(notificationRepository.markAsReadForPayment(notification.getPaymentDate(),supplierEntity.getSupplierId()))
+            {
+                log.info("Notification updated");
+                return true;
+            }
+        }else {
+            log.error("payment details not updated");
+        }
+
+        return false;
     }
 }
