@@ -5,6 +5,7 @@ import com.xworkz.farmfresh.dto.SupplierBankDetailsDTO;
 import com.xworkz.farmfresh.dto.SupplierDTO;
 import com.xworkz.farmfresh.service.AdminService;
 import com.xworkz.farmfresh.service.SupplierService;
+import com.xworkz.farmfresh.util.CommonControllerHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,6 +39,9 @@ public class SupplierController {
     @Autowired
     private SupplierService supplierService;
 
+    @Autowired
+    private CommonControllerHelper controllerHelper;
+
     @Value("${file.upload-dir}")
     private String uploadDir;
 
@@ -59,6 +63,7 @@ public class SupplierController {
         model.addAttribute("currentPage", page);
         model.addAttribute("pageSize", size);
         model.addAttribute("totalPages", totalPages);
+        controllerHelper.addNotificationData(model,email);
         return "MilkSuppliers";
     }
 
@@ -74,6 +79,7 @@ public class SupplierController {
         model.addAttribute("milkSuppliers", list);
         model.addAttribute("currentPage", 1);
         model.addAttribute("totalPages", 1);
+        controllerHelper.addNotificationData(model,email);
         return "MilkSuppliers";
 
     }

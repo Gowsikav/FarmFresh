@@ -6,6 +6,7 @@ import com.xworkz.farmfresh.dto.SupplierDTO;
 import com.xworkz.farmfresh.service.AdminService;
 import com.xworkz.farmfresh.service.CollectMilkService;
 import com.xworkz.farmfresh.service.SupplierService;
+import com.xworkz.farmfresh.util.CommonControllerHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,6 +35,9 @@ public class CollectMilkController {
     @Autowired
     private SupplierService supplierService;
 
+    @Autowired
+    private CommonControllerHelper controllerHelper;
+
     public CollectMilkController()
     {
         log.info("CollectMilkController constructor");
@@ -45,6 +49,7 @@ public class CollectMilkController {
         log.info("getCollectMilkPage in CollectMilkController");
         AdminDTO adminDTO=adminService.getAdminDetailsByEmail(email);
         model.addAttribute("dto",adminDTO);
+        controllerHelper.addNotificationData(model,email);
         return "CollectMilk";
     }
 
@@ -86,6 +91,7 @@ public class CollectMilkController {
         List<CollectMilkDTO> list=collectMilkService.getAllDetailsByDate(date);
         model.addAttribute("milkList",list);
         model.addAttribute("searchDate",date);
+        controllerHelper.addNotificationData(model,email);
         return "CollectMilkDetails";
     }
 
@@ -102,6 +108,7 @@ public class CollectMilkController {
         model.addAttribute("currentPage", page);
         model.addAttribute("pageSize", size);
         model.addAttribute("totalPages", totalPages);
+        controllerHelper.addNotificationData(model,email);
         return "SupplierMilkCollection";
     }
 }

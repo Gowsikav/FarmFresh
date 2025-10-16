@@ -1,0 +1,11 @@
+package com.xworkz.farmfresh.repository;
+
+import com.xworkz.farmfresh.entity.PaymentDetailsEntity;
+
+import java.time.LocalDate;
+
+public interface PaymentDetailsRepository {
+     boolean save(PaymentDetailsEntity entity);
+     PaymentDetailsEntity getEntityBySupplierIdAndPaymentDate(LocalDate paymentDate,Integer supplierId);
+     boolean update(PaymentDetailsEntity paymentDetailsEntity);
+}

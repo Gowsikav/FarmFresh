@@ -54,6 +54,48 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#"><i class="fa-solid fa-users me-2"></i> Customers</a>
                     </li>
+                    <!-- Notification dropdown -->
+                  <li class="nav-item dropdown">
+                      <a class="nav-link position-relative" href="#" id="notificationDropdown" role="button"
+                         data-bs-toggle="dropdown" aria-expanded="false">
+                          <i class="fa-solid fa-bell fa-lg"></i>
+                          <c:if test="${unreadCount > 0}">
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                ${unreadCount}
+            </span>
+                          </c:if>
+                      </a>
+
+                      <ul class="dropdown-menu dropdown-menu-end"
+                          aria-labelledby="notificationDropdown"
+                          style="width: 350px; max-height: 400px; overflow-y: auto;">
+                          <li><h6 class="dropdown-header">Notifications</h6></li>
+
+                          <c:choose>
+                              <c:when test="${empty notifications}">
+                                  <li>
+                                      <span class="dropdown-item text-muted">No new notifications</span>
+                                  </li>
+                              </c:when>
+                              <c:otherwise>
+                                  <c:forEach var="notification" items="${notifications}">
+                                      <li data-notification-id="${notification.id}"
+                                        data-admin-email="${dto.email}"
+                                          data-notification-type="${notification.notificationType}">
+                                          <a class="dropdown-item notification-item" href="#"
+                                             data-notification-id="${notification.id}"
+                                             data-admin-email="${dto.email}"
+                                             data-notification-type="${notification.notificationType}">
+                                              <i class="fas fa-bell me-2"></i>
+                                              ${notification.message}
+                                              <br/>
+                                          </a>
+                                      </li>
+                                  </c:forEach>
+                              </c:otherwise>
+                          </c:choose>
+                      </ul>
+                  </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
@@ -70,7 +112,7 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                             <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                    data-bs-target="#adminProfileModal"><i class="fa-solid fa-user me-2"></i></i> View
+                                    data-bs-target="#adminProfileModal"><i class="fa-solid fa-user me-2"></i>View
                                     Profile</a></li>
                             <li>
                                 <hr class="dropdown-divider">
@@ -324,23 +366,23 @@
                     <form id="editSupplierForm" method="post" action="updateMilkSupplier?adminEmail=${dto.email}">
                         <input type="hidden" name="id" id="editSupplierId">
                         <div class="mb-3">
-                            <label>First Name</label>
+                            <label for="editFirstName">First Name</label>
                             <input type="text" class="form-control" name="firstName" id="editFirstName">
                         </div>
                         <div class="mb-3">
-                            <label>Last Name</label>
+                            <label for="editLastName">Last Name</label>
                             <input type="text" class="form-control" name="lastName" id="editLastName">
                         </div>
                         <div class="mb-3">
-                            <label>Email</label>
+                            <label for="editEmail">Email</label>
                             <input type="email" class="form-control" name="email" id="editEmail" readonly>
                         </div>
                         <div class="mb-3">
-                            <label>Phone</label>
+                            <label for="editPhone">Phone</label>
                             <input type="tel" class="form-control" name="phoneNumber" id="editPhone" readonly>
                         </div>
                         <div class="mb-3">
-                            <label>Address</label>
+                            <label for="editAddress">Address</label>
                             <textarea class="form-control" name="address" id="editAddress" rows="3"></textarea>
                         </div>
                         <div class="mb-3">
@@ -458,37 +500,37 @@
                         <input type="hidden" name="supplierId" id="editBankSupplierId">
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label class="form-label fw-bold">Supplier Name</label>
+                                <label for="editBankSupplierName" class="form-label fw-bold">Supplier Name</label>
                                 <input type="text" class="form-control" id="editBankSupplierName" readonly>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-bold">Email</label>
+                                <label for="editBankSupplierEmail" class="form-label fw-bold">Email</label>
                                 <input type="text" class="form-control" id="editBankSupplierEmail" name="email" readonly>
                             </div>
                         </div>
                         <hr>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label class="form-label fw-bold">Bank Name</label>
+                                <label for="editBankName" class="form-label fw-bold">Bank Name</label>
                                 <input type="text" class="form-control" name="bankName" id="editBankName" required>
                                 <span class="text-danger" id="bankNameError"></span>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-bold">Branch</label>
+                                <label for="editBankBranch" class="form-label fw-bold">Branch</label>
                                 <input type="text" class="form-control" name="bankBranch" id="editBankBranch" required>
                                 <span class="text-danger" id="bankBranchError"></span>
                             </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label class="form-label fw-bold">Account Number</label>
+                                <label for="editAccountNumber" class="form-label fw-bold">Account Number</label>
                                 <input type="text" class="form-control" name="accountNumber" id="editAccountNumber"
                                     required>
                                 <span class="text-danger" id="accountNumberError"></span>
 
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-bold">IFSC Code</label>
+                                <label for="editIfscCode" class="form-label fw-bold">IFSC Code</label>
                                 <input type="text" class="form-control" name="IFSCCode" id="editIfscCode" required>
                                 <span class="text-small">4 captial letters +0 + 6 alphanumeric letters</span>
                                 <span class="text-danger" id="ifscCodeError"></span>
@@ -496,7 +538,7 @@
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label class="form-label fw-bold">Account Type</label>
+                                <label for="editAccountType" class="form-label fw-bold">Account Type</label>
                                 <select class="form-select" name="accountType" id="editAccountType" required>
         <option value="">Select Account Type</option>
         <option value="Savings">Savings</option>
@@ -642,6 +684,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js"
         crossorigin="anonymous"></script>
     <script src="js/supplier-form-validation.js"></script>
+    <script src="js/admin-notification.js"></script>
 </body>
 
 </html>

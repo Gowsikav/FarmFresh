@@ -1,6 +1,7 @@
 package com.xworkz.farmfresh.repository;
 
 import com.xworkz.farmfresh.entity.NotificationEntity;
+import com.xworkz.farmfresh.entity.SupplierEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -116,6 +117,79 @@ public class NotificationRepositoryImpl implements NotificationRepository {
             entityManager.createQuery("UPDATE NotificationEntity n SET n.isRead = true WHERE n.id = :id")
               .setParameter("id", notificationId)
               .executeUpdate();
+            entityTransaction.commit();
+            return true;
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            if (entityTransaction!=null) {
+                entityTransaction.rollback();
+                log.error("roll back");
+            }
+        } finally {
+            if(entityManager!=null && entityManager.isOpen()) {
+                entityManager.close();
+                log.info("Entity Manager is closed");
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public SupplierEntity getSupplierEntityByNotificationId(Long id) {
+        log.info("getSupplierEntityByNotificationId method in notification repo");
+        EntityManager entityManager=null;
+        SupplierEntity supplierEntity;
+        try{
+            entityManager=entityManagerFactory.createEntityManager();
+            supplierEntity=entityManager.createQuery("select a.supplier from NotificationEntity a where a.id=:id", SupplierEntity.class)
+                    .setParameter("id",id).getSingleResult();
+            return supplierEntity;
+        }catch (PersistenceException e)
+        {
+            log.error(e.getMessage());
+        }finally {
+            if(entityManager!=null && entityManager.isOpen()) {
+                entityManager.close();
+                log.info("Entity Manager is closed");
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public NotificationEntity getNotificationById(Long id) {
+        log.info("getNotificationById method in notification repo");
+        EntityManager entityManager=null;
+        NotificationEntity notification;
+        try{
+            entityManager=entityManagerFactory.createEntityManager();
+            notification=entityManager.find(NotificationEntity.class,id);
+            return notification;
+        }catch (PersistenceException e)
+        {
+            log.error(e.getMessage());
+        }finally {
+            if(entityManager!=null && entityManager.isOpen()) {
+                entityManager.close();
+                log.info("Entity Manager is closed");
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public boolean markAsReadForPayment(LocalDate paymentDate, Integer supplierId) {
+        log.info("markAsReadForPayment method in notification repo");
+        EntityManager entityManager = null;
+        EntityTransaction entityTransaction=null;
+        try {
+            entityManager=entityManagerFactory.createEntityManager();
+            entityTransaction=entityManager.getTransaction();
+            entityTransaction.begin();
+            entityManager.createQuery("UPDATE NotificationEntity n SET n.isRead = true WHERE n.paymentDate = :paymentDate and n.supplier.supplierId=:id")
+                    .setParameter("paymentDate",paymentDate)
+                    .setParameter("id", supplierId)
+                    .executeUpdate();
             entityTransaction.commit();
             return true;
         } catch (Exception e) {

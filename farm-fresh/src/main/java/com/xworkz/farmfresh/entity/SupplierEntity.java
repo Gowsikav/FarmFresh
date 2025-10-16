@@ -70,4 +70,14 @@ public class SupplierEntity {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private SupplierBankDetailsEntity supplierBankDetails;
+
+    @OneToMany(mappedBy = "supplier")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<PaymentDetailsEntity> paymentDetailsEntities;
+
+    @OneToMany(mappedBy = "supplier")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<NotificationEntity> notificationEntities;
 }

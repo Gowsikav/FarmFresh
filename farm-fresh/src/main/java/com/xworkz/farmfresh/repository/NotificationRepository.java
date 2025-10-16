@@ -1,6 +1,7 @@
 package com.xworkz.farmfresh.repository;
 
 import com.xworkz.farmfresh.entity.NotificationEntity;
+import com.xworkz.farmfresh.entity.SupplierEntity;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -10,4 +11,7 @@ public interface NotificationRepository {
     boolean existsAdvanceForPaymentDateByAdmin(Integer adminId, LocalDate paymentDate);
     List<NotificationEntity> findByAdminOrderByCreatedAtDesc(Integer adminId);
     boolean markAsRead(Long notificationId);
+    SupplierEntity getSupplierEntityByNotificationId(Long id);
+    NotificationEntity getNotificationById(Long id);
+    boolean markAsReadForPayment(LocalDate paymentDate,Integer supplierId);
 }

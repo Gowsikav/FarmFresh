@@ -11,9 +11,16 @@ public class PaymentScheduler {
     @Autowired
     private PaymentNotificationService paymentNotificationService;
 
-    // Runs at 09:00 on the 13th of every month  0 0 9 13 * ?    0 0 9 13,28 * *
-    @Scheduled(cron = "0 */1 * * * *",zone = "Asia/Kolkata")
+    //   0 0 9 13,28 * *   every month 13 and 28 at 9 AM
+    @Scheduled(cron = "0 0 9 13,28 * *",zone = "Asia/Kolkata")
     public void runAdvanceNotification() {
         paymentNotificationService.generateAdvanceNotifications();
     }
+
+    // 0 0 9 15,30 * *  every month 15 and 30 at 9 AM     // 0 */1 * * * *
+    @Scheduled(cron = " 0 0 9 15,30 * *", zone = "Asia/Kolkata")
+    public void runPaymentNotification() {
+        paymentNotificationService.generatePaymentNotifications();
+    }
+
 }

@@ -4,6 +4,7 @@ import com.xworkz.farmfresh.dto.AdminDTO;
 import com.xworkz.farmfresh.dto.SupplierBankDetailsDTO;
 import com.xworkz.farmfresh.dto.SupplierDTO;
 import com.xworkz.farmfresh.entity.*;
+import com.xworkz.farmfresh.repository.NotificationRepository;
 import com.xworkz.farmfresh.repository.SupplierRepository;
 import com.xworkz.farmfresh.util.OTPUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,9 @@ public class SupplierServiceImpl implements SupplierService{
 
     @Autowired
     private EmailSender emailSender;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     public SupplierServiceImpl()
     {
@@ -332,5 +336,12 @@ public class SupplierServiceImpl implements SupplierService{
             return emailSender.mailForSupplierBankDetails(supplierEntity.getEmail(), supplierBankDetailsEntity);
         }
         return false;
+    }
+
+    @Override
+    public SupplierDTO getSupplierDetailsByNotificationId(Long notificationId) {
+        log.info("getSupplierDetailsByNotificationId method in supplier service");
+        SupplierEntity supplierEntity=notificationRepository.getSupplierEntityByNotificationId(notificationId);
+        return getDetailsByEmail(supplierEntity.getEmail());
     }
 }

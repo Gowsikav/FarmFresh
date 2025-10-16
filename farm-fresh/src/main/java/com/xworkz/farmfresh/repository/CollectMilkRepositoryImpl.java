@@ -149,4 +149,29 @@ public class CollectMilkRepositoryImpl implements CollectMilkRepository{
         }
         return 0;
     }
+
+    @Override
+    public List<Object[]> getEntityForPaymentNotification(LocalDate startDate, LocalDate endDate) {
+        log.info("getEntityForPaymentNotification method in collectMilk repo");
+        EntityManager entityManager=null;
+        List<Object[]> list=null;
+        try{
+            entityManager=entityManagerFactory.createEntityManager();
+            list=entityManager.createQuery("select c.supplier, SUM(c.totalAmount) from CollectMilkEntity c " +
+                    "where c.collectedDate between :start and :end group by c.supplier", Object[].class)
+                    .setParameter("start",startDate)
+                    .setParameter("end",endDate).getResultList();
+            return list;
+        }catch (PersistenceException e)
+        {
+            log.error(e.getMessage());
+        }finally {
+            if(entityManager!=null && entityManager.isOpen())
+            {
+                entityManager.close();
+                log.info("EntityManager is closed");
+            }
+        }
+        return list;
+    }
 }

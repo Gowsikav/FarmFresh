@@ -1,9 +1,10 @@
 package com.xworkz.farmfresh.controller;
 
 import com.xworkz.farmfresh.dto.AdminDTO;
-import com.xworkz.farmfresh.entity.NotificationEntity;
 import com.xworkz.farmfresh.service.AdminService;
 import com.xworkz.farmfresh.service.PaymentNotificationService;
+import com.xworkz.farmfresh.service.SupplierService;
+import com.xworkz.farmfresh.util.CommonControllerHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +21,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 
 @Slf4j
 @Controller
@@ -33,6 +33,12 @@ public class AdminController {
 
     @Autowired
     private PaymentNotificationService notificationService;
+
+    @Autowired
+    private SupplierService supplierService;
+
+    @Autowired
+    private CommonControllerHelper controllerHelper;
 
     @Value("${file.upload-dir}")
     private String uploadDir;
@@ -55,10 +61,7 @@ public class AdminController {
         try {
             adminDTO= adminService.checkAdminLoginPassword(email, password);
             if (adminDTO != null) {
-                model.addAttribute("dto", adminDTO);
-                int count=adminService.getSupplierCount();
-                model.addAttribute("suppliersCount",count);
-                return "AdminDashboard";
+                return getDashboard(email,model);
             }else {
                 model.addAttribute("errorMessage", "Account not present");
                 return "AdminLogin";
@@ -84,19 +87,7 @@ public class AdminController {
         model.addAttribute("dto", adminDTO);
         int count=adminService.getSupplierCount();
         model.addAttribute("suppliersCount",count);
-        List<NotificationEntity> notifications = notificationService.getNotificationsByAdminEmail(email);
-        long unreadCount = notifications.size();
-// In your controller method
-        log.info("Notifications count: {}", notifications.size());
-        log.info("Unread count: {}", unreadCount);
-
-        for (NotificationEntity notification : notifications) {
-            log.info("Notification: id={}, message={}, isRead={}",
-                    notification.getId(), notification.getMessage(), notification.getIsRead());
-        }
-
-        model.addAttribute("notifications", notifications);
-        model.addAttribute("unreadCount", unreadCount);
+        controllerHelper.addNotificationData(model,email);
         return "AdminDashboard";
     }
 
@@ -195,5 +186,29 @@ public class AdminController {
         AdminDTO adminDTO = adminService.getAdminDetailsByEmail(email);
         model.addAttribute("dto", adminDTO);
         return "ManageProducts";
+    }
+
+    @GetMapping("/supplierPaymentDetails")
+    public String getSupplierPaymentDetails(@RequestParam Long notificationId,@RequestParam String email, Model model)
+    {
+        log.info("getSupplierPaymentDetails method in supplier controller");
+        model.addAttribute("supplier",supplierService.getSupplierDetailsByNotificationId(notificationId));
+        model.addAttribute("dto",adminService.getAdminDetailsByEmail(email));
+        model.addAttribute("notificationId",notificationId);
+        model.addAttribute("paymentAmount",notificationService.getAmountById(notificationId));
+        controllerHelper.addNotificationData(model,email);
+        return "SupplierPayDetails";
+    }
+
+    @PostMapping("/payToSupplier")
+    public String payToSupplier(@RequestParam String email,@RequestParam String supplierEmail,@RequestParam Long notificationId,Model model)
+    {
+        log.info("pay to supplier method in supplier controller");
+        if(notificationService.markAsReadForPayment(notificationId,supplierEmail,email))
+        {
+            return getDashboard(email,model);
+        }
+        model.addAttribute("errorMessage","Amount Not paid");
+        return getSupplierPaymentDetails(notificationId,email,model);
     }
 }
