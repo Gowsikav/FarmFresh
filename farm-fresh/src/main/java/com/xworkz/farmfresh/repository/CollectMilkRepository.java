@@ -13,4 +13,7 @@ public interface CollectMilkRepository {
     Integer getCountOFMilkDetailsByEmail(String email);
     int countSuppliersWithCollections(LocalDate startDate, LocalDate endDate);
     List<Object[]> getEntityForPaymentNotification(LocalDate startDate,LocalDate endDate);
+    List<CollectMilkEntity> getCollectMilkDetailsForSupplierById(Integer supplierId,LocalDate start,LocalDate end);
+    LocalDate getLastCollectedDate(Integer supplierId);
+    Double getTotalLitre(Integer supplierId);
 }

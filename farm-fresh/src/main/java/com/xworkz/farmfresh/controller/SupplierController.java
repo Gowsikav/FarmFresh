@@ -4,6 +4,8 @@ import com.xworkz.farmfresh.dto.AdminDTO;
 import com.xworkz.farmfresh.dto.SupplierBankDetailsDTO;
 import com.xworkz.farmfresh.dto.SupplierDTO;
 import com.xworkz.farmfresh.service.AdminService;
+import com.xworkz.farmfresh.service.CollectMilkService;
+import com.xworkz.farmfresh.service.PaymentNotificationService;
 import com.xworkz.farmfresh.service.SupplierService;
 import com.xworkz.farmfresh.util.CommonControllerHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +26,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -41,6 +44,12 @@ public class SupplierController {
 
     @Autowired
     private CommonControllerHelper controllerHelper;
+
+    @Autowired
+    private CollectMilkService collectMilkService;
+
+    @Autowired
+    private PaymentNotificationService paymentNotificationService;
 
     @Value("${file.upload-dir}")
     private String uploadDir;
@@ -173,9 +182,8 @@ public class SupplierController {
         try {
             if (supplierService.checkOTPForSupplierLogin(email, otp)) {
                 model.addAttribute("errorMessage", "successfully login");
-                model.addAttribute("dto",supplierService.getDetailsByEmail(email));
                 model.addAttribute("success","success");
-                return "SupplierDashboard";
+                return getSupplierDashboardPage(email,model);
             } else {
                 model.addAttribute("errorMessage", "not login");
             }
@@ -192,6 +200,20 @@ public class SupplierController {
     {
         log.info("getSupplierDashboardPage method in supplier controller");
         SupplierDTO supplierDTO=supplierService.getDetailsByEmail(email);
+        LocalDate lastDate=collectMilkService.getLastCollectedDate(supplierDTO.getSupplierId());
+        if(lastDate==null)
+            model.addAttribute("lastCollectedDate","Yet to collect");
+        else model.addAttribute("lastCollectedDate",lastDate);
+
+        Double litres=collectMilkService.getTotalLitre(supplierDTO.getSupplierId());
+        if(litres==null)
+            model.addAttribute("totalLitres",0);
+        else model.addAttribute("totalLitres",litres);
+
+        Double amount=paymentNotificationService.getTotalAmountPaid(supplierDTO.getSupplierId());
+        if(amount==null)
+            model.addAttribute("totalAmountPaid","No Collection");
+        else model.addAttribute("totalAmountPaid","Rs."+amount+"/-");
         model.addAttribute("dto",supplierDTO);
         return "SupplierDashboard";
     }

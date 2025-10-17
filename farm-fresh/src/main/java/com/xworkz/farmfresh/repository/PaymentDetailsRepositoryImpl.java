@@ -98,4 +98,26 @@ public class PaymentDetailsRepositoryImpl implements PaymentDetailsRepository {
         }
         return false;
     }
+
+    @Override
+    public Double getTotalPaidAmount(Integer supplierId) {
+        log.info("getTotalPaidAmount method in payment details repo");
+        EntityManager entityManager=null;
+        Double totalAmount=null;
+        try {
+            entityManager=entityManagerFactory.createEntityManager();
+            totalAmount=entityManager.createQuery("SELECT SUM(p.totalAmount) FROM PaymentDetailsEntity p WHERE p.supplier.supplierId = :id and p.paymentStatus='PAID'", Double.class)
+                    .setParameter("id",supplierId).getSingleResult();
+            return totalAmount;
+        }catch (PersistenceException e)
+        {
+            log.error(e.getMessage());
+        }finally {
+            if (entityManager != null && entityManager.isOpen()) {
+                log.info("EntityManager is closed");
+                entityManager.close();
+            }
+        }
+        return totalAmount;
+    }
 }

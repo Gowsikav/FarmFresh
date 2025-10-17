@@ -129,9 +129,7 @@
         </div>
     </nav>
 
-
-
-    <main class="flex-grow-1 d-flex align-items-center justify-content-center" style="margin-top: 90px;">
+    <main class="flex-grow-1 d-flex align-items-center justify-content-center" style="margin-top: 100px;">
         <div class="container" style="max-width: 700px;">
             <div class="card shadow-lg">
                 <div class="card-header bg-success text-white">
@@ -141,16 +139,12 @@
                     <div class="row align-items-center mb-4">
                         <div class="col-md-4 text-center mb-3 mb-md-0">
                             <c:choose>
-                                <c:when test="${empty supplier.profilePath}">
-                                    <img src="images/dummy-profile.png" alt="Profile"
+                                <c:when test="${empty supplier.profilePath}"> <img src="images/dummy-profile.png"
+                                        alt="Profile" class="rounded-circle border border-2" width="120" height="120"
+                                        style="object-fit: cover;"> </c:when>
+                                <c:otherwise> <img src="<c:url value='/uploads/${supplier.profilePath}'/>" alt="Profile"
                                         class="rounded-circle border border-2" width="120" height="120"
-                                        style="object-fit: cover;">
-                                </c:when>
-                                <c:otherwise>
-                                    <img src="<c:url value='/uploads/${supplier.profilePath}'/>" alt="Profile"
-                                        class="rounded-circle border border-2" width="120" height="120"
-                                        style="object-fit: cover;">
-                                </c:otherwise>
+                                        style="object-fit: cover;"> </c:otherwise>
                             </c:choose>
                         </div>
                         <div class="col-md-8">
@@ -169,80 +163,117 @@
                         <c:when test="${not empty supplier.supplierBankDetails}">
                             <div class="row g-3 mb-3">
                                 <div class="col-sm-6">
-                                    <div class="bg-light p-2 rounded">
-                                        <strong>Account Number:</strong><br />
-                                        <span
+                                    <div class="bg-light p-2 rounded"> <strong>Account
+                                            Number:</strong><br /> <span
                                             class="text-monospace">${supplier.supplierBankDetails.accountNumber}</span>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
-                                    <div class="bg-light p-2 rounded">
-                                        <strong>IFSC:</strong><br />
-                                        <span class="text-monospace">${supplier.supplierBankDetails.IFSCCode}</span>
+                                    <div class="bg-light p-2 rounded"> <strong>IFSC:</strong><br /> <span
+                                            class="text-monospace">${supplier.supplierBankDetails.IFSCCode}</span>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
-                                    <div class="bg-light p-2 rounded">
-                                        <strong>Bank Name:</strong><br />
-                                        ${supplier.supplierBankDetails.bankName}
-                                    </div>
+                                    <div class="bg-light p-2 rounded"> <strong>Bank Name:</strong><br />
+                                        ${supplier.supplierBankDetails.bankName} </div>
                                 </div>
                                 <div class="col-sm-6">
-                                    <div class="bg-light p-2 rounded">
-                                        <strong>Bank Branch:</strong><br />
-                                        ${supplier.supplierBankDetails.bankBranch}
-                                    </div>
+                                    <div class="bg-light p-2 rounded"> <strong>Bank Branch:</strong><br />
+                                        ${supplier.supplierBankDetails.bankBranch} </div>
                                 </div>
                             </div>
                         </c:when>
                         <c:otherwise>
-                            <div class="alert alert-warning d-flex align-items-center" role="alert">
-                                <i class="fa-solid fa-triangle-exclamation me-2"></i>
-                                Bank details not available. Please update bank details to enable payment.
-                            </div>
-                        </c:otherwise>
-                    </c:choose>
-                    <hr />
-                    <div class="row align-items-center mb-3">
-                        <div class="col-8">
-                            <h5 class="mb-0">Total Amount to Pay:</h5>
-                        </div>
-                        <div class="col-4 text-end">
-                            <h4 class="text-success mb-0">
-                                <i class="fa-solid fa-indian-rupee-sign"></i>
-                                <fmt:formatNumber value="${paymentAmount}" type="number" minFractionDigits="2" />
-                            </h4>
-                        </div>
-                    </div>
-                    <c:if test="${not empty errorMessage}">
-                        <div id="errorMsg" class="alert alert-danger" role="alert">
-                            ${errorMessage}
+                            <c:if test="${not empty errorMessage}">
+                        <div id="errorMsg" class="alert alert-danger" role="alert"> ${errorMessage} </div>
+                    </c:if>
+                    <c:if test="${not empty successMessage}">
+                        <div id="successMsg" class="alert alert-success" role="alert"> ${successMessage}
                         </div>
                     </c:if>
-                    <div class="text-end">
-                        <c:choose>
-                            <c:when test="${not empty supplier.supplierBankDetails}">
-                                <form action="payToSupplier" method="post" class="d-inline">
-                                    <input type="hidden" name="supplierEmail" value="${supplier.email}" />
-                                    <input type="hidden" name="notificationId" value="${notificationId}">
-                                    <input type="hidden" name="email" value="${dto.email}">
-                                    <button type="submit" class="btn btn-success btn-lg px-5">
-                                        <i class="fa-solid fa-money-bill-wave me-2"></i>Pay
-                                    </button>
-                                </form>
-                            </c:when>
-                            <c:otherwise>
-                                <button class="btn btn-secondary btn-lg px-5" disabled>
-                                    <i class="fa-solid fa-money-bill-wave me-2"></i>Pay
-                                </button>
-                            </c:otherwise>
-                        </c:choose>
-                    </div>
+                            <div class="alert alert-warning d-flex align-items-center" role="alert"> <i
+                                    class="fa-solid fa-triangle-exclamation me-2"></i> Bank details not
+                                available. Please update bank details to enable payment. </div>
+                            <form action="/farm-fresh/requestSupplierBankDetails" method="post" class="text-end mt-2">
+                                <input type="hidden" name="supplierEmail" value="${supplier.email}" /> <input
+                                    type="hidden" name="adminEmail" value="${dto.email}" /> <input type="hidden"
+                                    name="notificationId" value="${notificationId}"> <button type="submit"
+                                    class="btn btn-primary"> <i class="fa-solid fa-envelope me-2"></i>Request Bank
+                                    Details </button>
+                            </form>
+                        </c:otherwise>
+                    </c:choose>                   
                 </div>
             </div>
         </div>
     </main>
 
+    <div class="flex-grow-1 d-flex flex-column min-vh-10" style="margin-top: 80px;">
+        <div class="container p-5">
+            <h1 class="mb-4">Collected Milk Details</h1>
+        
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle">
+                    <thead class="table-success">
+                        <tr>
+                            <th>Date</th>
+                            <th>Type of Milk</th>
+                            <th>Quantity (litres)</th>
+                            <th>Price (per litre)</th>
+                            <th>Total Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach var="milk" items="${milkList}">
+                                        <tr>
+                                            <td>${milk.collectedDate}</td>
+                                            <td>${milk.typeOfMilk}</td>
+                                            <td>${milk.quantity}</td>
+                                            <td>${milk.price}</td>
+                                            <td>${milk.totalAmount}</td>
+                                            
+                                        </tr>      
+                        </c:forEach>
+                        <c:if test="${empty milkList}">
+                            <tr>
+                                <td colspan="8" class="text-center text-muted">No records found for the selected date.</td>
+                            </tr>
+                        </c:if>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mb-5" style="max-width: 700px;">
+         <div class="row align-items-center mb-3">
+                        <div class="col-8">
+                            <h5 class="mb-0">Total Amount to Pay:</h5>
+                        </div>
+                        <div class="col-4 text-end">
+                            <h4 class="text-success mb-0"> <i class="fa-solid fa-indian-rupee-sign"></i>
+                                <fmt:formatNumber value="${paymentAmount}" type="number" minFractionDigits="2" />
+                            </h4>
+                        </div>
+                    </div>
+                    
+                    <div class="text-end">
+                        <c:choose>
+                            <c:when test="${not empty supplier.supplierBankDetails}">
+                                <form action="payToSupplier" method="post" class="d-inline"> <input type="hidden"
+                                        name="supplierEmail" value="${supplier.email}" />
+                                    <input type="hidden" name="notificationId" value="${notificationId}">
+                                    <input type="hidden" name="email" value="${dto.email}"> <button type="submit"
+                                        class="btn btn-success btn-lg px-5"> <i
+                                            class="fa-solid fa-money-bill-wave me-2"></i>Pay </button>
+                                </form>
+                            </c:when>
+                            <c:otherwise> <button class="btn btn-secondary btn-lg px-5" disabled> <i
+                                        class="fa-solid fa-money-bill-wave me-2"></i>Pay </button>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
+    </div>
 
     <div class="modal fade" id="adminProfileModal" tabindex="-1" aria-labelledby="adminProfileModalLabel"
         aria-hidden="true">
@@ -291,13 +322,15 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <a href="redirectToUpdateAdminProfile?email=${dto.email}" class="btn btn-primary">Update Profile</a>
+                    <a href="redirectToUpdateAdminProfile?email=${dto.email}" class="btn btn-primary">Update
+                        Profile</a>
                 </div>
             </div>
         </div>
     </div>
 
-    <footer class="text-lg-start py-3" style="background: linear-gradient(90deg, #1b5e20, #fffde7); color: #333">
+    <footer class="text-lg-start py-3"
+        style="background: linear-gradient(90deg, #1b5e20, #fffde7); color: #333">
         <div class="container">
             <div class="row text-dark align-items-start text-center text-md-start">
                 <div class="col-md-3 mb-3">

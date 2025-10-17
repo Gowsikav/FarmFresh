@@ -11,4 +11,5 @@ public interface PaymentNotificationService {
     void generatePaymentNotifications();
     Double getAmountById(Long notificationId);
     boolean markAsReadForPayment(Long notificationId,String supplierEmail,String adminEmail);
+    Double getTotalAmountPaid(Integer supplierId);
 }

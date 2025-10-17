@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="css/index.css" />
 </head>
 
-<body class="d-flex flex-column min-vh-100">
+<body class="d-flex flex-column min-vh-100" style="overflow-y: auto !important;">
     <nav class="navbar navbar-expand-lg fixed-top" style="background: linear-gradient(90deg, #2e7d32, #f9fbe7)">
         <div class="container-fluid">
             <a class="navbar-brand">
@@ -129,7 +129,7 @@
         </div>
     </nav>
 
-    <main class="flex-grow-2 d-flex" style="margin-top: 80px;">
+    <main class="flex-grow-1 d-flex" style="margin-top: 80px;">
         <div class="container-fluid p-5">
             <!-- Welcome Message -->
             <h1 class="fw-bold">Welcome back, ${dto.adminName} </h1>
@@ -282,7 +282,7 @@
         </div>
     </div>
 
-    <footer class="text-lg-start py-3" style="background: linear-gradient(90deg, #1b5e20, #fffde7); color: #333">
+    <footer class="text-lg-start py-3 mt-auto" style="background: linear-gradient(90deg, #1b5e20, #fffde7); color: #333">
         <div class="container">
             <div class="row text-dark align-items-start text-center text-md-start">
                 <div class="col-md-3 mb-3">

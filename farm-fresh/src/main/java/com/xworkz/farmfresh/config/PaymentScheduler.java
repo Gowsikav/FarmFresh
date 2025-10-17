@@ -18,7 +18,7 @@ public class PaymentScheduler {
     }
 
     // 0 0 9 15,30 * *  every month 15 and 30 at 9 AM     // 0 */1 * * * *
-    @Scheduled(cron = " 0 0 9 15,30 * *", zone = "Asia/Kolkata")
+    @Scheduled(cron = "0 0 9 15,30 * *", zone = "Asia/Kolkata")
     public void runPaymentNotification() {
         paymentNotificationService.generatePaymentNotifications();
     }

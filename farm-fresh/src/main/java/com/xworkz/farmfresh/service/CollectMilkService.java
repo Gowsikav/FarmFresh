@@ -11,5 +11,8 @@ public interface CollectMilkService {
     List<CollectMilkDTO> getAllDetailsByDate(LocalDate selectDate);
     List<CollectMilkDTO> getAllDetailsBySupplier(String email,int page,int size);
     Integer getCountOFMilkDetailsByEmail(String email);
+    List<CollectMilkDTO> getAllDetailsBySupplier(Long notificationId);
+    LocalDate getLastCollectedDate(Integer supplierId);
+    Double getTotalLitre(Integer supplierId);
 
 }

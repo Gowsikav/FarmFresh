@@ -2,6 +2,7 @@ package com.xworkz.farmfresh.controller;
 
 import com.xworkz.farmfresh.dto.AdminDTO;
 import com.xworkz.farmfresh.service.AdminService;
+import com.xworkz.farmfresh.service.CollectMilkService;
 import com.xworkz.farmfresh.service.PaymentNotificationService;
 import com.xworkz.farmfresh.service.SupplierService;
 import com.xworkz.farmfresh.util.CommonControllerHelper;
@@ -39,6 +40,9 @@ public class AdminController {
 
     @Autowired
     private CommonControllerHelper controllerHelper;
+
+    @Autowired
+    private CollectMilkService collectMilkService;
 
     @Value("${file.upload-dir}")
     private String uploadDir;
@@ -196,6 +200,7 @@ public class AdminController {
         model.addAttribute("dto",adminService.getAdminDetailsByEmail(email));
         model.addAttribute("notificationId",notificationId);
         model.addAttribute("paymentAmount",notificationService.getAmountById(notificationId));
+        model.addAttribute("milkList",collectMilkService.getAllDetailsBySupplier(notificationId));
         controllerHelper.addNotificationData(model,email);
         return "SupplierPayDetails";
     }
@@ -210,5 +215,20 @@ public class AdminController {
         }
         model.addAttribute("errorMessage","Amount Not paid");
         return getSupplierPaymentDetails(notificationId,email,model);
+    }
+
+    @PostMapping("/requestSupplierBankDetails")
+    public String requestForSupplierBankDetails(@RequestParam String adminEmail,@RequestParam String supplierEmail,@RequestParam Long notificationId,Model model)
+    {
+        log.info("requestForSupplierBankDetails method in admin Controller");
+        if(supplierService.requestForSupplierBankDetails(supplierEmail))
+        {
+            model.addAttribute("dto",adminService.getAdminDetailsByEmail(adminEmail));
+            model.addAttribute("successMessage","Mail sent successfully");
+        }else {
+            model.addAttribute("errorMessage", "Mail not send");
+        }
+        return getSupplierPaymentDetails(notificationId,adminEmail,model);
+
     }
 }

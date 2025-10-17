@@ -24,4 +24,5 @@ public interface SupplierService {
     boolean updateSupplierBankDetails(SupplierBankDetailsDTO supplierBankDetailsDTO,String email);
     boolean updateSupplierBankDetailsByAdmin(SupplierBankDetailsDTO supplierBankDetailsDTO,String email,String adminEmail);
     SupplierDTO getSupplierDetailsByNotificationId(Long notificationId);
+    boolean requestForSupplierBankDetails(String supplierEmail);
 }
