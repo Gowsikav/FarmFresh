@@ -3,10 +3,9 @@ package com.xworkz.farmfresh.service;
 import com.xworkz.farmfresh.dto.AdminDTO;
 import com.xworkz.farmfresh.dto.CollectMilkDTO;
 import com.xworkz.farmfresh.dto.SupplierDTO;
-import com.xworkz.farmfresh.entity.AdminEntity;
-import com.xworkz.farmfresh.entity.CollectMilkAuditEntity;
-import com.xworkz.farmfresh.entity.CollectMilkEntity;
+import com.xworkz.farmfresh.entity.*;
 import com.xworkz.farmfresh.repository.CollectMilkRepository;
+import com.xworkz.farmfresh.repository.NotificationRepository;
 import com.xworkz.farmfresh.repository.SupplierRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -17,6 +16,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Slf4j
 @Service
@@ -30,6 +31,9 @@ public class CollectMilkServiceImpl implements CollectMilkService{
 
     @Autowired
     private SupplierRepository supplierRepository;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     public CollectMilkServiceImpl()
     {
@@ -98,5 +102,45 @@ public class CollectMilkServiceImpl implements CollectMilkService{
     public Integer getCountOFMilkDetailsByEmail(String email) {
         log.info("getCountOFMilkDetailsByEmail method in collectMilk service");
         return collectMilkRepository.getCountOFMilkDetailsByEmail(email);
+    }
+
+    @Override
+    public List<CollectMilkDTO> getAllDetailsBySupplier(Long notificationId) {
+        log.info("getAllDetailsBySupplier method in collect milk service");
+        NotificationEntity notification=notificationRepository.getNotificationById(notificationId);
+        SupplierEntity supplier=notification.getSupplier();
+
+        String message=notification.getMessage();
+        Pattern pattern = Pattern.compile("\\((\\d{4}-\\d{2}-\\d{2})\\s+to\\s+(\\d{4}-\\d{2}-\\d{2})\\)");
+        Matcher matcher = pattern.matcher(message);
+        LocalDate startDate =null;
+        LocalDate endDate =null;
+        if (matcher.find()) {
+            String startDateStr = matcher.group(1);
+            String endDateStr = matcher.group(2);
+
+             startDate = LocalDate.parse(startDateStr);
+             endDate = LocalDate.parse(endDateStr);
+        }
+        List<CollectMilkEntity> list=collectMilkRepository.getCollectMilkDetailsForSupplierById(supplier.getSupplierId(),startDate,endDate);
+        List<CollectMilkDTO> collectMilkDTOS=new ArrayList<>();
+        list.forEach(e->{
+            CollectMilkDTO collectMilkDTO=new CollectMilkDTO();
+            BeanUtils.copyProperties(e,collectMilkDTO);
+            collectMilkDTOS.add(collectMilkDTO);
+        });
+        return collectMilkDTOS;
+    }
+
+    @Override
+    public LocalDate getLastCollectedDate(Integer supplierId) {
+        log.info("getLastCollectedDate method in collect milk service");
+        return collectMilkRepository.getLastCollectedDate(supplierId);
+    }
+
+    @Override
+    public Double getTotalLitre(Integer supplierId) {
+        log.info("getTotalLitre method in collect milk service");
+        return collectMilkRepository.getTotalLitre(supplierId);
     }
 }

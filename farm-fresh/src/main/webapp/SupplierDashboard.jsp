@@ -81,15 +81,15 @@
                     <div class="card text-white bg-success mb-3 shadow">
                         <div class="card-body">
                             <h5 class="card-title">Total Milk Collected</h5>
-                            <p class="card-text fs-4 fw-bold">10 Ltr</p>
+                            <p class="card-text fs-4 fw-bold">${totalLitres} Ltr</p>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="card text-white bg-info mb-3 shadow">
                         <div class="card-body">
-                            <h5 class="card-title">Pending Payments</h5>
-                            <p class="card-text fs-4 fw-bold">Rs.100</p>
+                            <h5 class="card-title">Total Amount Received</h5>
+                            <p class="card-text fs-4 fw-bold">${totalAmountPaid}</p>
                         </div>
                     </div>
                 </div>
@@ -97,7 +97,7 @@
                     <div class="card text-white bg-primary mb-3 shadow">
                         <div class="card-body">
                             <h5 class="card-title">Last Collection Date</h5>
-                            <p class="card-text fs-4 fw-bold">10/03/2025</p>
+                            <p class="card-text fs-4 fw-bold">${lastCollectedDate}</p>
                         </div>
                     </div>
                 </div>

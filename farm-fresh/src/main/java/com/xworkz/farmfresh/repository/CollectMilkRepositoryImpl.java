@@ -174,4 +174,78 @@ public class CollectMilkRepositoryImpl implements CollectMilkRepository{
         }
         return list;
     }
+
+    @Override
+    public List<CollectMilkEntity> getCollectMilkDetailsForSupplierById(Integer supplierId, LocalDate start,LocalDate end) {
+        log.info("getCollectMilkDetailsForSupplierById method in collect milk repo");
+        EntityManager entityManager=null;
+        List<CollectMilkEntity> list=null;
+        try{
+            entityManager=entityManagerFactory.createEntityManager();
+            list=entityManager.createQuery("select a from CollectMilkEntity a where a.supplier.supplierId=:id and a.collectedDate between :start and :end order by a.collectMilkId desc", CollectMilkEntity.class)
+                    .setParameter("id",supplierId)
+                    .setParameter("end",end)
+                    .setParameter("start",start)
+                    .getResultList();
+            return list;
+        }catch (PersistenceException e)
+        {
+            log.error(e.getMessage());
+        }finally {
+            if(entityManager!=null && entityManager.isOpen())
+            {
+                entityManager.close();
+                log.info("EntityManager is closed");
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public Double getTotalLitre(Integer supplierId) {
+        log.info("getCollectMilkDetailsForSupplierById method in collect milk repo");
+        EntityManager entityManager=null;
+        Double totalLitre=0.0d;
+        try{
+            entityManager=entityManagerFactory.createEntityManager();
+            totalLitre=entityManager.createQuery("select SUM(c.quantity) FROM CollectMilkEntity c WHERE c.supplier.supplierId = :id",Double.class)
+                    .setParameter("id",supplierId).getSingleResult();
+
+            return totalLitre;
+        }catch (PersistenceException e)
+        {
+            log.error(e.getMessage());
+        }finally {
+            if(entityManager!=null && entityManager.isOpen())
+            {
+                entityManager.close();
+                log.info("EntityManager is closed");
+            }
+        }
+        return totalLitre;
+    }
+
+    @Override
+    public LocalDate getLastCollectedDate(Integer supplierId) {
+        log.info("getLastCollectedDate method in collect milk repo");
+        EntityManager entityManager=null;
+        LocalDate lastDate=null;
+        try{
+            entityManager=entityManagerFactory.createEntityManager();
+            lastDate=entityManager.createQuery("select MAX(c.collectedDate) FROM CollectMilkEntity c WHERE c.supplier.supplierId = :id",LocalDate.class)
+                    .setParameter("id",supplierId).getSingleResult();
+
+            return lastDate;
+        }catch (PersistenceException e)
+        {
+            log.error(e.getMessage());
+        }finally {
+            if(entityManager!=null && entityManager.isOpen())
+            {
+                entityManager.close();
+                log.info("EntityManager is closed");
+            }
+        }
+        return lastDate;
+    }
 }

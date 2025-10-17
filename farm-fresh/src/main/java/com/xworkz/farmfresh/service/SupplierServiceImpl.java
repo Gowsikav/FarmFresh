@@ -4,6 +4,7 @@ import com.xworkz.farmfresh.dto.AdminDTO;
 import com.xworkz.farmfresh.dto.SupplierBankDetailsDTO;
 import com.xworkz.farmfresh.dto.SupplierDTO;
 import com.xworkz.farmfresh.entity.*;
+import com.xworkz.farmfresh.repository.CollectMilkRepository;
 import com.xworkz.farmfresh.repository.NotificationRepository;
 import com.xworkz.farmfresh.repository.SupplierRepository;
 import com.xworkz.farmfresh.util.OTPUtil;
@@ -32,6 +33,9 @@ public class SupplierServiceImpl implements SupplierService{
 
     @Autowired
     private NotificationRepository notificationRepository;
+
+    @Autowired
+    private CollectMilkRepository collectMilkRepository;
 
     public SupplierServiceImpl()
     {
@@ -343,5 +347,12 @@ public class SupplierServiceImpl implements SupplierService{
         log.info("getSupplierDetailsByNotificationId method in supplier service");
         SupplierEntity supplierEntity=notificationRepository.getSupplierEntityByNotificationId(notificationId);
         return getDetailsByEmail(supplierEntity.getEmail());
+    }
+
+    @Override
+    public boolean requestForSupplierBankDetails(String supplierEmail) {
+        log.info("requestForSupplierBankDetails method in supplier service");
+        SupplierEntity supplierEntity=supplierRepository.getSupplierByEmail(supplierEmail);
+        return emailSender.mailForBankDetailsRequest(supplierEntity);
     }
 }

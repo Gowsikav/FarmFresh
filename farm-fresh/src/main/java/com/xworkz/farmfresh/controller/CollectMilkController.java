@@ -108,7 +108,6 @@ public class CollectMilkController {
         model.addAttribute("currentPage", page);
         model.addAttribute("pageSize", size);
         model.addAttribute("totalPages", totalPages);
-        controllerHelper.addNotificationData(model,email);
         return "SupplierMilkCollection";
     }
 }

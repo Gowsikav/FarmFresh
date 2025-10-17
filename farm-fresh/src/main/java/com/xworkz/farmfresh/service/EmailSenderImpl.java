@@ -1,7 +1,9 @@
 package com.xworkz.farmfresh.service;
 
 import com.xworkz.farmfresh.config.EmailConfiguration;
+import com.xworkz.farmfresh.entity.PaymentDetailsEntity;
 import com.xworkz.farmfresh.entity.SupplierBankDetailsEntity;
+import com.xworkz.farmfresh.entity.SupplierEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -137,5 +139,73 @@ public class EmailSenderImpl implements EmailSender{
             return false;
         }
     }
+
+    @Override
+    public boolean mailForSupplierPayment(SupplierEntity supplier, PaymentDetailsEntity paymentDetails) {
+        log.info("mailForSupplierPayment method in email sender");
+        try {
+            String subject = "Farm Fresh - Milk Supply Payment Confirmation";
+
+            String messageBody = "Dear " + supplier.getFirstName()+" "+supplier.getLastName() + ",\n\n"
+                    + "We are pleased to inform you that the payment for your milk supply has been successfully processed.\n\n"
+                    + "Below are the payment details:\n"
+                    + "---------------------------------------\n"
+                    + "Payment Date: " + paymentDetails.getPaymentDate() + "\n"
+                    + "Amount Paid: ₹" + paymentDetails.getTotalAmount() + "\n"
+                    + "Supply Period: " + paymentDetails.getPeriodStart() + " to " + paymentDetails.getPeriodEnd() + "\n"
+                    + "---------------------------------------\n\n"
+                    + "This payment covers the total amount for the milk supplied during the above period.\n\n"
+                    + "If you have any questions or concerns regarding this payment, please contact our accounts team at info@farmfresh.com.\n\n"
+                    + "Thank you for your consistent and quality milk supply.\n\n"
+                    + "Warm regards,\n"
+                    + "Farm Fresh Team";
+
+            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+            simpleMailMessage.setTo(supplier.getEmail());
+            simpleMailMessage.setSubject(subject);
+            simpleMailMessage.setText(messageBody);
+
+            configuration.mailSender().send(simpleMailMessage);
+            log.info("Payment confirmation mail sent successfully to: {}", supplier.getEmail());
+            return true;
+        } catch (Exception e) {
+            log.error("Error while sending payment confirmation email: {}", e.getMessage());
+            return false;
+        }
+    }
+
+    @Override
+    public boolean mailForBankDetailsRequest(SupplierEntity supplier) {
+        log.info("mailForBankDetailsRequest method in EmailSender");
+
+        try {
+            String subject = "Farm Fresh - Action Required: Update Your Bank Details";
+
+            String messageBody = "Dear " + supplier.getFirstName()+" "+supplier.getLastName() + ",\n\n"
+                    + "We hope you're doing well!\n\n"
+                    + "Our records show that your bank details are not yet provided in your Farm Fresh account.\n"
+                    + "Please update your bank details as soon as possible to ensure smooth and timely payments.\n\n"
+                    + "⚠️ Note: Payments will not be processed until your bank details are submitted and verified.\n\n"
+                    + "To update your bank details, please log in to your Farm Fresh Supplier Dashboard.\n\n"
+                    + "Thank you for your cooperation.\n\n"
+                    + "Best regards,\n"
+                    + "Farm Fresh Team";
+
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(supplier.getEmail());
+            message.setSubject(subject);
+            message.setText(messageBody);
+
+            configuration.mailSender().send(message);
+
+            log.info("Bank details reminder email sent successfully to {}", supplier.getEmail());
+            return true;
+
+        } catch (Exception e) {
+            log.error("Error while sending bank details reminder email to {}", supplier.getEmail(), e);
+            return false;
+        }
+    }
+
 
 }

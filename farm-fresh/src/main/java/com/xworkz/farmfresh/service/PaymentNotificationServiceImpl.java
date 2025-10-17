@@ -32,6 +32,9 @@ public class PaymentNotificationServiceImpl implements PaymentNotificationServic
     @Autowired
     private PaymentDetailsRepository paymentDetailsRepository;
 
+    @Autowired
+    private EmailSender emailSender;
+
     public PaymentNotificationServiceImpl() {
         log.info("PaymentNotificationServiceImpl constructor");
     }
@@ -39,11 +42,13 @@ public class PaymentNotificationServiceImpl implements PaymentNotificationServic
     @Override
     public void generateAdvanceNotifications() {
         log.info("generate advance notifications method in PaymentNotificationServiceImpl");
+
         LocalDate today = LocalDate.now();
         int dayOfMonth = today.getDayOfMonth();
+        int lastDayOfMonth = today.lengthOfMonth();
 
-        if (dayOfMonth != 13 && dayOfMonth != 28) {
-            log.info("Not the 13th or 28th, skipping notification generation. Today: {}", today);
+        if (dayOfMonth != 13 && dayOfMonth != lastDayOfMonth - 2) {
+            log.info("Not the 13th or {} (two days before month end), skipping notification generation. Today: {}", lastDayOfMonth - 2, today);
             return;
         }
 
@@ -53,7 +58,6 @@ public class PaymentNotificationServiceImpl implements PaymentNotificationServic
         String dayStr;
 
         if (dayOfMonth == 13) {
-
             LocalDate prevMonth = today.minusMonths(1);
             int startDay = Math.min(30, prevMonth.lengthOfMonth());
             periodStart = prevMonth.withDayOfMonth(startDay);
@@ -61,14 +65,11 @@ public class PaymentNotificationServiceImpl implements PaymentNotificationServic
             paymentDate = today.withDayOfMonth(15);
             dayStr = "15th";
         } else {
-
             periodStart = today.withDayOfMonth(15);
-            periodEnd = today.withDayOfMonth(27);
+            periodEnd = today.withDayOfMonth(lastDayOfMonth - 1);
 
-            int lastDayOfMonth = today.lengthOfMonth();
-            int paymentDay = Math.min(30, lastDayOfMonth);
-            paymentDate = today.withDayOfMonth(paymentDay);
-            dayStr = paymentDay + "th";
+            paymentDate = today.withDayOfMonth(lastDayOfMonth);
+            dayStr = lastDayOfMonth + "th";
         }
 
         log.info("Checking collections from {} to {} for payment on {}", periodStart, periodEnd, paymentDate);
@@ -79,11 +80,10 @@ public class PaymentNotificationServiceImpl implements PaymentNotificationServic
             return;
         }
 
-        // Fan-out one notification per admin, avoid duplicates per admin per payment date
         List<AdminEntity> admins = adminRepository.findAll();
         for (AdminEntity admin : admins) {
             if (notificationRepository.existsAdvanceForPaymentDateByAdmin(admin.getAdminId(), paymentDate)) {
-                log.info("Notification already exists for admin {} on {}", admin.getAdminId(), paymentDate);
+                log.info("Advance notification already exists for admin {} for payment date {}", admin.getAdminId(), paymentDate);
                 continue;
             }
 
@@ -95,10 +95,12 @@ public class PaymentNotificationServiceImpl implements PaymentNotificationServic
             n.setMessage(supplierCount + " suppliers need to be paid on " + dayStr);
 
             if (notificationRepository.save(n))
-                log.info("Created notification for admin {} for payment date {}", admin.getAdminId(), paymentDate);
-            else log.error("notification not created");
+                log.info("Created advance notification for admin {} for payment date {}", admin.getAdminId(), paymentDate);
+            else
+                log.error("Failed to create advance notification for admin {}", admin.getAdminId());
         }
     }
+
 
     @Override
     public List<NotificationEntity> getNotificationsByAdminEmail(String email) {
@@ -119,11 +121,13 @@ public class PaymentNotificationServiceImpl implements PaymentNotificationServic
     @Override
     public void generatePaymentNotifications() {
         log.info("generate payment notifications method in PaymentNotificationServiceImpl");
+
         LocalDate today = LocalDate.now();
         int dayOfMonth = today.getDayOfMonth();
+        int lastDayOfMonth = today.lengthOfMonth();
 
-        if (dayOfMonth != 15 && dayOfMonth != 30) {
-            log.info("Not the 15th or 30th, skipping payment notification generation");
+        if (dayOfMonth != 15 && dayOfMonth != lastDayOfMonth) {
+            log.info("Not the 15th or last day ({}), skipping payment notification generation", lastDayOfMonth);
             return;
         }
 
@@ -131,21 +135,22 @@ public class PaymentNotificationServiceImpl implements PaymentNotificationServic
         LocalDate periodEnd;
 
         if (dayOfMonth == 15) {
-            periodStart = today.minusMonths(1).withDayOfMonth(30);
+            int prevMonthLastDay = today.minusMonths(1).lengthOfMonth();
+            periodStart = today.minusMonths(1).withDayOfMonth(Math.min(30, prevMonthLastDay));
             periodEnd = today.withDayOfMonth(14);
         } else {
             periodStart = today.withDayOfMonth(15);
-            periodEnd = today.withDayOfMonth(29);
+            periodEnd = today.withDayOfMonth(Math.min(30, lastDayOfMonth - 1));
         }
+
+        log.info("Generating payment notifications for period {} to {}", periodStart, periodEnd);
 
         List<Object[]> supplierList = collectMilkRepository.getEntityForPaymentNotification(periodStart, periodEnd);
         List<AdminEntity> admins = adminRepository.findAll();
-        log.error("size {} {}",supplierList.size(),admins.size());
 
         for (Object[] row : supplierList) {
             SupplierEntity supplier = (SupplierEntity) row[0];
             Double totalAmount = row[1] != null ? ((Number) row[1]).doubleValue() : 0.0;
-            log.error("supplier {} , total amount {}",supplier,totalAmount);
 
             PaymentDetailsEntity paymentDetailsEntity = new PaymentDetailsEntity();
             paymentDetailsEntity.setSupplier(supplier);
@@ -156,8 +161,9 @@ public class PaymentNotificationServiceImpl implements PaymentNotificationServic
             paymentDetailsEntity.setPaymentDate(today);
 
             if (paymentDetailsRepository.save(paymentDetailsEntity))
-                log.info("payment details saved for " + supplier.getSupplierId());
-            else log.error("payment details not saved for " + supplier.getSupplierId());
+                log.info("Payment details saved for supplier {}", supplier.getSupplierId());
+            else
+                log.error("Failed to save payment details for supplier {}", supplier.getSupplierId());
 
             for (AdminEntity admin : admins) {
                 NotificationEntity n = new NotificationEntity();
@@ -165,16 +171,17 @@ public class PaymentNotificationServiceImpl implements PaymentNotificationServic
                 n.setSupplier(supplier);
                 n.setNotificationType("PAYMENT");
                 n.setIsRead(false);
-                n.setMessage("Pay Rs." + totalAmount + " to " + supplier.getFirstName() + " " + supplier.getLastName() + " (" + periodStart + " to " + periodEnd + ")");
+                n.setMessage("Pay Rs." + totalAmount + " to " + supplier.getFirstName() + " " +
+                        supplier.getLastName() + " ("+ periodStart + " to " + periodEnd +")");
                 n.setPaymentDate(today);
                 n.setAmount(totalAmount);
 
                 if (notificationRepository.save(n))
                     log.info("Payment notification created for admin {}", admin.getAdminId());
-                 else log.error("Failed to create payment notification for admin {}", admin.getAdminId());
+                else
+                    log.error("Failed to create payment notification for admin {}", admin.getAdminId());
             }
         }
-
     }
 
     @Override
@@ -214,12 +221,17 @@ public class PaymentNotificationServiceImpl implements PaymentNotificationServic
             if(notificationRepository.markAsReadForPayment(notification.getPaymentDate(),supplierEntity.getSupplierId()))
             {
                 log.info("Notification updated");
-                return true;
+                return emailSender.mailForSupplierPayment(supplierEntity,paymentDetailsEntity);
             }
         }else {
             log.error("payment details not updated");
         }
-
         return false;
+    }
+
+    @Override
+    public Double getTotalAmountPaid(Integer supplierId) {
+        log.info("getTotalAmountPaid method in payment notification service");
+        return paymentDetailsRepository.getTotalPaidAmount(supplierId);
     }
 }
