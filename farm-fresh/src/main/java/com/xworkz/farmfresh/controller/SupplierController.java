@@ -1,6 +1,7 @@
 package com.xworkz.farmfresh.controller;
 
 import com.xworkz.farmfresh.dto.AdminDTO;
+import com.xworkz.farmfresh.dto.PaymentDetailsDTO;
 import com.xworkz.farmfresh.dto.SupplierBankDetailsDTO;
 import com.xworkz.farmfresh.dto.SupplierDTO;
 import com.xworkz.farmfresh.service.AdminService;
@@ -322,5 +323,16 @@ public class SupplierController {
             model.addAttribute("error","Bank details not updated");
         }
         return getMilkSupplierList(adminEmail,1,10,model);
+    }
+
+    @GetMapping("/redirectToPaymentStatus")
+    public String getPaymentStatus(@RequestParam String email,Model model)
+    {
+        log.info("getPayment status in supplier controller");
+        SupplierDTO supplierDTO=supplierService.getDetailsByEmail(email);
+        List<PaymentDetailsDTO> list=paymentNotificationService.getPaymentDetailsForSupplier(supplierDTO);
+        model.addAttribute("dto",supplierDTO);
+        model.addAttribute("paymentList",list);
+        return "SupplierPaymentStatus";
     }
 }

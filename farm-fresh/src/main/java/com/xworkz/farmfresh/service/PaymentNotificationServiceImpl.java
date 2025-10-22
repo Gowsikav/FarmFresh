@@ -1,11 +1,14 @@
 package com.xworkz.farmfresh.service;
 
+import com.xworkz.farmfresh.dto.PaymentDetailsDTO;
+import com.xworkz.farmfresh.dto.SupplierDTO;
 import com.xworkz.farmfresh.entity.AdminEntity;
 import com.xworkz.farmfresh.entity.NotificationEntity;
 import com.xworkz.farmfresh.entity.PaymentDetailsEntity;
 import com.xworkz.farmfresh.entity.SupplierEntity;
 import com.xworkz.farmfresh.repository.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -233,5 +236,31 @@ public class PaymentNotificationServiceImpl implements PaymentNotificationServic
     public Double getTotalAmountPaid(Integer supplierId) {
         log.info("getTotalAmountPaid method in payment notification service");
         return paymentDetailsRepository.getTotalPaidAmount(supplierId);
+    }
+
+    @Override
+    public List<PaymentDetailsDTO> getPaymentDetailsForSupplier(SupplierDTO supplierDTO) {
+        log.info("getPaymentDetailsForSupplier method in payment notification service");
+        List<PaymentDetailsEntity> paymentDetailsEntities=paymentDetailsRepository.getPaymentDetailsForSupplier(supplierDTO.getSupplierId());
+        List<PaymentDetailsDTO> paymentDetailsDTOS=new ArrayList<>();
+        paymentDetailsEntities.forEach(paymentDetailsEntity -> {
+            PaymentDetailsDTO paymentDetailsDTO=new PaymentDetailsDTO();
+            BeanUtils.copyProperties(paymentDetailsEntity,paymentDetailsDTO);
+            paymentDetailsDTOS.add(paymentDetailsDTO);
+        });
+        return paymentDetailsDTOS;
+    }
+
+    @Override
+    public boolean getPaymentDetailsForAdminEmailSummary() {
+        log.info("getPaymentDetailsForAdminEmailSummary method in payment service");
+        List<PaymentDetailsDTO> list=new ArrayList<>();
+        List<PaymentDetailsEntity> paymentDetailsEntities=paymentDetailsRepository.getPaymentDetailsForAdminSummaryEmail();
+        paymentDetailsEntities.forEach(paymentDetailsEntity -> {
+            PaymentDetailsDTO paymentDetailsDTO=new PaymentDetailsDTO();
+            BeanUtils.copyProperties(paymentDetailsEntity,paymentDetailsDTO);
+            list.add(paymentDetailsDTO);
+        });
+        return emailSender.mailForAdminPaymentSummary(list);
     }
 }

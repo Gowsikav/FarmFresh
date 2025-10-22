@@ -1,13 +1,21 @@
 package com.xworkz.farmfresh.service;
 
 import com.xworkz.farmfresh.config.EmailConfiguration;
+import com.xworkz.farmfresh.dto.PaymentDetailsDTO;
+import com.xworkz.farmfresh.entity.AdminEntity;
 import com.xworkz.farmfresh.entity.PaymentDetailsEntity;
 import com.xworkz.farmfresh.entity.SupplierBankDetailsEntity;
 import com.xworkz.farmfresh.entity.SupplierEntity;
+import com.xworkz.farmfresh.repository.AdminRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+
+import javax.mail.internet.MimeMessage;
+import java.time.LocalDate;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -15,6 +23,9 @@ public class EmailSenderImpl implements EmailSender{
 
     @Autowired
     private EmailConfiguration configuration;
+
+    @Autowired
+    private AdminRepository adminRepository;
 
     public EmailSenderImpl()
     {
@@ -207,5 +218,50 @@ public class EmailSenderImpl implements EmailSender{
         }
     }
 
+    @Override
+    public boolean mailForAdminPaymentSummary(List<PaymentDetailsDTO> payments) {
+        log.info("mailForAdminPaymentSummary method in EmailSender");
 
+        try {
+            LocalDate today=LocalDate.now();
+            StringBuilder html = new StringBuilder();
+            html.append("<h2>📅 Payment Summary for ").append(today).append("</h2>");
+            html.append("<table border='1' cellspacing='0' cellpadding='6' style='border-collapse:collapse;width:100%;'>")
+                    .append("<tr style='background:#f2f2f2;'>")
+                    .append("<th>Supplier</th>")
+                    .append("<th>Amount Paid (₹)</th>")
+                    .append("<th>Status</th>")
+                    .append("<th>Period</th>")
+                    .append("</tr>");
+
+            for (PaymentDetailsDTO p : payments) {
+                String color = "Paid".equalsIgnoreCase(p.getPaymentStatus()) ? "green" : "red";
+                html.append("<tr>")
+                        .append("<td>").append(p.getSupplier().getFirstName()).append(" ").append(p.getSupplier().getLastName()).append("</td>")
+                        .append("<td>").append(p.getTotalAmount()).append("</td>")
+                        .append("<td style='color:").append(color).append(";'>").append(p.getPaymentStatus()).append("</td>")
+                        .append("<td>").append(p.getPeriodStart()).append(" to ").append(p.getPeriodEnd()).append("</td>")
+                        .append("</tr>");
+            }
+            html.append("</table>");
+
+            List<AdminEntity> admins = adminRepository.findAll();
+
+            for (AdminEntity admin : admins) {
+                if (admin.getEmail() != null && !admin.getEmail().isEmpty()) {
+                    MimeMessage message = configuration.mailSender().createMimeMessage();
+                    MimeMessageHelper helper = new MimeMessageHelper(message, true);
+                    helper.setTo(admin.getEmail());
+                    helper.setSubject("Evening Payment Summary - " + today);
+                    helper.setText(html.toString(), true);
+                    configuration.mailSender().send(message);
+                    log.info("Payment summary email sent to admin: {}", admin.getEmail());
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            log.error("Error while sending admin payment summary email: {}", e.getMessage(), e);
+        }
+        return false;
+    }
 }

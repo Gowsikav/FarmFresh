@@ -1,8 +1,11 @@
 package com.xworkz.farmfresh.service;
 
+import com.xworkz.farmfresh.dto.PaymentDetailsDTO;
 import com.xworkz.farmfresh.entity.PaymentDetailsEntity;
 import com.xworkz.farmfresh.entity.SupplierBankDetailsEntity;
 import com.xworkz.farmfresh.entity.SupplierEntity;
+
+import java.util.List;
 
 public interface EmailSender {
 
@@ -12,4 +15,5 @@ public interface EmailSender {
     boolean mailForSupplierBankDetails(String email, SupplierBankDetailsEntity bankDetails);
     boolean mailForSupplierPayment(SupplierEntity supplier, PaymentDetailsEntity paymentDetails);
     boolean mailForBankDetailsRequest(SupplierEntity supplier);
+    boolean mailForAdminPaymentSummary(List<PaymentDetailsDTO> payments);
 }

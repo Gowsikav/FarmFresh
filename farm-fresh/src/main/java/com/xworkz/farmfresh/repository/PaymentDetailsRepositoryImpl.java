@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Repository
@@ -119,5 +121,54 @@ public class PaymentDetailsRepositoryImpl implements PaymentDetailsRepository {
             }
         }
         return totalAmount;
+    }
+
+    @Override
+    public List<PaymentDetailsEntity> getPaymentDetailsForSupplier(Integer id) {
+        log.info("getPaymentDetailsForSupplier method in payment service");
+        EntityManager entityManager=null;
+        List<PaymentDetailsEntity> list=null;
+        try {
+            entityManager=entityManagerFactory.createEntityManager();
+            list=entityManager.createQuery("select a from PaymentDetailsEntity a where a.supplier.supplierId=:id order by id desc", PaymentDetailsEntity.class)
+                    .setParameter("id",id)
+                    .getResultList();
+            return list;
+        }catch (PersistenceException e)
+        {
+            log.error(e.getMessage());
+        }finally {
+            if (entityManager != null && entityManager.isOpen()) {
+                log.info("EntityManager is closed");
+                entityManager.close();
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public List<PaymentDetailsEntity> getPaymentDetailsForAdminSummaryEmail() {
+        log.info("getPaymentDetailsForAdminSummaryEmail method in payment service");
+        EntityManager entityManager=null;
+        List<PaymentDetailsEntity> list=new ArrayList<>();
+        try {
+            entityManager=entityManagerFactory.createEntityManager();
+            LocalDate today = LocalDate.now();
+            list = entityManager.createQuery(
+                            "SELECT a FROM PaymentDetailsEntity a WHERE a.paymentDate = :today",
+                            PaymentDetailsEntity.class)
+                    .setParameter("today", today)
+                    .getResultList();
+            return list;
+        }catch (PersistenceException e)
+        {
+            log.error(e.getMessage());
+        }finally {
+            if (entityManager != null && entityManager.isOpen()) {
+                log.info("EntityManager is closed");
+                entityManager.close();
+            }
+        }
+        return list;
     }
 }
