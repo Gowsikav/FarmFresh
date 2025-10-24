@@ -125,8 +125,8 @@
         </div>
     </nav>
 
-    <div class="page-wrapper d-flex flex-column min-vh-10" style="margin-top: 80px;"></div>
-    <div class="container mt-4 mb-5 flex-grow-1">
+    <div class="page-wrapper d-flex flex-column min-vh-10" style="margin-top: 80px;">
+    <div class="container-fluid mt-4 mb-5 flex-grow-1">
         <h2 class="mb-4">Products Price </h2>
         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addProductWithPriceModal">
             <i class="fa-solid fa-plus me-2"></i>Add Products
@@ -182,6 +182,7 @@
                 </tbody>
             </table>
         </div>
+    </div>
     </div>
 
     <!-- Add Product Modal -->

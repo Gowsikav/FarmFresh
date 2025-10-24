@@ -21,7 +21,12 @@
                 <img src="images/farm-fresh-logo.png" alt="Farm Fresh Logo" height="60" width="60"
                     class="rounded-circle border border-light p-1 ms-3 me-2" />
             </a>
-            <div class="collapse navbar-collapse">
+             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ms-auto me-3">
                     <li class="nav-item">
                         <a class="nav-link" href="redirectToSupplierDashboard?email=${dto.email}"><i

@@ -64,3 +64,38 @@ html {
   background-size: cover; 
   background-position: center;
 }
+
+@media (max-width: 992px) {
+  h2 {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .table th, .table td {
+    white-space: nowrap;
+    font-size: 14px;
+  }
+
+  .btn-sm {
+    font-size: 13px;
+    padding: 4px 8px;
+  }
+
+  .d-flex.flex-md-row {
+    flex-direction: column !important;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 576px) {
+  .table th, .table td {
+    font-size: 12px;
+  }
+  .btn {
+    width: 100%;
+    margin-bottom: 5px;
+  }
+}

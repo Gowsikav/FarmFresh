@@ -128,7 +128,7 @@
         </div>
     </nav>
 
-    <div class="page-wrapper d-flex flex-column min-vh-10" style="margin-top: 80px;"></div>
+    <div class="page-wrapper d-flex flex-column min-vh-10" style="margin-top: 80px;">
     <div class="container mt-4 mb-5 flex-grow-1">
         <h2 class="mb-4">Milk Suppliers</h2>
 
@@ -158,12 +158,11 @@
             </div>
         </c:if>
 
-        <div class="table-responsive">
-            <table class="table table-striped table-bordered">
+        <div class="table-responsive w-100">
+            <table class="table table-striped table-bordered w-100">
                 <thead>
                     <tr>
-                        <th>FirstName</th>
-                        <th>LastName</th>
+                        <th>Name</th>
                         <th>Email</th>
                         <th>Phone Number</th>
                         <th>Address</th>
@@ -175,8 +174,8 @@
                 <tbody>
                     <c:forEach var="supplier" items="${milkSuppliers}">
                         <tr>
-                            <td>${supplier.firstName}</td>
-                            <td>${supplier.lastName}</td>
+                            <td>${supplier.firstName} ${supplier.lastName}</td>
+                            
                             <td>${supplier.email}</td>
                             <td>${supplier.phoneNumber}</td>
                             <td class="text-break">${supplier.address}</td>
@@ -195,7 +194,7 @@
                                             data-ifsc-code="${supplier.supplierBankDetails.IFSCCode}"
                                             data-account-type="${supplier.supplierBankDetails.accountType}">
                                              <i class="fa-solid fa-eye"></i>View
-                                        </button>
+                                        </button> 
                                         <button class="btn btn-primary btn-sm me-2 editSupplierBankBtn"
                                             data-bs-toggle="modal" data-bs-target="#editSupplierBankDetailsModal"
                                             data-supplier-id="${supplier.supplierId}"
@@ -215,7 +214,8 @@
                                 </c:choose>
                             </td>
 
-                            <td>
+                            <td class="d-flex justify-content-center gap-2">
+                                
                                 <button type="button" class="btn btn-primary btn-sm me-2 viewSupplierBtn"
                                     data-bs-toggle="modal" data-bs-target="#viewSupplierModal"
                                     data-firstname="${supplier.firstName}" data-lastname="${supplier.lastName}"
@@ -238,6 +238,7 @@
                                     data-delete-url="deleteMilkSupplier?email=${supplier.email}&adminEmail=${dto.email}">
                                     <i class="fa-solid fa-trash"></i> Delete
                                 </a>
+                                
                             </td>
                         </tr>
                     </c:forEach>
@@ -257,7 +258,7 @@
             </div>
         </div>
     </div>
-
+</div>
     <!-- Add Milk Supplier Modal -->
     <div class="modal fade" id="addMilkSupplierModal" tabindex="-1" aria-labelledby="addMilkSupplierModalLabel"
         aria-hidden="true">
