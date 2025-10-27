@@ -171,4 +171,50 @@ public class PaymentDetailsRepositoryImpl implements PaymentDetailsRepository {
         }
         return list;
     }
+
+    @Override
+    public List<PaymentDetailsEntity> getAllPaymentDetailsForAdminHistory(int page, int size) {
+        log.info("getAllPaymentDetailsForAdminHistory method in payment repository");
+        EntityManager entityManager=null;
+        List<PaymentDetailsEntity> list=null;
+        try {
+            entityManager=entityManagerFactory.createEntityManager();
+            list=entityManager.createQuery("select a from PaymentDetailsEntity a left join fetch a.supplier left join fetch a.admin order by a.paymentDate desc", PaymentDetailsEntity.class)
+                    .setFirstResult((page-1)*size)
+                    .setMaxResults(size).getResultList();
+            return list;
+        }catch (PersistenceException e)
+        {
+            log.error(e.getMessage());
+        }finally {
+            if(entityManager!=null && entityManager.isOpen())
+            {
+                entityManager.close();
+                log.info("EntityManager is closed");
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public Integer getTotalCount() {
+        log.info("getTotalCount method in payment repo");
+        EntityManager entityManager=null;
+        Long count=0L;
+        try {
+            entityManager=entityManagerFactory.createEntityManager();
+            count=entityManager.createQuery("select count(a) from PaymentDetailsEntity a", Long.class).getSingleResult();
+            return count.intValue();
+        }catch (PersistenceException e)
+        {
+            log.error(e.getMessage());
+        }finally {
+            if(entityManager!=null && entityManager.isOpen())
+            {
+                entityManager.close();
+                log.info("EntityManager is closed");
+            }
+        }
+        return count.intValue();
+    }
 }

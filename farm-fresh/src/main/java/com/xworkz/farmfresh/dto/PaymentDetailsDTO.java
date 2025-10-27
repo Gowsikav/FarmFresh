@@ -1,7 +1,5 @@
 package com.xworkz.farmfresh.dto;
 
-import com.xworkz.farmfresh.entity.AdminEntity;
-import com.xworkz.farmfresh.entity.SupplierEntity;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -10,8 +8,8 @@ import java.time.LocalDate;
 public class PaymentDetailsDTO {
 
     private Integer id;
-    private SupplierEntity supplier;
-    private AdminEntity admin;
+    private SupplierDTO supplier;
+    private AdminDTO admin;
     private Double totalAmount;
     private LocalDate periodStart;
     private LocalDate periodEnd;

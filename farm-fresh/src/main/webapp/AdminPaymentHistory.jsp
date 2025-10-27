@@ -1,12 +1,13 @@
 <%@ page isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <html lang="en">
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Farm Fresh | Collect Milk</title>
+    <title>Farm Fresh | Payment History</title>
     <link rel="shortcut icon" href="images/title-pic.png" type="image/x-icon" />
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -15,7 +16,7 @@
     <link rel="stylesheet" href="css/index.css" />
 </head>
 
-<body class="d-flex flex-column min-vh-100">
+<body class="d-flex flex-column min-vh-100" style="overflow-y: auto !important;">
     <nav class="navbar navbar-expand-lg fixed-top" style="background: linear-gradient(90deg, #2e7d32, #f9fbe7)">
         <div class="container-fluid">
             <a class="navbar-brand">
@@ -28,8 +29,8 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-                <ul class="navbar-nav mb-2 mb-lg-0 align-items-center">
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mb-2 mb-lg-0 align-items-center ms-lg-auto me-3">
                     <li class="nav-item">
                         <a class="nav-link" href="redirectToAdminDashboard?email=${dto.email}"><i
                                 class="fa-solid fa-user-shield me-2"></i> Dashboard</a>
@@ -47,11 +48,12 @@
                                 class="fa-solid fa-bottle-droplet me-2"></i> Milk Suppliers</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="redirectToCollectMilk?email=${dto.email}"><i
+                        <a class="nav-link" href="redirectToCollectMilk?email=${dto.email}"><i
                                 class="fa-solid fa-glass-water-droplet me-2"></i> Collect Milk</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="redirectToAdminPaymentHistory?email=${dto.email}&page=1&size=10"><i
+                        <a class="nav-link active"
+                            href="redirectToAdminPaymentHistory?email=${dto.email}&page=1&size=10"><i
                                 class="fa-solid fa-money-bill-transfer me-2"></i> Payment History</a>
                     </li>
                     <li class="nav-item">
@@ -100,110 +102,110 @@
                             </c:choose>
                         </ul>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            <c:choose>
-                                <c:when test="${empty dto.profilePath}">
-                                    <img src="images/dummy-profile.png" alt="Profile" class="rounded-circle" width="40"
-                                        height="40" style="object-fit: cover;">
-                                </c:when>
-                                <c:otherwise>
-                                    <img src="<c:url value='/uploads/${dto.profilePath}'/>" alt="Profile"
-                                        class="rounded-circle" width="40" height="40" style="object-fit: cover;">
-                                </c:otherwise>
-                            </c:choose>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                    data-bs-target="#adminProfileModal"><i class="fa-solid fa-user me-2"></i> View
-                                    Profile</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li>
-                                <a class="dropdown-item text-danger" href="adminLogout?email=${dto.email}"><i
-                                        class="fa-solid fa-right-from-bracket me-2"></i> Logout</a>
-                            </li>
-                        </ul>
-                    </li>
+
+                    <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <c:choose>
+                            <c:when test="${empty dto.profilePath}">
+                                <img src="images/dummy-profile.png" alt="Profile" class="rounded-circle" width="40"
+                                    height="40" style="object-fit: cover;">
+                            </c:when>
+                            <c:otherwise>
+                                <img src="<c:url value='/uploads/${dto.profilePath}'/>" alt="Profile"
+                                    class="rounded-circle" width="40" height="40" style="object-fit: cover;">
+                            </c:otherwise>
+                        </c:choose>
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
+                                data-bs-target="#adminProfileModal"><i class="fa-solid fa-user me-2"></i>View
+                                Profile</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <a class="dropdown-item text-danger" href="adminLogout?email=${dto.email}"><i
+                                    class="fa-solid fa-right-from-bracket me-2"></i> Logout</a>
+                        </li>
+                    </ul>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <main class="d-flex flex-grow-1" style="margin-top: 80px;">
-        <div class="container p-5">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h1 class="mb-0">Collect Milk</h1>
-                <a href="redirectToCollectMilkDetails?email=${dto.email}" class="btn btn-primary">
-                    <i class="fa-solid fa-list me-2"></i> View Collected Milk Details
-                </a>
+    <main class="container my-5 pt-5">
+        <h2 class="mb-4 text-center">Payment History</h2>
+
+        <c:if test="${empty paymentList}">
+            <p class="text-center">No payment records found.</p>
+        </c:if>
+
+        <c:if test="${not empty paymentList}">
+            <div class="d-flex justify-content-center">
+                <div class="table-responsive w-100" style="max-width: 1000px;">
+                    <table class="table table-bordered table-hover align-middle text-center">
+                        <thead class="table-responsive">
+                            <tr style="font-weight: bold;">
+                                <th>Supplier Name</th>
+                                <th>Admin Name</th>
+                                <th>Period</th>
+                                <th>Payment Date</th>
+                                <th>Payment Status</th>
+                                <th>Total Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:forEach var="payment" items="${paymentList}">
+                                <tr>
+                                    <td>${payment.supplier.firstName} ${payment.supplier.lastName}</td>
+                                    <td>
+                                        <c:choose>
+                                            <c:when test="${empty payment.admin.adminName}">-</c:when>
+                                            <c:otherwise>${payment.admin.adminName}</c:otherwise>
+                                        </c:choose>
+                                    </td>
+
+                                    <td>${payment.periodStart} to ${payment.periodEnd}</td>
+
+                                    <td>${payment.paymentDate}</td>
+                                    <td>
+                                        <c:choose>
+                                            <c:when test="${payment.paymentStatus eq 'PENDING'}">
+                                                <span
+                                                    style="color: red; font-weight: 600;">${payment.paymentStatus}</span>
+                                            </c:when>
+                                            <c:when test="${payment.paymentStatus eq 'PAID'}">
+                                                <span
+                                                    style="color: green; font-weight: 600;">${payment.paymentStatus}</span>
+                                            </c:when>
+                                            <c:otherwise>
+                                                ${payment.paymentStatus}
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </td>
+                                    <td>${payment.totalAmount}</td>
+                                </tr>
+                            </c:forEach>
+                        </tbody>
+                    </table>
+                    <div class="d-flex justify-content-md-start align-items-center mt-3 gap-3 flex-wrap">
+                        <c:if test="${currentPage > 1}"> <a class="btn btn-outline-success"
+                                href="redirectToAdminPaymentHistory?email=${dto.email}&page=${currentPage - 1}&size=${pageSize}">
+                                Previous </a> 
+                            </c:if> 
+                            <span class="fw-semibold">Page ${currentPage} of ${totalPages}</span>
+                        <c:if test="${currentPage < totalPages}"> <a class="btn btn-outline-success"
+                                href="redirectToAdminPaymentHistory?email=${dto.email}&page=${currentPage + 1}&size=${pageSize}">
+                                Next </a> 
+                            </c:if>
+                    </div>
+
+                </div>
             </div>
-
-            <!-- Tip Alert -->
-            <div class="alert alert-info mb-4" role="alert">
-                <strong>Tip:</strong> Please <b>enter the supplier's phone number first</b>.
-                If the email is registered, the Name and Email fields will be filled automatically.
-            </div>
-            <c:if test="${not empty error}">
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    ${error}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            </c:if>
-            <!-- Collect Milk Form -->
-            <form action="addCollectMilk" method="post" id="collectMilkForm" class="row g-3 align-items-end mb-4">
-                <input type="email" name="email" hidden value="${dto.email}">
-                <div class="col-lg-4 col-md-6 col-12">
-                    <label for="phone" class="form-label">Phone Number <span class="text-danger small">*</span></label>
-                    <input type="tel" class="form-control" id="phone" placeholder="Enter phone number"
-                        name="phoneNumber" value="${milk.phoneNumber}" required>
-                    <span id="phoneError" class="text small"></span>
-                </div>
-                <div class="col-lg-4 col-md-6 col-12">
-                    <label for="name" class="form-label">Name</label>
-                    <input type="text" class="form-control" id="name" placeholder="Will autofill after phone number"
-                        readonly>
-                </div>
-                <div class="col-lg-4 col-md-6 col-12">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="email" placeholder="Will autofill after phone number"
-                        readonly>
-                </div>
-
-                <div class="col-lg-4 col-md-6 col-12">
-                    <label for="typeOfMilk" class="form-label">Type of Milk <span
-                            class="text-danger small">*</span></label>
-                    <select class="form-select" id="typeOfMilk" name="typeOfMilk" required>
-                        <option value="">Select milk type</option>
-                    </select>
-                    <div id="typeOfMilkError" class="error-msg text-danger small"></div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-12">
-                    <label for="quantity" class="form-label">Quantity (litres) <span
-                            class="text-danger small">*</span></label>
-                    <input type="number" class="form-control" id="quantity" placeholder="Enter quantity" name="quantity"
-                        value="${milk.quantity}" min="0.01" step="0.01" required>
-                </div>
-                <div class="col-lg-4 col-md-6 col-12">
-                    <label for="price" class="form-label">Price (per litre)</label>
-                    <input type="number" class="form-control" id="price"
-                        placeholder="Will be filled after milk type selection" name="price" value="${milk.price}"
-                        min="1" readonly>
-                </div>
-                <div class="col-lg-4 col-md-6 col-12">
-                    <label for="totalAmount" class="form-label">Total Amount</label>
-                    <input type="number" class="form-control" id="totalAmount" placeholder="Calculated automatically"
-                        name="totalAmount" value="${milk.totalAmount}" readonly>
-                </div>
-                <div class="col-12 text-end">
-                    <button class="btn btn-success mt-2" type="submit">Collect Milk</button>
-                </div>
-            </form>
-
-        </div>
+        </c:if>
     </main>
+
 
     <div class="modal fade" id="adminProfileModal" tabindex="-1" aria-labelledby="adminProfileModalLabel"
         aria-hidden="true">
@@ -258,7 +260,8 @@
         </div>
     </div>
 
-    <footer class="text-lg-start py-3" style="background: linear-gradient(90deg, #1b5e20, #fffde7); color: #333">
+    <footer class="text-lg-start py-3 mt-auto"
+        style="background: linear-gradient(90deg, #1b5e20, #fffde7); color: #333">
         <div class="container">
             <div class="row text-dark align-items-start text-center text-md-start">
                 <div class="col-md-3 mb-3">
@@ -324,7 +327,6 @@
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js"
         crossorigin="anonymous"></script>
-    <script src="js/collect-milk.js"></script>
     <script src="js/admin-notification.js"></script>
 </body>
 

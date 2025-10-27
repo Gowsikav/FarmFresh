@@ -12,4 +12,6 @@ public interface PaymentDetailsRepository {
      Double getTotalPaidAmount(Integer supplierId);
     List<PaymentDetailsEntity> getPaymentDetailsForSupplier(Integer id);
     List<PaymentDetailsEntity> getPaymentDetailsForAdminSummaryEmail();
+    List<PaymentDetailsEntity> getAllPaymentDetailsForAdminHistory(int page,int size);
+    Integer getTotalCount();
 }

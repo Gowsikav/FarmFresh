@@ -1,5 +1,5 @@
 <%@ page isELIgnored="false" %>
-    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <html lang="en">
 
@@ -52,50 +52,55 @@
                                 class="fa-solid fa-glass-water-droplet me-2"></i> Collect Milk</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="redirectToAdminPaymentHistory?email=${dto.email}&page=1&size=10"><i
+                                class="fa-solid fa-money-bill-transfer me-2"></i> Payment History</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="#"><i class="fa-solid fa-users me-2"></i> Customers</a>
                     </li>
                     <!-- Notification dropdown -->
-                  <li class="nav-item dropdown">
-                      <a class="nav-link position-relative" href="#" id="notificationDropdown" role="button"
-                         data-bs-toggle="dropdown" aria-expanded="false">
-                          <i class="fa-solid fa-bell fa-lg"></i>
-                          <c:if test="${unreadCount > 0}">
-            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                ${unreadCount}
-            </span>
-                          </c:if>
-                      </a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link position-relative" href="#" id="notificationDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-bell fa-lg"></i>
+                            <c:if test="${unreadCount > 0}">
+                                <span
+                                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    ${unreadCount}
+                                </span>
+                            </c:if>
+                        </a>
 
-                      <ul class="dropdown-menu dropdown-menu-end"
-                          aria-labelledby="notificationDropdown"
-                          style="width: 350px; max-height: 400px; overflow-y: auto;">
-                          <li><h6 class="dropdown-header">Notifications</h6></li>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown"
+                            style="width: 350px; max-height: 400px; overflow-y: auto;">
+                            <li>
+                                <h6 class="dropdown-header">Notifications</h6>
+                            </li>
 
-                          <c:choose>
-                              <c:when test="${empty notifications}">
-                                  <li>
-                                      <span class="dropdown-item text-muted">No new notifications</span>
-                                  </li>
-                              </c:when>
-                              <c:otherwise>
-                                  <c:forEach var="notification" items="${notifications}">
-                                      <li data-notification-id="${notification.id}"
-                                        data-admin-email="${dto.email}"
-                                          data-notification-type="${notification.notificationType}">
-                                          <a class="dropdown-item notification-item" href="#"
-                                             data-notification-id="${notification.id}"
-                                             data-admin-email="${dto.email}"
-                                             data-notification-type="${notification.notificationType}">
-                                              <i class="fas fa-bell me-2"></i>
-                                              ${notification.message}
-                                              <br/>
-                                          </a>
-                                      </li>
-                                  </c:forEach>
-                              </c:otherwise>
-                          </c:choose>
-                      </ul>
-                  </li>
+                            <c:choose>
+                                <c:when test="${empty notifications}">
+                                    <li>
+                                        <span class="dropdown-item text-muted">No new notifications</span>
+                                    </li>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:forEach var="notification" items="${notifications}">
+                                        <li data-notification-id="${notification.id}" data-admin-email="${dto.email}"
+                                            data-notification-type="${notification.notificationType}">
+                                            <a class="dropdown-item notification-item" href="#"
+                                                data-notification-id="${notification.id}"
+                                                data-admin-email="${dto.email}"
+                                                data-notification-type="${notification.notificationType}">
+                                                <i class="fas fa-bell me-2"></i>
+                                                ${notification.message}
+                                                <br />
+                                            </a>
+                                        </li>
+                                    </c:forEach>
+                                </c:otherwise>
+                            </c:choose>
+                        </ul>
+                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
@@ -129,136 +134,137 @@
     </nav>
 
     <div class="page-wrapper d-flex flex-column min-vh-10" style="margin-top: 80px;">
-    <div class="container mt-4 mb-5 flex-grow-1">
-        <h2 class="mb-4">Milk Suppliers</h2>
+        <div class="container mt-4 mb-5 flex-grow-1">
+            <h2 class="mb-4">Milk Suppliers</h2>
 
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addMilkSupplierModal">
-                <i class="fa-solid fa-plus me-2"></i>Add Milk Supplier
-            </button>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                    data-bs-target="#addMilkSupplierModal">
+                    <i class="fa-solid fa-plus me-2"></i>Add Milk Supplier
+                </button>
 
-            <form action="searchSuppliers" method="get" class="d-flex">
-                <input type="hidden" name="email" value="${dto.email}">
-                <input type="text" name="keyword" class="form-control me-2" placeholder="Search suppliers...">
-                <button type="submit" class="btn btn-primary">Search</button>
-            </form>
-        </div>
-
-
-        <c:if test="${not empty success}">
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                ${success}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <form action="searchSuppliers" method="get" class="d-flex">
+                    <input type="hidden" name="email" value="${dto.email}">
+                    <input type="text" name="keyword" class="form-control me-2" placeholder="Search suppliers...">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
             </div>
-        </c:if>
-        <c:if test="${not empty error}">
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                ${error}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        </c:if>
 
-        <div class="table-responsive w-100">
-            <table class="table table-striped table-bordered w-100">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone Number</th>
-                        <th>Address</th>
-                        <th>Type Of Milk</th>
-                        <th>Bank Details</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <c:forEach var="supplier" items="${milkSuppliers}">
+
+            <c:if test="${not empty success}">
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    ${success}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </c:if>
+            <c:if test="${not empty error}">
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    ${error}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </c:if>
+
+            <div class="table-responsive w-100">
+                <table class="table table-striped table-bordered w-100">
+                    <thead>
                         <tr>
-                            <td>${supplier.firstName} ${supplier.lastName}</td>
-                            
-                            <td>${supplier.email}</td>
-                            <td>${supplier.phoneNumber}</td>
-                            <td class="text-break">${supplier.address}</td>
-                            <td>${supplier.typeOfMilk}</td>
-                            
-                            <td>
-                                <c:choose>
-                                    <c:when test="${not empty supplier.supplierBankDetails}">
-                                        <button class="btn btn-primary btn-sm me-2 viewSupplierBankBtn"
-                                            data-bs-toggle="modal" data-bs-target="#viewSupplierBankDetailsModal"
-                                            data-supplier-name="${supplier.firstName} ${supplier.lastName}"
-                                            data-supplier-email="${supplier.email}"
-                                            data-bank-name="${supplier.supplierBankDetails.bankName}"
-                                            data-bank-branch="${supplier.supplierBankDetails.bankBranch}"
-                                            data-account-number="${supplier.supplierBankDetails.accountNumber}"
-                                            data-ifsc-code="${supplier.supplierBankDetails.IFSCCode}"
-                                            data-account-type="${supplier.supplierBankDetails.accountType}">
-                                             <i class="fa-solid fa-eye"></i>View
-                                        </button> 
-                                        <button class="btn btn-primary btn-sm me-2 editSupplierBankBtn"
-                                            data-bs-toggle="modal" data-bs-target="#editSupplierBankDetailsModal"
-                                            data-supplier-id="${supplier.supplierId}"
-                                            data-supplier-name="${supplier.firstName} ${supplier.lastName}"
-                                            data-supplier-email="${supplier.email}"
-                                            data-bank-name="${supplier.supplierBankDetails.bankName}"
-                                            data-bank-branch="${supplier.supplierBankDetails.bankBranch}"
-                                            data-account-number="${supplier.supplierBankDetails.accountNumber}"
-                                            data-ifsc-code="${supplier.supplierBankDetails.IFSCCode}"
-                                            data-account-type="${supplier.supplierBankDetails.accountType}">
-                                            <i class="fa-solid fa-pen-to-square"></i> Edit
-                                        </button>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <span class="text-muted">No Bank Details</span>
-                                    </c:otherwise>
-                                </c:choose>
-                            </td>
-
-                            <td class="d-flex justify-content-center gap-2">
-                                
-                                <button type="button" class="btn btn-primary btn-sm me-2 viewSupplierBtn"
-                                    data-bs-toggle="modal" data-bs-target="#viewSupplierModal"
-                                    data-firstname="${supplier.firstName}" data-lastname="${supplier.lastName}"
-                                    data-email="${supplier.email}" data-phone="${supplier.phoneNumber}"
-                                    data-address="${supplier.address}" data-milk="${supplier.typeOfMilk}">
-                                    <i class="fa-solid fa-eye"></i> View
-                                </button>
-
-                                <button type="button" class="btn btn-primary btn-sm me-2 editSupplierBtn"
-                                    data-bs-toggle="modal" data-bs-target="#editSupplierModal"
-                                    data-id="${supplier.supplierId}" data-firstname="${supplier.firstName}"
-                                    data-lastname="${supplier.lastName}" data-email="${supplier.email}"
-                                    data-phone="${supplier.phoneNumber}" data-address="${supplier.address}"
-                                    data-milk="${supplier.typeOfMilk}">
-                                    <i class="fa-solid fa-pen-to-square"></i> Edit
-                                </button>
-
-                                <a href="#" class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#deleteConfirmModal"
-                                    data-delete-url="deleteMilkSupplier?email=${supplier.email}&adminEmail=${dto.email}">
-                                    <i class="fa-solid fa-trash"></i> Delete
-                                </a>
-                                
-                            </td>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone Number</th>
+                            <th>Address</th>
+                            <th>Type Of Milk</th>
+                            <th>Bank Details</th>
+                            <th>Action</th>
                         </tr>
-                    </c:forEach>
+                    </thead>
+                    <tbody>
+                        <c:forEach var="supplier" items="${milkSuppliers}">
+                            <tr>
+                                <td>${supplier.firstName} ${supplier.lastName}</td>
 
-                </tbody>
-            </table>
-            <div>
-                <c:if test="${currentPage > 1}">
-                    <a class="btn btn-outline-secondary"
-                        href="redirectToMilkSuppliersList?email=${dto.email}&page=${currentPage - 1}&size=${pageSize}">Previous</a>
-                </c:if>
-                <span> Page ${currentPage} of ${totalPages} </span>
-                <c:if test="${currentPage < totalPages}">
-                    <a class="btn btn-outline-secondary"
-                        href="redirectToMilkSuppliersList?email=${dto.email}&page=${currentPage + 1}&size=${pageSize}">Next</a>
-                </c:if>
+                                <td>${supplier.email}</td>
+                                <td>${supplier.phoneNumber}</td>
+                                <td class="text-break">${supplier.address}</td>
+                                <td>${supplier.typeOfMilk}</td>
+
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${not empty supplier.supplierBankDetails}">
+                                            <button class="btn btn-primary btn-sm me-2 viewSupplierBankBtn"
+                                                data-bs-toggle="modal" data-bs-target="#viewSupplierBankDetailsModal"
+                                                data-supplier-name="${supplier.firstName} ${supplier.lastName}"
+                                                data-supplier-email="${supplier.email}"
+                                                data-bank-name="${supplier.supplierBankDetails.bankName}"
+                                                data-bank-branch="${supplier.supplierBankDetails.bankBranch}"
+                                                data-account-number="${supplier.supplierBankDetails.accountNumber}"
+                                                data-ifsc-code="${supplier.supplierBankDetails.IFSCCode}"
+                                                data-account-type="${supplier.supplierBankDetails.accountType}">
+                                                <i class="fa-solid fa-eye"></i>View
+                                            </button>
+                                            <button class="btn btn-primary btn-sm me-2 editSupplierBankBtn"
+                                                data-bs-toggle="modal" data-bs-target="#editSupplierBankDetailsModal"
+                                                data-supplier-id="${supplier.supplierId}"
+                                                data-supplier-name="${supplier.firstName} ${supplier.lastName}"
+                                                data-supplier-email="${supplier.email}"
+                                                data-bank-name="${supplier.supplierBankDetails.bankName}"
+                                                data-bank-branch="${supplier.supplierBankDetails.bankBranch}"
+                                                data-account-number="${supplier.supplierBankDetails.accountNumber}"
+                                                data-ifsc-code="${supplier.supplierBankDetails.IFSCCode}"
+                                                data-account-type="${supplier.supplierBankDetails.accountType}">
+                                                <i class="fa-solid fa-pen-to-square"></i> Edit
+                                            </button>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span class="text-muted">No Bank Details</span>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
+
+                                <td class="d-flex justify-content-center gap-2">
+
+                                    <button type="button" class="btn btn-primary btn-sm me-2 viewSupplierBtn"
+                                        data-bs-toggle="modal" data-bs-target="#viewSupplierModal"
+                                        data-firstname="${supplier.firstName}" data-lastname="${supplier.lastName}"
+                                        data-email="${supplier.email}" data-phone="${supplier.phoneNumber}"
+                                        data-address="${supplier.address}" data-milk="${supplier.typeOfMilk}">
+                                        <i class="fa-solid fa-eye"></i> View
+                                    </button>
+
+                                    <button type="button" class="btn btn-primary btn-sm me-2 editSupplierBtn"
+                                        data-bs-toggle="modal" data-bs-target="#editSupplierModal"
+                                        data-id="${supplier.supplierId}" data-firstname="${supplier.firstName}"
+                                        data-lastname="${supplier.lastName}" data-email="${supplier.email}"
+                                        data-phone="${supplier.phoneNumber}" data-address="${supplier.address}"
+                                        data-milk="${supplier.typeOfMilk}">
+                                        <i class="fa-solid fa-pen-to-square"></i> Edit
+                                    </button>
+
+                                    <a href="#" class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#deleteConfirmModal"
+                                        data-delete-url="deleteMilkSupplier?email=${supplier.email}&adminEmail=${dto.email}">
+                                        <i class="fa-solid fa-trash"></i> Delete
+                                    </a>
+
+                                </td>
+                            </tr>
+                        </c:forEach>
+
+                    </tbody>
+                </table>
+                <div>
+                    <c:if test="${currentPage > 1}">
+                        <a class="btn btn-outline-secondary"
+                            href="redirectToMilkSuppliersList?email=${dto.email}&page=${currentPage - 1}&size=${pageSize}">Previous</a>
+                    </c:if>
+                    <span> Page ${currentPage} of ${totalPages} </span>
+                    <c:if test="${currentPage < totalPages}">
+                        <a class="btn btn-outline-secondary"
+                            href="redirectToMilkSuppliersList?email=${dto.email}&page=${currentPage + 1}&size=${pageSize}">Next</a>
+                    </c:if>
+                </div>
             </div>
         </div>
     </div>
-</div>
     <!-- Add Milk Supplier Modal -->
     <div class="modal fade" id="addMilkSupplierModal" tabindex="-1" aria-labelledby="addMilkSupplierModalLabel"
         aria-hidden="true">
@@ -496,7 +502,8 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                         aria-label="Close"></button>
                 </div>
-                <form id="editBankDetailsForm" method="post" action="updateSupplierBankDetailsByAdmin?adminEmail=${dto.email}">
+                <form id="editBankDetailsForm" method="post"
+                    action="updateSupplierBankDetailsByAdmin?adminEmail=${dto.email}">
                     <div class="modal-body px-4 py-3">
                         <input type="hidden" name="supplierId" id="editBankSupplierId">
                         <div class="row mb-3">
@@ -506,7 +513,8 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="editBankSupplierEmail" class="form-label fw-bold">Email</label>
-                                <input type="text" class="form-control" id="editBankSupplierEmail" name="email" readonly>
+                                <input type="text" class="form-control" id="editBankSupplierEmail" name="email"
+                                    readonly>
                             </div>
                         </div>
                         <hr>
@@ -541,14 +549,14 @@
                             <div class="col-md-6">
                                 <label for="editAccountType" class="form-label fw-bold">Account Type</label>
                                 <select class="form-select" name="accountType" id="editAccountType" required>
-        <option value="">Select Account Type</option>
-        <option value="Savings">Savings</option>
-        <option value="Current">Current</option>
-        <option value="Salary">Salary</option>
-    </select>
+                                    <option value="">Select Account Type</option>
+                                    <option value="Savings">Savings</option>
+                                    <option value="Current">Current</option>
+                                    <option value="Salary">Salary</option>
+                                </select>
                                 <span class="text-danger" id="accountTypeError"></span>
                             </div>
-                        
+
                         </div>
                     </div>
                     <div class="modal-footer">

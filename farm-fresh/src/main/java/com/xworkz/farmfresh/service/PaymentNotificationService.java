@@ -16,4 +16,6 @@ public interface PaymentNotificationService {
     Double getTotalAmountPaid(Integer supplierId);
     List<PaymentDetailsDTO> getPaymentDetailsForSupplier(SupplierDTO supplierDTO);
     boolean getPaymentDetailsForAdminEmailSummary();
+    List<PaymentDetailsDTO> getAllPaymentDetailsForAdminHistory(int page,int size);
+    Integer getTotalCount();
 }
