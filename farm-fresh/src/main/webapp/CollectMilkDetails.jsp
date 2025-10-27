@@ -46,6 +46,10 @@
                         <a class="nav-link active" href="redirectToCollectMilk?email=${dto.email}"><i class="fa-solid fa-glass-water-droplet me-2"></i> Collect Milk</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="redirectToAdminPaymentHistory?email=${dto.email}&page=1&size=10"><i
+                                class="fa-solid fa-money-bill-transfer me-2"></i> Payment History</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="#"><i class="fa-solid fa-users me-2"></i> Customers</a>
                     </li>
                     <!-- Notification dropdown -->

@@ -1,5 +1,6 @@
 package com.xworkz.farmfresh.service;
 
+import com.xworkz.farmfresh.dto.AdminDTO;
 import com.xworkz.farmfresh.dto.PaymentDetailsDTO;
 import com.xworkz.farmfresh.dto.SupplierDTO;
 import com.xworkz.farmfresh.entity.AdminEntity;
@@ -262,5 +263,35 @@ public class PaymentNotificationServiceImpl implements PaymentNotificationServic
             list.add(paymentDetailsDTO);
         });
         return emailSender.mailForAdminPaymentSummary(list);
+    }
+
+    @Override
+    public List<PaymentDetailsDTO> getAllPaymentDetailsForAdminHistory(int page, int size) {
+        log.info("getAllPaymentDetailsForAdminHistory method in payment service");
+        List<PaymentDetailsEntity> paymentDetailsEntities=paymentDetailsRepository.getAllPaymentDetailsForAdminHistory(page,size);
+        List<PaymentDetailsDTO> paymentDetailsDTOS=new ArrayList<>();
+        paymentDetailsEntities.forEach(paymentDetailsEntity -> {
+            PaymentDetailsDTO paymentDetailsDTO=new PaymentDetailsDTO();
+            BeanUtils.copyProperties(paymentDetailsEntity,paymentDetailsDTO);
+            if(paymentDetailsEntity.getSupplier()!=null) {
+                SupplierDTO supplierDTO = new SupplierDTO();
+                BeanUtils.copyProperties(paymentDetailsEntity.getSupplier(), supplierDTO);
+                paymentDetailsDTO.setSupplier(supplierDTO);
+            }
+            if(paymentDetailsEntity.getAdmin()!=null)
+            {
+                AdminDTO adminDTO=new AdminDTO();
+                BeanUtils.copyProperties(paymentDetailsEntity.getAdmin(),adminDTO);
+                paymentDetailsDTO.setAdmin(adminDTO);
+            }
+            paymentDetailsDTOS.add(paymentDetailsDTO);
+        });
+        return paymentDetailsDTOS;
+    }
+
+    @Override
+    public Integer getTotalCount() {
+        log.info("getTotalCount method in payment service");
+        return paymentDetailsRepository.getTotalCount();
     }
 }

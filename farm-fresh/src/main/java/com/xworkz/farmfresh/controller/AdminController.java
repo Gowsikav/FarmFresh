@@ -1,6 +1,7 @@
 package com.xworkz.farmfresh.controller;
 
 import com.xworkz.farmfresh.dto.AdminDTO;
+import com.xworkz.farmfresh.dto.PaymentDetailsDTO;
 import com.xworkz.farmfresh.service.AdminService;
 import com.xworkz.farmfresh.service.CollectMilkService;
 import com.xworkz.farmfresh.service.PaymentNotificationService;
@@ -22,6 +23,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -230,5 +232,24 @@ public class AdminController {
         }
         return getSupplierPaymentDetails(notificationId,adminEmail,model);
 
+    }
+
+    @GetMapping("/redirectToAdminPaymentHistory")
+    public String redirectToAdminPaymentHistory(@RequestParam String email,@RequestParam(defaultValue = "1") int page,
+                                                @RequestParam(defaultValue = "10") int size, Model model)
+    {
+        log.info("redirectToAdminPaymentHistory method in adminController");
+        List<PaymentDetailsDTO> list=notificationService.getAllPaymentDetailsForAdminHistory(page,size);
+        model.addAttribute("paymentList",list);
+        model.addAttribute("dto",adminService.getAdminDetailsByEmail(email));
+
+        Integer totalCount= notificationService.getTotalCount();
+        int totalPages = (int) Math.ceil((double) totalCount / size);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("pageSize", size);
+
+        controllerHelper.addNotificationData(model,email);
+        return "AdminPaymentHistory";
     }
 }
