@@ -62,11 +62,9 @@ public class PaymentNotificationServiceImpl implements PaymentNotificationServic
         String dayStr;
 
         if (dayOfMonth == 13) {
-            LocalDate prevMonth = today.minusMonths(1);
-            int startDay = Math.min(30, prevMonth.lengthOfMonth());
-            periodStart = prevMonth.withDayOfMonth(startDay);
-            periodEnd = today.withDayOfMonth(12);
-            paymentDate = today.withDayOfMonth(15);
+            periodStart = today.minusMonths(1).withDayOfMonth(today.minusMonths(1).lengthOfMonth());
+            periodEnd = today.withDayOfMonth(14);
+            paymentDate=today.withDayOfMonth(15);
             dayStr = "15th";
         } else {
             periodStart = today.withDayOfMonth(15);
@@ -139,12 +137,11 @@ public class PaymentNotificationServiceImpl implements PaymentNotificationServic
         LocalDate periodEnd;
 
         if (dayOfMonth == 15) {
-            int prevMonthLastDay = today.minusMonths(1).lengthOfMonth();
-            periodStart = today.minusMonths(1).withDayOfMonth(Math.min(30, prevMonthLastDay));
+            periodStart = today.minusMonths(1).withDayOfMonth(today.minusMonths(1).lengthOfMonth());
             periodEnd = today.withDayOfMonth(14);
         } else {
             periodStart = today.withDayOfMonth(15);
-            periodEnd = today.withDayOfMonth(Math.min(30, lastDayOfMonth - 1));
+            periodEnd = today.withDayOfMonth(lastDayOfMonth - 1);
         }
 
         log.info("Generating payment notifications for period {} to {}", periodStart, periodEnd);

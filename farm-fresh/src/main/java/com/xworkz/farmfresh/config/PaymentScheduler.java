@@ -15,11 +15,21 @@ public class PaymentScheduler {
     @Autowired
     private PaymentNotificationService paymentNotificationService;
 
-    //   0 0 9 13,28 * *   every month 13 and 28 at 9 AM
-    @Scheduled(cron = "0 0 9 13,28 * *",zone = "Asia/Kolkata")
+    @Scheduled(cron = "0 0 9 * * *", zone = "Asia/Kolkata") // runs daily at 9 AM
     public void runAdvanceNotification() {
-        paymentNotificationService.generateAdvanceNotifications();
+        LocalDate today = LocalDate.now();
+        int dayOfMonth = today.getDayOfMonth();
+        int lastDayOfMonth = today.lengthOfMonth();
+
+        if (dayOfMonth == 13 || dayOfMonth == lastDayOfMonth - 2) {
+            log.info("Triggering advance payment notification for {}", today);
+            paymentNotificationService.generateAdvanceNotifications();
+        } else {
+            log.info("Today ({}) is not 13th or {} (2 days before month end). Skipping advance notification.",
+                    dayOfMonth, lastDayOfMonth - 2);
+        }
     }
+
 
     // every day at 9 AM    // 0 */1 * * * *
     @Scheduled(cron = "0 0 9 * * *", zone = "Asia/Kolkata")
