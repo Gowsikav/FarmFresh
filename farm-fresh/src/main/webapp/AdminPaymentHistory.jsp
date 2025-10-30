@@ -134,16 +134,16 @@
         </div>
     </nav>
 
-    <main class="container my-5 pt-5">
-        <h2 class="mb-4 text-center">Payment History</h2>
+    <main class="container pt-5 min-vh-10" style="margin-top:80px;">
+        <h2 class="mb-4 text-md-start">Payment History</h2>
 
         <c:if test="${empty paymentList}">
             <p class="text-center">No payment records found.</p>
         </c:if>
 
         <c:if test="${not empty paymentList}">
-            <div class="d-flex justify-content-center">
-                <div class="table-responsive w-100" style="max-width: 1000px;">
+            <div class="d-flex justify-content-start">
+                <div class="table-responsive w-100 text-center" style="max-width: 1000px;">
                     <table class="table table-bordered table-hover align-middle text-center">
                         <thead class="table-responsive">
                             <tr style="font-weight: bold;">
