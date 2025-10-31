@@ -144,7 +144,7 @@
         <c:if test="${not empty paymentList}">
             <div class="d-flex justify-content-start">
                 <div class="table-responsive w-100 text-center" style="max-width: 1000px;">
-                    <table class="table table-bordered table-hover align-middle text-center">
+                    <table class="table table-striped table-bordered table-hover align-middle text-center">
                         <thead class="table-responsive">
                             <tr style="font-weight: bold;">
                                 <th>Supplier Name</th>
