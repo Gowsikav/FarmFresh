@@ -257,6 +257,12 @@ public class PaymentNotificationServiceImpl implements PaymentNotificationServic
         paymentDetailsEntities.forEach(paymentDetailsEntity -> {
             PaymentDetailsDTO paymentDetailsDTO=new PaymentDetailsDTO();
             BeanUtils.copyProperties(paymentDetailsEntity,paymentDetailsDTO);
+            if(paymentDetailsEntity.getSupplier()!=null)
+            {
+                SupplierDTO supplierDTO=new SupplierDTO();
+                BeanUtils.copyProperties(paymentDetailsEntity.getSupplier(),supplierDTO);
+                paymentDetailsDTO.setSupplier(supplierDTO);
+            }
             list.add(paymentDetailsDTO);
         });
         return emailSender.mailForAdminPaymentSummary(list);

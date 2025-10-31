@@ -168,7 +168,12 @@
 
                                     <td>${payment.periodStart} to ${payment.periodEnd}</td>
 
-                                    <td>${payment.paymentDate}</td>
+                                    <td>
+                                        <c:choose>
+                                            <c:when test="${empty payment.admin.adminName}">-</c:when>
+                                            <c:otherwise>${payment.paymentDate}</c:otherwise>
+                                        </c:choose>
+                                    </td>
                                     <td>
                                         <c:choose>
                                             <c:when test="${payment.paymentStatus eq 'PENDING'}">

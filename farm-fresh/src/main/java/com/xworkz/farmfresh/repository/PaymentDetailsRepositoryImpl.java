@@ -155,7 +155,7 @@ public class PaymentDetailsRepositoryImpl implements PaymentDetailsRepository {
             entityManager=entityManagerFactory.createEntityManager();
             LocalDate today = LocalDate.now();
             list = entityManager.createQuery(
-                            "SELECT a FROM PaymentDetailsEntity a WHERE a.paymentDate = :today",
+                            "SELECT a FROM PaymentDetailsEntity a JOIN FETCH a.supplier WHERE a.paymentDate = :today",
                             PaymentDetailsEntity.class)
                     .setParameter("today", today)
                     .getResultList();
