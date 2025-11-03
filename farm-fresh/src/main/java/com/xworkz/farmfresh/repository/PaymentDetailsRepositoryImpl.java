@@ -217,4 +217,26 @@ public class PaymentDetailsRepositoryImpl implements PaymentDetailsRepository {
         }
         return count.intValue();
     }
+
+    @Override
+    public PaymentDetailsEntity getPaymentDetailsById(Integer id) {
+        log.info("getPaymentDetailsById method in payment repository");
+        EntityManager entityManager=null;
+        PaymentDetailsEntity paymentDetailsEntity=null;
+        try {
+            entityManager=entityManagerFactory.createEntityManager();
+            paymentDetailsEntity=entityManager.find(PaymentDetailsEntity.class,id);
+            return paymentDetailsEntity;
+        }catch (PersistenceException e)
+        {
+            log.error(e.getMessage());
+        }finally {
+            if(entityManager!=null && entityManager.isOpen())
+            {
+                entityManager.close();
+                log.info("EntityManager is closed");
+            }
+        }
+        return paymentDetailsEntity;
+    }
 }

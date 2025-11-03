@@ -1,7 +1,7 @@
 <%@ page isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<html lang="en">
+<html lang="en" xmlns:c="http://www.w3.org/1999/XSL/Transform">
 
 <head>
     <meta charset="UTF-8" />
@@ -91,6 +91,7 @@
                                     <th>Total Amount (&#8377;)</th>
                                     <th>Payment Date</th>
                                     <th>Payment Status</th>
+                                    <th>Invoice</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -113,6 +114,26 @@
                                             </c:otherwise>
                                         </c:choose>
                                         </td>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${record.paymentStatus eq 'PAID'}">
+                                                    <form action="generateInvoiceForSupplier" method="get" target="_blank" style="display:inline;">
+                                                        <input type="hidden" name="periodStart" value="${record.periodStart}" />
+                                                        <input type="hidden" name="periodEnd" value="${record.periodEnd}" />
+                                                        <input type="hidden" name="paymentDate" value="${record.paymentDate}" />
+                                                        <input type="hidden" name="supplierId" value="${dto.supplierId}" />
+                                                        <input type="hidden" name="paymentId" value="${record.id}" />
+                                                        <button type="submit" class="btn btn-sm btn-success">
+                                                            <i class="fa fa-file-pdf-o"></i> Download Invoice
+                                                        </button>
+                                                    </form>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <span class="text-muted">No</span>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </td>
+
                                     </tr>
                                 </c:forEach>
                                 <c:if test="${empty paymentList}">

@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -334,5 +335,13 @@ public class SupplierController {
         model.addAttribute("dto",supplierDTO);
         model.addAttribute("paymentList",list);
         return "SupplierPaymentStatus";
+    }
+
+    @GetMapping("/generateInvoiceForSupplier")
+    public void getInvoiceForSupplier(@RequestParam String periodStart, @RequestParam String periodEnd,
+                                      @RequestParam String paymentDate, @RequestParam Integer supplierId,@RequestParam Integer paymentId, HttpServletResponse response)
+    {
+        log.info("getInvoiceForSupplier method in supplier controller");
+        supplierService.downloadInvoicePdf(supplierId,paymentId, LocalDate.parse(periodStart), LocalDate.parse(periodEnd), LocalDate.parse(paymentDate), response);
     }
 }
