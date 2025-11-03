@@ -3,6 +3,8 @@ package com.xworkz.farmfresh.service;
 import com.xworkz.farmfresh.dto.SupplierBankDetailsDTO;
 import com.xworkz.farmfresh.dto.SupplierDTO;
 
+import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface SupplierService {
@@ -25,4 +27,5 @@ public interface SupplierService {
     boolean updateSupplierBankDetailsByAdmin(SupplierBankDetailsDTO supplierBankDetailsDTO,String email,String adminEmail);
     SupplierDTO getSupplierDetailsByNotificationId(Long notificationId);
     boolean requestForSupplierBankDetails(String supplierEmail);
+    void downloadInvoicePdf(Integer supplierId,Integer paymentId, LocalDate start, LocalDate end, LocalDate paymentDate, HttpServletResponse response);
 }

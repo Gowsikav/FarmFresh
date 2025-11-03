@@ -1,22 +1,35 @@
 package com.xworkz.farmfresh.service;
 
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+
 import com.xworkz.farmfresh.dto.AdminDTO;
 import com.xworkz.farmfresh.dto.SupplierBankDetailsDTO;
 import com.xworkz.farmfresh.dto.SupplierDTO;
 import com.xworkz.farmfresh.entity.*;
 import com.xworkz.farmfresh.repository.CollectMilkRepository;
 import com.xworkz.farmfresh.repository.NotificationRepository;
+import com.xworkz.farmfresh.repository.PaymentDetailsRepository;
 import com.xworkz.farmfresh.repository.SupplierRepository;
 import com.xworkz.farmfresh.util.OTPUtil;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.itextpdf.text.Font.BOLD;
+import static com.itextpdf.text.Font.ITALIC;
+
 
 @Slf4j
 @Service
@@ -36,6 +49,9 @@ public class SupplierServiceImpl implements SupplierService{
 
     @Autowired
     private CollectMilkRepository collectMilkRepository;
+
+    @Autowired
+    private PaymentDetailsRepository paymentDetailsRepository;
 
     public SupplierServiceImpl()
     {
@@ -355,4 +371,136 @@ public class SupplierServiceImpl implements SupplierService{
         SupplierEntity supplierEntity=supplierRepository.getSupplierByEmail(supplierEmail);
         return emailSender.mailForBankDetailsRequest(supplierEntity);
     }
+
+    @Override
+    public void downloadInvoicePdf(Integer supplierId,Integer paymentId, LocalDate start, LocalDate end, LocalDate paymentDate, HttpServletResponse response) {
+        log.info("Generating enhanced supplier invoice for supplierId {}", supplierId);
+
+        try {
+            PaymentDetailsEntity payment = paymentDetailsRepository.getPaymentDetailsById(paymentId);
+            List<CollectMilkEntity> milkList = collectMilkRepository.getCollectMilkDetailsForSupplierById(supplierId, start, end);
+            SupplierEntity supplier = supplierRepository.getSupplierDetailsAndBankById(supplierId);
+
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=Invoice_"
+                    + supplier.getFirstName() + "_" + supplier.getLastName() + ".pdf");
+
+            Document document = new Document(PageSize.A4, 36, 36, 54, 36);
+            PdfWriter.getInstance(document, response.getOutputStream());
+            document.open();
+
+            Font titleFont = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD, BaseColor.WHITE);
+            Font sectionHeaderFont = new Font(Font.FontFamily.HELVETICA, 13, Font.BOLD, new BaseColor(0, 51, 102));
+            Font tableHeaderFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.WHITE);
+            Font normalFont = new Font(Font.FontFamily.HELVETICA, 11, Font.NORMAL, BaseColor.BLACK);
+            Font italicFont = new Font(Font.FontFamily.HELVETICA, 10, Font.ITALIC, BaseColor.GRAY);
+
+            PdfPTable headerTable = new PdfPTable(1);
+            headerTable.setWidthPercentage(100);
+            PdfPCell headerCell = new PdfPCell(new Phrase("FARM FRESH - SUPPLIER PAYMENT INVOICE", titleFont));
+            headerCell.setBackgroundColor(new BaseColor(0, 102, 204));
+            headerCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            headerCell.setPadding(12);
+            headerCell.setBorder(Rectangle.NO_BORDER);
+            headerTable.addCell(headerCell);
+            document.add(headerTable);
+            document.add(Chunk.NEWLINE);
+
+            document.add(new Paragraph("Invoice Date: " + LocalDate.now(), normalFont));
+            document.add(new Paragraph("Period: " + start + " to " + end, normalFont));
+            document.add(Chunk.NEWLINE);
+
+            PdfPTable supplierTable = new PdfPTable(2);
+            supplierTable.setWidthPercentage(100);
+            PdfPCell supplierHeader = new PdfPCell(new Phrase("Supplier Details", sectionHeaderFont));
+            supplierHeader.setColspan(2);
+            supplierHeader.setBackgroundColor(new BaseColor(230, 240, 255));
+            supplierHeader.setPadding(6);
+            supplierTable.addCell(supplierHeader);
+            supplierTable.addCell("Supplier Name");
+            supplierTable.addCell(supplier.getFirstName() + " " + supplier.getLastName());
+            supplierTable.addCell("Phone");
+            supplierTable.addCell(supplier.getPhoneNumber());
+            supplierTable.addCell("Address");
+            supplierTable.addCell(supplier.getAddress());
+            document.add(supplierTable);
+            document.add(Chunk.NEWLINE);
+
+            if (supplier.getSupplierBankDetails() != null) {
+                PdfPTable bankTable = new PdfPTable(2);
+                bankTable.setWidthPercentage(100);
+                PdfPCell bankHeader = new PdfPCell(new Phrase("Bank Details", sectionHeaderFont));
+                bankHeader.setColspan(2);
+                bankHeader.setBackgroundColor(new BaseColor(230, 240, 255));
+                bankHeader.setPadding(6);
+                bankTable.addCell(bankHeader);
+                bankTable.addCell("Bank Name");
+                bankTable.addCell(supplier.getSupplierBankDetails().getBankName());
+                bankTable.addCell("Branch");
+                bankTable.addCell(supplier.getSupplierBankDetails().getBankBranch());
+                bankTable.addCell("Account No");
+                bankTable.addCell(supplier.getSupplierBankDetails().getAccountNumber());
+                bankTable.addCell("IFSC");
+                bankTable.addCell(supplier.getSupplierBankDetails().getIFSCCode());
+                document.add(bankTable);
+                document.add(Chunk.NEWLINE);
+            }
+
+            PdfPTable milkTable = new PdfPTable(5);
+            milkTable.setWidthPercentage(100);
+            milkTable.setSpacingBefore(5);
+            milkTable.setSpacingAfter(5);
+            milkTable.setWidths(new float[]{2.5f, 2.5f, 1.5f, 1.5f, 1.5f});
+
+            String[] milkHeaders = {"Milk Type", "Date", "Quantity (L)", "Price per litre", "Total Amount"};
+            for (String h : milkHeaders) {
+                PdfPCell cell = new PdfPCell(new Phrase(h, tableHeaderFont));
+                cell.setBackgroundColor(new BaseColor(0, 102, 204));
+                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                cell.setPadding(5);
+                milkTable.addCell(cell);
+            }
+
+            double total = 0;
+            for (CollectMilkEntity m : milkList) {
+                milkTable.addCell(new Phrase(m.getTypeOfMilk(), normalFont));
+                milkTable.addCell(new Phrase(m.getCollectedDate().toString(), normalFont));
+                milkTable.addCell(new Phrase(String.valueOf(m.getQuantity()), normalFont));
+                milkTable.addCell(new Phrase(String.valueOf(m.getPrice()), normalFont));
+                milkTable.addCell(new Phrase(String.valueOf(m.getTotalAmount()), normalFont));
+                total += m.getTotalAmount();
+            }
+            document.add(new Paragraph("Milk Collection Summary", sectionHeaderFont));
+            document.add(milkTable);
+            document.add(Chunk.NEWLINE);
+
+            PdfPTable payTable = new PdfPTable(2);
+            payTable.setWidthPercentage(100);
+            PdfPCell payHeader = new PdfPCell(new Phrase("Payment Details", sectionHeaderFont));
+            payHeader.setColspan(2);
+            payHeader.setBackgroundColor(new BaseColor(230, 240, 255));
+            payHeader.setPadding(6);
+            payTable.addCell(payHeader);
+            payTable.addCell("Payment Date");
+            payTable.addCell(payment.getPaymentDate().toString());
+            payTable.addCell("Total Amount");
+            payTable.addCell(String.format("₹ %.2f", total));
+            payTable.addCell("Status");
+            payTable.addCell(payment.getPaymentStatus());
+            document.add(payTable);
+
+            document.add(Chunk.NEWLINE);
+            Paragraph thanks = new Paragraph("Thank you for your continued partnership!", italicFont);
+            thanks.setAlignment(Element.ALIGN_CENTER);
+            document.add(thanks);
+
+            document.close();
+            log.info("Invoice generated successfully for supplier {}", supplierId);
+
+        } catch (Exception e) {
+            log.error("Error generating invoice for supplier {}: {}", supplierId, e.getMessage(), e);
+            throw new RuntimeException("Error generating enhanced supplier invoice PDF", e);
+        }
+    }
+
 }

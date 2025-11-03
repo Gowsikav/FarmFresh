@@ -334,4 +334,29 @@ public class SupplierRepositoryImpl implements SupplierRepository {
         }
         return false;
     }
+
+    @Override
+    public SupplierEntity getSupplierDetailsAndBankById(Integer id) {
+        log.info("getSupplierDetailsAndBankById bySupplier method in supplier repository");
+        EntityManager entityManager=null;
+        SupplierEntity supplierEntity=null;
+        try {
+            entityManager=entityManagerFactory.createEntityManager();
+            supplierEntity=entityManager.createQuery("select a from SupplierEntity a left join fetch a.supplierBankDetails where a.supplierId=:id and a.isActive=true",
+                    SupplierEntity.class)
+                    .setParameter("id",id)
+                    .getSingleResult();
+            return supplierEntity;
+        }catch (PersistenceException e)
+        {
+            log.error(e.getMessage());
+        }finally {
+            if(entityManager!=null && entityManager.isOpen())
+            {
+                entityManager.close();
+                log.info("EntityManager is closed");
+            }
+        }
+        return supplierEntity;
+    }
 }
