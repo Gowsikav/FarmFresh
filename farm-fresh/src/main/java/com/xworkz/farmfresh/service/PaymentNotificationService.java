@@ -18,4 +18,8 @@ public interface PaymentNotificationService {
     boolean getPaymentDetailsForAdminEmailSummary();
     List<PaymentDetailsDTO> getAllPaymentDetailsForAdminHistory(int page,int size);
     Integer getTotalCount();
+
+    Double getTotalPaymentsThisMonth();
+    List<PaymentDetailsDTO> getRecentPayments();
+    Double totalPendingAmount();
 }

@@ -77,7 +77,7 @@
                     <label for="adminEmail" class="form-label">Email <span class="text-danger">*</span></label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
-                        <input type="email" class="form-control" id="adminEmail" name="email" value="${email}"
+                        <input type="email" class="form-control" id="adminEmail" placeholder="Enter your email" name="email" value="${email}"
                             required />
                     </div>
                 </div>
@@ -86,7 +86,7 @@
                     <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fa-solid fa-key"></i></span>
-                        <input type="password" class="form-control" id="password" name="password" minlength="5"
+                        <input type="password" class="form-control" id="password" placeholder="Enter password" name="password" minlength="5"
                             pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{5,}$" required />
                     </div>
                 </div>

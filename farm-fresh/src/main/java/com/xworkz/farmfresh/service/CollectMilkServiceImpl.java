@@ -143,4 +143,29 @@ public class CollectMilkServiceImpl implements CollectMilkService{
         log.info("getTotalLitre method in collect milk service");
         return collectMilkRepository.getTotalLitre(supplierId);
     }
+
+    @Override
+    public Double getTotalMilkCollected() {
+        log.info("getTotalMilkCollected method in collect milk service");
+        return collectMilkRepository.getTotalMilkCollected();
+    }
+
+    @Override
+    public List<CollectMilkDTO> getRecentCollections() {
+        log.info("getRecentCollections method in milk collect service");
+        List<CollectMilkDTO> collectMilkDTOS=new ArrayList<>();
+        List<CollectMilkEntity> collectMilkEntityList=collectMilkRepository.getRecentCollections();
+        collectMilkEntityList.forEach(collectMilkEntity -> {
+            CollectMilkDTO collectMilkDTO=new CollectMilkDTO();
+            BeanUtils.copyProperties(collectMilkEntity,collectMilkDTO);
+            if(collectMilkEntity.getSupplier()!=null)
+            {
+                SupplierDTO supplierDTO=new SupplierDTO();
+                BeanUtils.copyProperties(collectMilkEntity.getSupplier(),supplierDTO);
+                collectMilkDTO.setSupplier(supplierDTO);
+            }
+            collectMilkDTOS.add(collectMilkDTO);
+        });
+        return collectMilkDTOS;
+    }
 }

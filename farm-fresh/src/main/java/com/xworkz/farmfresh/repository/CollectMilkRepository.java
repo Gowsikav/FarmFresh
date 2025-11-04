@@ -16,4 +16,6 @@ public interface CollectMilkRepository {
     List<CollectMilkEntity> getCollectMilkDetailsForSupplierById(Integer supplierId,LocalDate start,LocalDate end);
     LocalDate getLastCollectedDate(Integer supplierId);
     Double getTotalLitre(Integer supplierId);
+    Double getTotalMilkCollected();
+    List<CollectMilkEntity> getRecentCollections();
 }

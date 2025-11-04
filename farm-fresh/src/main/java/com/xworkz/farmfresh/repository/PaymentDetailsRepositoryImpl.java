@@ -239,4 +239,75 @@ public class PaymentDetailsRepositoryImpl implements PaymentDetailsRepository {
         }
         return paymentDetailsEntity;
     }
+
+    public Double getTotalPaymentsThisMonth() {
+        log.info("getTotalPaymentsThisMonth method in payment repository");
+        EntityManager entityManager=null;
+        LocalDate start = LocalDate.now().withDayOfMonth(1);
+        LocalDate end = LocalDate.now();
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+            Double total = entityManager.createQuery(
+                            "SELECT SUM(p.totalAmount) FROM PaymentDetailsEntity p WHERE p.paymentDate BETWEEN :start AND :end",
+                            Double.class)
+                    .setParameter("start", start)
+                    .setParameter("end", end)
+                    .getSingleResult();
+
+            return total != null ? total : 0.0;
+        }catch (PersistenceException e)
+        {
+            log.error(e.getMessage());
+        }finally {
+            if(entityManager!=null && entityManager.isOpen())
+            {
+                entityManager.close();
+                log.info("EntityManager is closed");
+            }
+        }
+        return 0.0;
+    }
+
+    public List<PaymentDetailsEntity> getRecentPayments() {
+        log.info("getRecentPayments method in payment repository");
+        EntityManager entityManager=null;
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+            return entityManager.createQuery("SELECT p FROM PaymentDetailsEntity p join fetch p.supplier ORDER BY p.paymentDate DESC", PaymentDetailsEntity.class)
+                    .setMaxResults(5)
+                    .getResultList();
+        }catch (PersistenceException e)
+        {
+            log.error(e.getMessage());
+        }finally {
+            if(entityManager!=null && entityManager.isOpen())
+            {
+                entityManager.close();
+                log.info("EntityManager is closed");
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Double totalPendingAmount() {
+        log.info("totalPendingAmount method in payment repo");
+        EntityManager entityManager=null;
+        try {
+            entityManager=entityManagerFactory.createEntityManager();
+            Double total=entityManager.createQuery("select sum(p.totalAmount) from PaymentDetailsEntity p where p.paymentStatus=:status",Double.class)
+                    .setParameter("status","PENDING").getSingleResult();
+            return total!=null?total:0.0;
+        }catch (PersistenceException e)
+        {
+            log.error(e.getMessage());
+        }finally {
+            if(entityManager!=null && entityManager.isOpen())
+            {
+                entityManager.close();
+                log.info("EntityManager is closed");
+            }
+        }
+        return 0.0;
+    }
 }

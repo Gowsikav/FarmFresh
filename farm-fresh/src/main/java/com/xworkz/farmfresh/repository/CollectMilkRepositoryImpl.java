@@ -248,4 +248,46 @@ public class CollectMilkRepositoryImpl implements CollectMilkRepository{
         }
         return lastDate;
     }
+
+    public Double getTotalMilkCollected() {
+        log.info("getTotalMilkCollected method in collect milk repo");
+        EntityManager entityManager=null;
+        try {
+            entityManager=entityManagerFactory.createEntityManager();
+            Double total = entityManager.createQuery("SELECT SUM(m.quantity) FROM CollectMilkEntity m", Double.class)
+                    .getSingleResult();
+            return total != null ? total : 0.0;
+        }catch(PersistenceException e)
+        {
+            log.error(e.getMessage());
+        }finally {
+            if(entityManager!=null && entityManager.isOpen())
+            {
+                entityManager.close();
+                log.info("EntityManager is closed");
+            }
+        }
+        return 0.0;
+    }
+
+    public List<CollectMilkEntity> getRecentCollections() {
+        log.info("getRecentCollections method in collect milk repo");
+        EntityManager entityManager=null;
+        try {
+            entityManager=entityManagerFactory.createEntityManager();
+            return entityManager.createQuery("SELECT m FROM CollectMilkEntity m join fetch m.supplier ORDER BY m.collectedDate DESC", CollectMilkEntity.class)
+                    .setMaxResults(5)
+                    .getResultList();
+        } catch (PersistenceException e)
+        {
+            log.error(e.getMessage());
+        }finally {
+            if(entityManager!=null && entityManager.isOpen())
+            {
+                entityManager.close();
+                log.info("EntityManager is closed");
+            }
+        }
+        return null;
+    }
 }
