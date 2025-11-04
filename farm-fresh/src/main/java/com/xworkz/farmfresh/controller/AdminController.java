@@ -93,6 +93,11 @@ public class AdminController {
         model.addAttribute("dto", adminDTO);
         int count=adminService.getSupplierCount();
         model.addAttribute("suppliersCount",count);
+        model.addAttribute("totalMilkCollected", collectMilkService.getTotalMilkCollected());
+        model.addAttribute("recentCollections", collectMilkService.getRecentCollections());
+        model.addAttribute("totalPayments", notificationService.getTotalPaymentsThisMonth());
+        model.addAttribute("recentPayments", notificationService.getRecentPayments());
+        model.addAttribute("pendingAmount", notificationService.totalPendingAmount());
         controllerHelper.addNotificationData(model,email);
         return "AdminDashboard";
     }

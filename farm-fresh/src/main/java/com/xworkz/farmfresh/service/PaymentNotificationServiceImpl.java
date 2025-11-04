@@ -297,4 +297,35 @@ public class PaymentNotificationServiceImpl implements PaymentNotificationServic
         log.info("getTotalCount method in payment service");
         return paymentDetailsRepository.getTotalCount();
     }
+
+    @Override
+    public Double getTotalPaymentsThisMonth() {
+        log.info("getTotalPaymentsThisMonth method in payment service");
+        return paymentDetailsRepository.getTotalPaymentsThisMonth();
+    }
+
+    @Override
+    public List<PaymentDetailsDTO> getRecentPayments() {
+        log.info("getRecentPayments method in payment service");
+        List<PaymentDetailsDTO> paymentDetailsDTOS=new ArrayList<>();
+        List<PaymentDetailsEntity> paymentDetailsEntities=paymentDetailsRepository.getRecentPayments();
+        paymentDetailsEntities.forEach(paymentDetailsEntity -> {
+            PaymentDetailsDTO paymentDetailsDTO=new PaymentDetailsDTO();
+            BeanUtils.copyProperties(paymentDetailsEntity,paymentDetailsDTO);
+            if(paymentDetailsEntity.getSupplier()!=null)
+            {
+                SupplierDTO supplierDTO=new SupplierDTO();
+                BeanUtils.copyProperties(paymentDetailsEntity.getSupplier(),supplierDTO);
+                paymentDetailsDTO.setSupplier(supplierDTO);
+            }
+            paymentDetailsDTOS.add(paymentDetailsDTO);
+        });
+        return paymentDetailsDTOS;
+    }
+
+    @Override
+    public Double totalPendingAmount() {
+        log.info("totalPendingAmount method in payment service");
+        return paymentDetailsRepository.totalPendingAmount();
+    }
 }

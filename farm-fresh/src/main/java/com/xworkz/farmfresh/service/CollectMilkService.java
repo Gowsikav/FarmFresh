@@ -14,5 +14,6 @@ public interface CollectMilkService {
     List<CollectMilkDTO> getAllDetailsBySupplier(Long notificationId);
     LocalDate getLastCollectedDate(Integer supplierId);
     Double getTotalLitre(Integer supplierId);
-
+    Double getTotalMilkCollected();
+    List<CollectMilkDTO> getRecentCollections();
 }
