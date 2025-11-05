@@ -74,7 +74,7 @@
     </nav>
 
 <main class="flex-grow-1" style="margin-top: 80px; margin-bottom: 20px;">
-        <div class="container">
+        <div class="container-fluid p-5">
             <div class="row justify-content-center">
                 <div class="col-md-8">
                     <div class="card shadow-sm">
