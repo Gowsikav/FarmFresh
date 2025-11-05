@@ -1,9 +1,7 @@
 package com.xworkz.farmfresh.service;
 
 import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.*;
 
 import com.xworkz.farmfresh.dto.AdminDTO;
 import com.xworkz.farmfresh.dto.SupplierBankDetailsDTO;
@@ -18,6 +16,7 @@ import com.xworkz.farmfresh.util.OTPUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
@@ -386,8 +385,20 @@ public class SupplierServiceImpl implements SupplierService{
                     + supplier.getFirstName() + "_" + supplier.getLastName() + ".pdf");
 
             Document document = new Document(PageSize.A4, 36, 36, 54, 36);
-            PdfWriter.getInstance(document, response.getOutputStream());
+            PdfWriter writer = PdfWriter.getInstance(document, response.getOutputStream());
             document.open();
+
+            String imagePath = "D:\\Git\\FarmFresh\\farm-fresh\\src\\main\\webapp\\images\\farm-fresh-logo.png";
+            Image bg = Image.getInstance(imagePath);
+            bg.scaleToFit(PageSize.A4.getWidth(), PageSize.A4.getHeight());
+            bg.setAbsolutePosition(0, 0);
+            PdfContentByte canvas = writer.getDirectContentUnder();
+            PdfGState gState = new PdfGState();
+            gState.setFillOpacity(0.15f);
+            canvas.saveState();
+            canvas.setGState(gState);
+            canvas.addImage(bg);
+            canvas.restoreState();
 
             Font titleFont = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD, BaseColor.WHITE);
             Font sectionHeaderFont = new Font(Font.FontFamily.HELVETICA, 13, Font.BOLD, new BaseColor(0, 51, 102));
