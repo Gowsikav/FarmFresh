@@ -126,7 +126,13 @@
 
     <main class="flex-grow-1 d-flex flex-column min-vh-10" style="margin-top: 80px;">
         <div class="container p-5">
-            <h1 class="mb-4">Collected Milk Details</h1>
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h1 class="mb-4">Collected Milk Details</h1>
+                <a href="redirectToExportAllMilkCollectData?email=${dto.email}" class="btn btn-primary">
+                    <i class="fa-solid fa-file-export me-2"></i>Export All Data
+                </a>
+            </div>
             <form class="row g-3 mb-4" method="get" action="redirectToCollectMilkDetails">
                 <input type="email" name="email" hidden value="${dto.email}">
                 <div class="col-auto">

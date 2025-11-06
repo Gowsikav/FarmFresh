@@ -2,6 +2,7 @@ package com.xworkz.farmfresh.service;
 
 import com.xworkz.farmfresh.dto.CollectMilkDTO;
 
+import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -16,4 +17,5 @@ public interface CollectMilkService {
     Double getTotalLitre(Integer supplierId);
     Double getTotalMilkCollected();
     List<CollectMilkDTO> getRecentCollections();
+    void exportAllMilkCollectData(HttpServletResponse response);
 }
