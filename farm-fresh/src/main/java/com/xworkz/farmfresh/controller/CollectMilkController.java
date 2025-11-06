@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
@@ -109,5 +110,12 @@ public class CollectMilkController {
         model.addAttribute("pageSize", size);
         model.addAttribute("totalPages", totalPages);
         return "SupplierMilkCollection";
+    }
+
+    @GetMapping("/redirectToExportAllMilkCollectData")
+    public void exportAllMilkCollectData(HttpServletResponse response)
+    {
+        log.info("exportAllMilkCollectData method in collect milk controller");
+        collectMilkService.exportAllMilkCollectData(response);
     }
 }

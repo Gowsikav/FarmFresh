@@ -18,4 +18,5 @@ public interface CollectMilkRepository {
     Double getTotalLitre(Integer supplierId);
     Double getTotalMilkCollected();
     List<CollectMilkEntity> getRecentCollections();
+    List<CollectMilkEntity> getAllEntityForExport();
 }

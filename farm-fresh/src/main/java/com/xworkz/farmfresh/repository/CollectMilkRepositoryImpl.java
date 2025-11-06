@@ -10,6 +10,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceException;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -277,6 +278,27 @@ public class CollectMilkRepositoryImpl implements CollectMilkRepository{
             entityManager=entityManagerFactory.createEntityManager();
             return entityManager.createQuery("SELECT m FROM CollectMilkEntity m join fetch m.supplier ORDER BY m.collectedDate DESC", CollectMilkEntity.class)
                     .setMaxResults(5)
+                    .getResultList();
+        } catch (PersistenceException e)
+        {
+            log.error(e.getMessage());
+        }finally {
+            if(entityManager!=null && entityManager.isOpen())
+            {
+                entityManager.close();
+                log.info("EntityManager is closed");
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public List<CollectMilkEntity> getAllEntityForExport() {
+        log.info("getAllEntityForExport method in collect milk repo");
+        EntityManager entityManager=null;
+        try {
+            entityManager=entityManagerFactory.createEntityManager();
+            return entityManager.createQuery("SELECT m FROM CollectMilkEntity m join fetch m.supplier join fetch m.admin order by m.collectMilkId", CollectMilkEntity.class)
                     .getResultList();
         } catch (PersistenceException e)
         {
