@@ -71,7 +71,7 @@ public class CollectMilkController {
         {
             log.info("successfully saved");
             model.addAttribute("success","Details saved");
-            return getCollectMilkDetailsPage(email,String.valueOf(LocalDate.now()),model);
+            return getCollectMilkDetailsPage(email,String.valueOf(LocalDate.now()),String.valueOf(LocalDate.now()),model);
         }else {
             log.info("Not saved");
             model.addAttribute("error","Details not saved");
@@ -81,17 +81,22 @@ public class CollectMilkController {
     }
 
     @GetMapping("/redirectToCollectMilkDetails")
-    public String getCollectMilkDetailsPage(@RequestParam String email,@RequestParam(required = false) String searchDate, Model model)
+    public String getCollectMilkDetailsPage(@RequestParam String email,@RequestParam(required = false) String fromSearchDate,
+                                            @RequestParam(required = false) String toSearchDate, Model model)
     {
         log.info("getCollectMilkDetailsPage method in collect milk controller");
-        LocalDate date = (searchDate != null && !searchDate.isEmpty())
-                ? LocalDate.parse(searchDate)
+        LocalDate fromDate = (fromSearchDate != null && !fromSearchDate.isEmpty())
+                ? LocalDate.parse(fromSearchDate)
+                : LocalDate.now();
+        LocalDate toDate = (toSearchDate != null && !toSearchDate.isEmpty())
+                ? LocalDate.parse(toSearchDate)
                 : LocalDate.now();
         AdminDTO adminDTO=adminService.getAdminDetailsByEmail(email);
         model.addAttribute("dto",adminDTO);
-        List<CollectMilkDTO> list=collectMilkService.getAllDetailsByDate(date);
+        List<CollectMilkDTO> list=collectMilkService.getAllDetailsByDate(fromDate,toDate);
         model.addAttribute("milkList",list);
-        model.addAttribute("searchDate",date);
+        model.addAttribute("fromSearchDate", fromDate);
+        model.addAttribute("toSearchDate",toDate);
         controllerHelper.addNotificationData(model,email);
         return "CollectMilkDetails";
     }

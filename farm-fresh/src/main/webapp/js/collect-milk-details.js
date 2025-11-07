@@ -1,7 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll(".view-details-btn").forEach(function (btn) {
     btn.addEventListener("click", function (e) {
-      // No need to preventDefault, since modal is triggered by Bootstrap
       let html = `
                 <h5 class="mb-3">Supplier Details</h5>
                 <ul class="list-group mb-3">
@@ -41,8 +40,39 @@ document.addEventListener("DOMContentLoaded", function () {
                 </ul>
             `;
       document.getElementById("milkDetailsModalBody").innerHTML = html;
-      // Modal will show automatically via Bootstrap's data-bs-toggle
     });
   });
+  const today = new Date().toISOString().split("T")[0];
+      document.getElementById("fromSearchDate").setAttribute("max", today);
+      document.getElementById("toSearchDate").setAttribute("max", today);
 });
+
+function validateDates() {
+    const fromDate = document.getElementById("fromSearchDate").value.trim();
+    const toDate = document.getElementById("toSearchDate").value.trim();
+    const errorMsg = document.getElementById("dateError");
+    const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+
+    errorMsg.style.display = "none";
+    errorMsg.textContent = "";
+
+    if (!datePattern.test(fromDate) || !datePattern.test(toDate)) {
+        errorMsg.textContent = "Please enter valid dates in YYYY-MM-DD format.";
+        errorMsg.style.display = "block";
+        return false;
+    }
+
+    if (new Date(fromDate) > new Date(toDate)) {
+        errorMsg.textContent = "'From' date cannot be later than 'To' date.";
+        errorMsg.style.display = "block";
+        return false;
+    }
+     if (fromDate > today || toDate > today) {
+            errorMsg.textContent = "Future dates are not allowed.";
+            errorMsg.style.display = "block";
+            return false;
+        }
+
+    return true;
+}
 

@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "collect_milk_details")
 @NamedQuery(name = "getAllDetailsByDate",query = "select a from CollectMilkEntity a " +
-        "JOIN FETCH a.supplier where a.collectedDate=:selectDate order by a.collectMilkId DESC")
+        "JOIN FETCH a.supplier where a.collectedDate between :fromDate and :toDate order by a.collectMilkId DESC")
 @NamedQuery(name = "getAllDetailsByEmail",query = "select a from CollectMilkEntity a JOIN FETCH a.supplier where a.supplier.email=:email " +
         "and a.supplier.isActive=true order by a.collectedDate desc")
 @NamedQuery(name="getMilkDetailsCountByEmail",query = "select count(a) from CollectMilkEntity a JOIN a.supplier where a.supplier.email=:email and a.supplier.isActive=true")

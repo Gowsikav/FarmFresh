@@ -65,9 +65,9 @@ public class CollectMilkServiceImpl implements CollectMilkService {
     }
 
     @Override
-    public List<CollectMilkDTO> getAllDetailsByDate(LocalDate selectDate) {
+    public List<CollectMilkDTO> getAllDetailsByDate(LocalDate fromDate,LocalDate toDate) {
         log.info("getAllDetailsByDate method in collect milk service");
-        List<CollectMilkEntity> collectMilkEntityList = collectMilkRepository.getAllDetailsByDate(selectDate);
+        List<CollectMilkEntity> collectMilkEntityList = collectMilkRepository.getAllDetailsByDate(fromDate,toDate);
         List<CollectMilkDTO> collectMilkDTOS = new ArrayList<>();
         collectMilkEntityList.forEach(collectMilkEntity -> {
             CollectMilkDTO collectMilkDTO = new CollectMilkDTO();

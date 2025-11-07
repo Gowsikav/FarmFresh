@@ -8,7 +8,7 @@ import java.util.List;
 public interface CollectMilkRepository {
 
     boolean save(CollectMilkEntity collectMilkEntity);
-    List<CollectMilkEntity> getAllDetailsByDate(LocalDate selectDate);
+    List<CollectMilkEntity> getAllDetailsByDate(LocalDate fromDate,LocalDate toDate);
     List<CollectMilkEntity> getAllDetailsBySupplier(String email,int page,int size);
     Integer getCountOFMilkDetailsByEmail(String email);
     int countSuppliersWithCollections(LocalDate startDate, LocalDate endDate);
