@@ -133,17 +133,31 @@
                     <i class="fa-solid fa-file-export me-2"></i>Export All Data
                 </a>
             </div>
-            <form class="row g-3 mb-4" method="get" action="redirectToCollectMilkDetails">
+            <form class="row g-3 mb-4" method="get" action="redirectToCollectMilkDetails" onsubmit="return validateDates()">
                 <input type="email" name="email" hidden value="${dto.email}">
+
                 <div class="col-auto">
-                    <label for="searchDate" class="form-label">Search by Date:</label>
+                    <label class="form-label">Search by Date:</label>
                 </div>
+
                 <div class="col-auto">
-                    <input type="date" class="form-control" id="searchDate" name="searchDate"
-                        value="${searchDate}" required>
+                    <label for="fromSearchDate">From</label>
+                    <input type="date" class="form-control" id="fromSearchDate" name="fromSearchDate"
+                           value="${fromSearchDate}" pattern="\d{4}-\d{2}-\d{2}" required>
                 </div>
+
                 <div class="col-auto">
-                    <button type="submit" class="btn btn-primary">Search</button>
+                    <label for="toSearchDate">To</label>
+                    <input type="date" class="form-control" id="toSearchDate" name="toSearchDate"
+                           value="${toSearchDate}" pattern="\d{4}-\d{2}-\d{2}" required>
+                </div>
+
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary mt-4">Search</button>
+                </div>
+
+                <div class="col-12">
+                    <small id="dateError" class="text-danger" style="display:none;"></small>
                 </div>
             </form>
             <c:if test="${not empty success}">

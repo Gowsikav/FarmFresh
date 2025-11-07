@@ -10,7 +10,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceException;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -56,13 +55,16 @@ public class CollectMilkRepositoryImpl implements CollectMilkRepository{
     }
 
     @Override
-    public List<CollectMilkEntity> getAllDetailsByDate(LocalDate selectDate) {
+    public List<CollectMilkEntity> getAllDetailsByDate(LocalDate fromDate,LocalDate toDate) {
         log.info("getAllDetailsByDate method in collectMilkRepository");
         EntityManager entityManager=null;
         List<CollectMilkEntity> list=null;
         try {
             entityManager=entityManagerFactory.createEntityManager();
-            list=entityManager.createNamedQuery("getAllDetailsByDate").setParameter("selectDate",selectDate).getResultList();
+            list=entityManager.createNamedQuery("getAllDetailsByDate", CollectMilkEntity.class)
+                    .setParameter("fromDate",fromDate)
+                    .setParameter("toDate",toDate)
+                    .getResultList();
         }catch (PersistenceException e)
         {
             log.error(e.getMessage());
@@ -83,7 +85,7 @@ public class CollectMilkRepositoryImpl implements CollectMilkRepository{
         List<CollectMilkEntity> list=null;
         try {
             entityManager=entityManagerFactory.createEntityManager();
-            list=entityManager.createNamedQuery("getAllDetailsByEmail").setParameter("email",email)
+            list=entityManager.createNamedQuery("getAllDetailsByEmail", CollectMilkEntity.class).setParameter("email",email)
                     .setFirstResult((page-1)*size).setMaxResults(size).getResultList();
         }catch (PersistenceException e)
         {
@@ -312,4 +314,5 @@ public class CollectMilkRepositoryImpl implements CollectMilkRepository{
         }
         return null;
     }
+
 }

@@ -9,7 +9,7 @@ import java.util.List;
 public interface CollectMilkService {
 
     boolean save(CollectMilkDTO collectMilkDTO,String email);
-    List<CollectMilkDTO> getAllDetailsByDate(LocalDate selectDate);
+    List<CollectMilkDTO> getAllDetailsByDate(LocalDate fromDate,LocalDate toDate);
     List<CollectMilkDTO> getAllDetailsBySupplier(String email,int page,int size);
     Integer getCountOFMilkDetailsByEmail(String email);
     List<CollectMilkDTO> getAllDetailsBySupplier(Long notificationId);
