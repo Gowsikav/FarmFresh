@@ -16,7 +16,6 @@ import com.xworkz.farmfresh.util.OTPUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
@@ -25,10 +24,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.itextpdf.text.Font.BOLD;
-import static com.itextpdf.text.Font.ITALIC;
-
 
 @Slf4j
 @Service
@@ -51,6 +46,9 @@ public class SupplierServiceImpl implements SupplierService{
 
     @Autowired
     private PaymentDetailsRepository paymentDetailsRepository;
+
+    @Autowired
+    private QrGeneratorService qrGeneratorService;
 
     public SupplierServiceImpl()
     {
@@ -78,7 +76,9 @@ public class SupplierServiceImpl implements SupplierService{
         if(supplierRepository.addSupplier(supplierEntity))
         {
             log.info("supplier details saved");
-            if(emailSender.mailForSupplierRegisterSuccess(supplierEntity.getEmail(),supplierEntity.getFirstName()+supplierEntity.getLastName()))
+            SupplierEntity supplier=supplierRepository.getSupplierByEmail(supplierEntity.getEmail());
+            String qrcode=qrGeneratorService.generateSupplierQR(supplier.getSupplierId(),supplier.getEmail(),supplier.getPhoneNumber());
+            if(emailSender.mailForSupplierRegisterSuccess(supplierEntity.getEmail(),supplierEntity.getFirstName()+supplierEntity.getLastName(),qrcode))
             {
                 log.info("Mail send to supplier");
                 return true;

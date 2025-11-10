@@ -30,6 +30,7 @@
         <jackson-databind.version>2.17.2</jackson-databind.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <zxing.qr-code.version>3.5.2</zxing.qr-code.version>
     </properties>
     <dependencies>
         <dependency>
@@ -148,6 +149,17 @@
             <artifactId>itextpdf</artifactId>
             <version>5.5.13.3</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>${zxing.qr-code.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
+            <version>${zxing.qr-code.version}</version>
+        </dependency>
+
     </dependencies>
     <build>
         <finalName>farm-fresh</finalName>
