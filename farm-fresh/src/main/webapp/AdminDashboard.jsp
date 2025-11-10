@@ -152,7 +152,9 @@
                     <div class="card text-white bg-primary mb-3 shadow">
                         <div class="card-body">
                             <h5 class="card-title">Total Milk Collected</h5>
-                            <p class="card-text fs-4 fw-bold">${totalMilkCollected} L</p>
+                            <p class="card-text fs-4 fw-bold">
+                                <fmt:formatNumber value="${totalMilkCollected}" type="number" maxFractionDigits="2" minFractionDigits="2"/> L
+                            </p>
                         </div>
                     </div>
                 </div>

@@ -9,11 +9,13 @@ import com.xworkz.farmfresh.entity.SupplierEntity;
 import com.xworkz.farmfresh.repository.AdminRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import javax.mail.internet.MimeMessage;
+import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -60,33 +62,41 @@ public class EmailSenderImpl implements EmailSender{
     }
 
     @Override
-    public boolean mailForSupplierRegisterSuccess(String email, String supplierName) {
+    public boolean mailForSupplierRegisterSuccess(String email, String supplierName, String qrCodePath) {
         log.info("mailForSupplierRegisterSuccess method");
+
         try {
             String subject = "Welcome to Farm Fresh - Registration Successful";
 
-            String messageBody = "Dear " + supplierName + ",\n\n"
-                    + "We are thrilled to inform you that your registration as a Milk Supplier with Farm Fresh has been successfully completed.\n\n"
-                    + "You are now officially part of our trusted network of suppliers. "
-                    + "Our team is committed to supporting you in delivering high-quality milk to our customers efficiently.\n\n"
-                    + "If you have any questions or need assistance, please feel free to reach out to us at info@farmfresh.com or call our support line.\n\n"
-                    + "Once again, welcome aboard! We look forward to a fruitful and long-lasting partnership.\n\n"
-                    + "Warm regards,\n"
-                    + "Farm Fresh Team";
+            String messageBody = "<p>Dear <b>" + supplierName + "</b>,</p>"
+                    + "<p>We are happy to inform you that your registration as a Milk Supplier with <b>Farm Fresh</b> has been successfully completed.</p>"
+                    + "<p>You are now officially part of our trusted network of suppliers. "
+                    + "Our team is committed to supporting you in delivering high-quality milk efficiently.</p>"
+                    + "<p><b>Your QR Code:</b> This QR code will be used for quick identification during milk collection.</p>"
+                    + "<p><img src='cid:qrCodeImage' alt='QR Code' style='width:150px;height:150px;'/></p>"
+                    + "<p>If you have any questions, reach out to us at <a href='mailto:info@farmfresh.com'>info@farmfresh.com</a>.</p>"
+                    + "<p>Warm regards,<br/>Farm Fresh Team</p>";
 
-            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-            simpleMailMessage.setTo(email);
-            simpleMailMessage.setSubject(subject);
-            simpleMailMessage.setText(messageBody);
+            MimeMessage mimeMessage = configuration.mailSender().createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
 
-            configuration.mailSender().send(simpleMailMessage);
-            log.info("Registration success mail sent to: {}", email);
+            helper.setTo(email);
+            helper.setSubject(subject);
+            helper.setText(messageBody, true);
+
+            FileSystemResource qrImage = new FileSystemResource(new File(qrCodePath));
+            helper.addInline("qrCodeImage", qrImage);
+
+            configuration.mailSender().send(mimeMessage);
+            log.info("Registration email with QR sent to: {}", email);
             return true;
+
         } catch (Exception e) {
-            log.error("Error while sending registration success email: {}", e.getMessage());
+            log.error("Error while sending registration success email: {}", e.getMessage(), e);
             return false;
         }
     }
+
 
     @Override
     public boolean mailForSupplierLoginOtp(String email, String otp) {

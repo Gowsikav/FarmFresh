@@ -10,7 +10,7 @@ import java.util.List;
 public interface EmailSender {
 
     boolean mailSend(String email);
-    boolean mailForSupplierRegisterSuccess(String email,String supplierName);
+    boolean mailForSupplierRegisterSuccess(String email,String supplierName,String qrCodePath);
     boolean mailForSupplierLoginOtp(String email,String otp);
     boolean mailForSupplierBankDetails(String email, SupplierBankDetailsEntity bankDetails);
     boolean mailForSupplierPayment(SupplierEntity supplier, PaymentDetailsEntity paymentDetails);

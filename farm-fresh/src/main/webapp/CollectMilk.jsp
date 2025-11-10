@@ -157,10 +157,22 @@
                 <input type="email" name="email" hidden value="${dto.email}">
                 <div class="col-lg-4 col-md-6 col-12">
                     <label for="phone" class="form-label">Phone Number <span class="text-danger small">*</span></label>
-                    <input type="tel" class="form-control" id="phone" placeholder="Enter phone number"
-                        name="phoneNumber" value="${milk.phoneNumber}" required>
+                    <div class="input-group">
+                        <input type="tel" class="form-control" id="phone" placeholder="Enter phone number"
+                               name="phoneNumber" value="${milk.phoneNumber}" required>
+                        <button class="btn btn-outline-secondary" type="button" id="startScanBtn">
+                            <i class="fa fa-qrcode"></i> Scan QR
+                        </button>
+                    </div>
                     <span id="phoneError" class="text small"></span>
+
+                    <!-- QR Scanner container (hidden initially) -->
+                    <div id="qrScannerContainer" class="mt-3" style="display:none;">
+                        <div id="reader" style="width:100%; height:240px; border:1px solid #ccc; border-radius:8px;"></div>
+                        <button type="button" class="btn btn-danger btn-sm mt-2" id="stopScanBtn">Stop Scanning</button>
+                    </div>
                 </div>
+
                 <div class="col-lg-4 col-md-6 col-12">
                     <label for="name" class="form-label">Name</label>
                     <input type="text" class="form-control" id="name" placeholder="Will autofill after phone number"
@@ -204,6 +216,27 @@
 
         </div>
     </main>
+
+    <!-- Scanned Data Modal -->
+    <div class="modal fade" id="qrResultModal" tabindex="-1" aria-labelledby="qrResultModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-success">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="qrResultModalLabel">QR Code Scanned</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p class="mb-1"><strong>ID:</strong> <span id="qrId"></span></p>
+                    <p class="mb-1"><strong>Email:</strong> <span id="qrEmail"></span></p>
+                    <p class="mb-1"><strong>Phone:</strong> <span id="qrPhone"></span></p>
+                    <div class="mt-3">
+                        <button type="button" class="btn btn-success" id="fillFormBtn" data-bs-dismiss="modal">Fill Form</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <div class="modal fade" id="adminProfileModal" tabindex="-1" aria-labelledby="adminProfileModalLabel"
         aria-hidden="true">
@@ -324,6 +357,7 @@
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js"
         crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <script src="js/collect-milk.js"></script>
     <script src="js/admin-notification.js"></script>
 </body>
