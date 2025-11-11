@@ -20,6 +20,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import javax.sql.DataSource;
+import javax.validation.Validation;
 import java.util.Properties;
 
 @Configuration
@@ -112,5 +113,10 @@ public class FarmFreshConfiguration implements WebMvcConfigurer {
     {
         System.out.println("MultipartResolver method");
         return new StandardServletMultipartResolver();
+    }
+
+    @Bean
+    public javax.validation.Validator validator() {
+        return Validation.buildDefaultValidatorFactory().getValidator();
     }
 }

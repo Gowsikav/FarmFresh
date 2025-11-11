@@ -135,7 +135,21 @@
 
     <div class="page-wrapper d-flex flex-column min-vh-10" style="margin-top: 80px;">
         <div class="container mt-4 mb-5 flex-grow-1">
-            <h2 class="mb-4">Milk Suppliers</h2>
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="mb-4">Milk Suppliers</h2>
+
+                <form action="importForSupplierRegister" method="post" enctype="multipart/form-data" class="d-flex align-items-center">
+                    <input type="hidden" name="email" value="${dto.email}">
+                    <input type="file" name="file" id="fileInput" class="form-control form-control-sm"
+                        style="width:auto;"
+                        accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                        required>
+                    <button type="submit" class="btn btn-outline-success btn-sm ms-2">
+                        <i class="fa-solid fa-file-import me-1"></i>Import
+                    </button>
+                </form>
+
+            </div>
 
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <button type="button" class="btn btn-success" data-bs-toggle="modal"
