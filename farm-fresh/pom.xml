@@ -31,6 +31,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <zxing.qr-code.version>3.5.2</zxing.qr-code.version>
+        <apache-poi.version>5.2.3</apache-poi.version>
     </properties>
     <dependencies>
         <dependency>
@@ -159,12 +160,21 @@
             <artifactId>javase</artifactId>
             <version>${zxing.qr-code.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>${apache-poi.version}</version>
+        </dependency>
 
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>${apache-poi.version}</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>farm-fresh</finalName>
         <plugins>
-            <!-- ✅ Compiler plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -175,7 +185,6 @@
                 </configuration>
             </plugin>
 
-            <!-- ✅ WAR plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>

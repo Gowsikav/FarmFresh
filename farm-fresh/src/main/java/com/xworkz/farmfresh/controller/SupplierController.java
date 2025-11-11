@@ -4,10 +4,7 @@ import com.xworkz.farmfresh.dto.AdminDTO;
 import com.xworkz.farmfresh.dto.PaymentDetailsDTO;
 import com.xworkz.farmfresh.dto.SupplierBankDetailsDTO;
 import com.xworkz.farmfresh.dto.SupplierDTO;
-import com.xworkz.farmfresh.service.AdminService;
-import com.xworkz.farmfresh.service.CollectMilkService;
-import com.xworkz.farmfresh.service.PaymentNotificationService;
-import com.xworkz.farmfresh.service.SupplierService;
+import com.xworkz.farmfresh.service.*;
 import com.xworkz.farmfresh.util.CommonControllerHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +21,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -53,8 +52,14 @@ public class SupplierController {
     @Autowired
     private PaymentNotificationService paymentNotificationService;
 
+    @Autowired
+    private SupplierImportService supplierImportService;
+
     @Value("${file.upload-dir}")
     private String uploadDir;
+
+    @Value("${supplier-upload.path}")
+    private String uploadPath;
 
     public SupplierController() {
         log.info("SupplierController constructor");
@@ -344,4 +349,34 @@ public class SupplierController {
         log.info("getInvoiceForSupplier method in supplier controller");
         supplierService.downloadInvoicePdf(supplierId,paymentId, LocalDate.parse(periodStart), LocalDate.parse(periodEnd), LocalDate.parse(paymentDate), response);
     }
+
+    @PostMapping("/importForSupplierRegister")
+    public String uploadFile(@RequestParam("file") MultipartFile file,@RequestParam String email, Model model) {
+        log.info("uploadFile method in SupplierController");
+        try {
+            if (file.isEmpty()) {
+                model.addAttribute("error", "Please choose a file to upload.");
+                return "supplier";
+            }
+
+            File directory = new File(uploadPath);
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            Path filePath = Paths.get(uploadPath, fileName);
+
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            List<Integer> invalidRows=supplierImportService.importSuppliersFromExcel(filePath.toString());
+            invalidRows.forEach(e->log.error("row:{}",e));
+            log.info("File uploaded successfully to: {}", filePath.toAbsolutePath());
+            model.addAttribute("success", "File uploaded successfully: " + fileName);
+        } catch (Exception e) {
+            log.error("Upload failed: " + e.getMessage());
+            model.addAttribute("error", "Error saving file: " + e.getMessage());
+        }
+        return getMilkSupplierList(email,1,10,model);
+    }
+
 }
