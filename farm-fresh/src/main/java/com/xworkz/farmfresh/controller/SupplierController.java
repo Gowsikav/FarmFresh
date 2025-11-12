@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
@@ -183,14 +184,15 @@ public class SupplierController {
     }
 
     @PostMapping("/verifySupplierOTP")
-    public String checkOtpForSupplierLogin(@RequestParam String email,@RequestParam String otp,Model model)
+    public String checkOtpForSupplierLogin(@RequestParam String email, @RequestParam String otp, Model model, HttpSession session)
     {
         log.info("checkOtpForSupplierLogin method in supplier controller");
         try {
             if (supplierService.checkOTPForSupplierLogin(email, otp)) {
                 model.addAttribute("errorMessage", "successfully login");
                 model.addAttribute("success","success");
-                return getSupplierDashboardPage(email,model);
+                session.setAttribute("userRole", "SUPPLIER");
+                return "redirect:/redirectToSupplierDashboard?email="+email;
             } else {
                 model.addAttribute("errorMessage", "not login");
             }
@@ -201,6 +203,8 @@ public class SupplierController {
         }
         return "MilkSupplierLogin";
     }
+
+
 
     @GetMapping("/redirectToSupplierDashboard")
     public String getSupplierDashboardPage(@RequestParam String email,Model model)
@@ -270,9 +274,10 @@ public class SupplierController {
     }
 
     @GetMapping("supplierLogout")
-    public String supplierLogout(@RequestParam String email)
+    public String supplierLogout(@RequestParam String email,HttpSession session)
     {
         log.info("supplier log out");
+        session.invalidate();
         return "index";
     }
 
@@ -353,10 +358,12 @@ public class SupplierController {
     @PostMapping("/importForSupplierRegister")
     public String uploadFile(@RequestParam("file") MultipartFile file,@RequestParam String email, Model model) {
         log.info("uploadFile method in SupplierController");
+        AdminDTO adminDTO = adminService.getAdminDetailsByEmail(email);
+        model.addAttribute("dto", adminDTO);
         try {
             if (file.isEmpty()) {
                 model.addAttribute("error", "Please choose a file to upload.");
-                return "supplier";
+                return getMilkSupplierList(email,1,10,model);
             }
 
             File directory = new File(uploadPath);
@@ -368,15 +375,22 @@ public class SupplierController {
 
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-            List<Integer> invalidRows=supplierImportService.importSuppliersFromExcel(filePath.toString());
-            invalidRows.forEach(e->log.error("row:{}",e));
+            List<SupplierDTO> invalidRows=supplierImportService.importSuppliersFromExcel(filePath.toString(),email);
+            if(invalidRows.isEmpty())
+            {
+                model.addAttribute("success", "All records are saved");
+                return getMilkSupplierList(email,1,10,model);
+            }else{
+                model.addAttribute("invalidRows",invalidRows);
+                model.addAttribute("error",invalidRows.size()+" records are not saved");
+            }
             log.info("File uploaded successfully to: {}", filePath.toAbsolutePath());
-            model.addAttribute("success", "File uploaded successfully: " + fileName);
         } catch (Exception e) {
             log.error("Upload failed: " + e.getMessage());
             model.addAttribute("error", "Error saving file: " + e.getMessage());
         }
-        return getMilkSupplierList(email,1,10,model);
+        controllerHelper.addNotificationData(model,email);
+        return "MilkSuppliers";
     }
 
 }

@@ -28,9 +28,12 @@ public class SupplierImportServiceImpl implements SupplierImportService {
     @Autowired
     private ProductPriceService productPriceService;
 
+    @Autowired
+    private SupplierService supplierService;
+
     @Override
-    public List<Integer> importSuppliersFromExcel(String filePath) {
-        List<Integer> invalidRows = new ArrayList<>();
+    public List<SupplierDTO> importSuppliersFromExcel(String filePath,String email) {
+        List<SupplierDTO> invalidRows = new ArrayList<>();
 
         try (FileInputStream fis = new FileInputStream(filePath);
              Workbook workbook = new XSSFWorkbook(fis)) {
@@ -75,16 +78,18 @@ public class SupplierImportServiceImpl implements SupplierImportService {
                 }
 
                 if (!violations.isEmpty() || duplicateEmail || duplicatePhone || invalidMilkType) {
-                    invalidRows.add(rowNumber);
                     log.warn("Invalid row {} - {}", rowNumber,
                             invalidMilkType ? "Invalid milk type: " + dto.getTypeOfMilk() :
                                     !violations.isEmpty() ? violations.iterator().next().getMessage() :
                                             duplicateEmail ? "Duplicate Email" :
                                                     "Duplicate Phone"
                     );
+                    dto.setSupplierId(rowNumber);
+                    invalidRows.add(dto);
                 } else {
-                    // If valid, you’ll call save logic separately in controller
-                    log.info("Valid row {} - {}", rowNumber, dto.getEmail());
+                    if(supplierService.addSupplier(dto,email))
+                        log.info("supplier: {} saved", dto.getEmail());
+                    else log.error("supplier: {} not saved",dto.getEmail());
                 }
             }
 
