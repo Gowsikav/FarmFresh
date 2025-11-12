@@ -1,5 +1,6 @@
 <%@ page isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ include file="/WEB-INF/views/includes/sessionCheck.jspf" %>
 
 <html lang="en">
 
@@ -13,11 +14,11 @@
     <link rel="stylesheet" href="css/index.css" />
     
 </head>
-<c:if test="${not empty success}">
-    <script defer >
-        localStorage.removeItem("otpStartTime");
-    </script>
-</c:if>
+    <script>
+  localStorage.removeItem("otpStartTime");
+</script>
+
+
 <body class="d-flex flex-column min-vh-100">
     <nav class="navbar navbar-expand-lg fixed-top" style="background: linear-gradient(90deg, #388e3c, #e8f5e9)">
         <div class="container-fluid">
