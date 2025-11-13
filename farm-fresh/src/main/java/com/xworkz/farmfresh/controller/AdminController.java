@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -60,14 +61,15 @@ public class AdminController {
     }
 
     @PostMapping("/adminLogin")
-    public String checkPasswordForAdminLogin(@RequestParam String email, @RequestParam String password, Model model) {
+    public String checkPasswordForAdminLogin(@RequestParam String email, @RequestParam String password, Model model, HttpSession session) {
         log.info("checkPasswordForAdminLogin method in adminController");
         log.info("Email: {} password: {}" ,email , password);
         AdminDTO adminDTO=null;
         try {
             adminDTO= adminService.checkAdminLoginPassword(email, password);
             if (adminDTO != null) {
-                return getDashboard(email,model);
+                session.setAttribute("userRole", "ADMIN");
+                return "redirect:/redirectToAdminDashboard?email="+email;
             }else {
                 model.addAttribute("errorMessage", "Account not present");
                 return "AdminLogin";
@@ -178,13 +180,14 @@ public class AdminController {
     }
 
     @GetMapping("/adminLogout")
-    public String updateAdminLogout(@RequestParam("email")String email,Model model)
+    public String updateAdminLogout(@RequestParam("email")String email,Model model,HttpSession session)
     {
         log.info("updateAdminLogout method in admin controller");
         if(adminService.updateAdminLogoutTime(email))
         {
             log.info("logout time changed");
-            return "index";
+            session.invalidate();
+            return "redirect:/redirectToIndex";
         }
         return getDashboard(email,model);
     }
