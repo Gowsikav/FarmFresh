@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -38,9 +39,10 @@ public class ProductPriceController {
     }
 
     @GetMapping("/redirectToProductsPrice")
-    public String getProductPricePage(@RequestParam String email, Model model)
+    public String getProductPricePage(HttpSession session, Model model)
     {
         log.info("getProductPricePage method in product price controller");
+        String email = (String) session.getAttribute("adminEmail");
         AdminDTO adminDTO = adminService.getAdminDetailsByEmail(email);
         model.addAttribute("dto", adminDTO);
 
@@ -51,9 +53,10 @@ public class ProductPriceController {
     }
 
     @PostMapping("/addProductWithPrice")
-    public String getProduct(@Valid ProductPriceDTO productPriceDTO, BindingResult bindingResult,@RequestParam String adminEmail,Model model)
+    public String getProduct(@Valid ProductPriceDTO productPriceDTO, BindingResult bindingResult,HttpSession session,Model model)
     {
         log.info("getProduct method in product price controller");
+        String adminEmail = (String) session.getAttribute("adminEmail");
         if(bindingResult.hasErrors())
         {
             log.error("fields has error");
@@ -62,19 +65,20 @@ public class ProductPriceController {
                     .forEach(System.out::println);
             model.addAttribute("product", productPriceDTO);
             model.addAttribute("error", "Details not saved");
-            return getProductPricePage(adminEmail, model);
+            return getProductPricePage(session, model);
         }
         if(productPriceService.saveProduct(productPriceDTO,adminEmail))
             model.addAttribute("success","Product Details saved");
         else
             model.addAttribute("error","Product details not saved");
-        return getProductPricePage(adminEmail,model);
+        return getProductPricePage(session,model);
     }
 
     @PostMapping("/updateProductPrice")
-    public String updateProductPrice(@Valid ProductPriceDTO productPriceDTO,BindingResult bindingResult,@RequestParam String adminEmail,Model model)
+    public String updateProductPrice(@Valid ProductPriceDTO productPriceDTO,BindingResult bindingResult,HttpSession session,Model model)
     {
         log.info("updateProductPrice method in product price controller");
+        String adminEmail = (String) session.getAttribute("adminEmail");
         log.info("edit{}",productPriceDTO);
         if(bindingResult.hasErrors())
         {
@@ -84,22 +88,22 @@ public class ProductPriceController {
                     .forEach(System.out::println);
             model.addAttribute("product", productPriceDTO);
             model.addAttribute("error", "Details has error");
-            return getProductPricePage(adminEmail, model);
+            return getProductPricePage(session, model);
         }
         if(productPriceService.updateProduct(productPriceDTO,adminEmail))
             model.addAttribute("success","Product updated");
         else
             model.addAttribute("error","product details not updated");
-        return getProductPricePage(adminEmail,model);
+        return getProductPricePage(session,model);
     }
 
     @GetMapping("/deleteProductPrice")
-    public String deleteProduct(@RequestParam Integer productId,@RequestParam String adminEmail,Model model)
+    public String deleteProduct(@RequestParam Integer productId,HttpSession session,Model model)
     {
         log.info("delete product method in product price controller");
         if(productPriceService.deleteProduct(productId))
             model.addAttribute("success","Product deleted successfully!");
         else model.addAttribute("error","Product not deleted");
-        return getProductPricePage(adminEmail,model);
+        return getProductPricePage(session,model);
     }
 }

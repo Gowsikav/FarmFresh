@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
@@ -44,20 +45,24 @@ public class CollectMilkController {
         log.info("CollectMilkController constructor");
     }
 
+    // admin
     @GetMapping("/redirectToCollectMilk")
-    public String getCollectMilkPage(@RequestParam String email, Model model)
+    public String getCollectMilkPage(HttpSession session, Model model)
     {
         log.info("getCollectMilkPage in CollectMilkController");
+        String email = (String) session.getAttribute("adminEmail");
         AdminDTO adminDTO=adminService.getAdminDetailsByEmail(email);
         model.addAttribute("dto",adminDTO);
         controllerHelper.addNotificationData(model,email);
         return "CollectMilk";
     }
 
+    //admin
     @PostMapping("addCollectMilk")
-    public String getCollectedMilk(@Valid CollectMilkDTO collectMilkDTO, BindingResult bindingResult,@RequestParam String email, Model model)
+    public String getCollectedMilk(@Valid CollectMilkDTO collectMilkDTO, BindingResult bindingResult,HttpSession session, Model model)
     {
         log.info("getCollectedMilk method in CollectMilkController");
+        String email = (String) session.getAttribute("adminEmail");
         if(bindingResult.hasErrors())
         {
             log.error("Fields has error");
@@ -65,26 +70,28 @@ public class CollectMilkController {
                     .forEach(log::error);
             model.addAttribute("error","Wrong details");
             model.addAttribute("milk",collectMilkDTO);
-            return getCollectMilkPage(email,model);
+            return getCollectMilkPage(session,model);
         }
         if(collectMilkService.save(collectMilkDTO,email))
         {
             log.info("successfully saved");
             model.addAttribute("success","Details saved");
-            return getCollectMilkDetailsPage(email,String.valueOf(LocalDate.now()),String.valueOf(LocalDate.now()),model);
+            return getCollectMilkDetailsPage(session,String.valueOf(LocalDate.now()),String.valueOf(LocalDate.now()),model);
         }else {
             log.info("Not saved");
             model.addAttribute("error","Details not saved");
             model.addAttribute("milk",collectMilkDTO);
         }
-        return getCollectMilkPage(email,model);
+        return getCollectMilkPage(session,model);
     }
 
+    // admin
     @GetMapping("/redirectToCollectMilkDetails")
-    public String getCollectMilkDetailsPage(@RequestParam String email,@RequestParam(required = false) String fromSearchDate,
+    public String getCollectMilkDetailsPage(HttpSession session,@RequestParam(required = false) String fromSearchDate,
                                             @RequestParam(required = false) String toSearchDate, Model model)
     {
         log.info("getCollectMilkDetailsPage method in collect milk controller");
+        String email = (String) session.getAttribute("adminEmail");
         LocalDate fromDate = (fromSearchDate != null && !fromSearchDate.isEmpty())
                 ? LocalDate.parse(fromSearchDate)
                 : LocalDate.now();
@@ -101,10 +108,12 @@ public class CollectMilkController {
         return "CollectMilkDetails";
     }
 
+    // supplier
     @GetMapping("redirectToMilkCollection")
-    public String getAllMilkDetailsBySupplier(@RequestParam String email,@RequestParam(defaultValue = "1") int page,@RequestParam(defaultValue = "15") int size, Model model)
+    public String getAllMilkDetailsBySupplier(HttpSession session,@RequestParam(defaultValue = "1") int page,@RequestParam(defaultValue = "15") int size, Model model)
     {
         log.info("getAllMilkDetailsBySupplier method in collect milk controller");
+        String email = (String) session.getAttribute("supplierEmail");
         List<CollectMilkDTO> list=collectMilkService.getAllDetailsBySupplier(email,page,size);
         model.addAttribute("milkCollectionList",list);
         SupplierDTO supplierDTO=supplierService.getDetailsByEmail(email);
@@ -117,6 +126,7 @@ public class CollectMilkController {
         return "SupplierMilkCollection";
     }
 
+    // admin
     @GetMapping("/redirectToExportAllMilkCollectData")
     public void exportAllMilkCollectData(HttpServletResponse response)
     {

@@ -30,7 +30,7 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ms-auto me-3">
                     <li class="nav-item">
-                        <a class="nav-link active" href="redirectToSupplierDashboard?email=${dto.email}"><i
+                        <a class="nav-link active" href="redirectToSupplierDashboard"><i
                                 class="fa-solid fa-user me-2"></i>Dashboard</a>
                     </li>
 
@@ -49,7 +49,7 @@
                             </c:choose>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                            <li><a class="dropdown-item text-danger" href="supplierLogout?email=${dto.email}"><i
+                            <li><a class="dropdown-item text-danger" href="supplierLogout"><i
                                         class="fa-solid fa-right-from-bracket me-2"></i>Logout</a></li>
                         </ul>
                     </li>
@@ -108,7 +108,7 @@
                 </div>
 
                 <button type="submit" class="btn btn-success w-100">Update Profile</button>
-                <a href="redirectToSupplierDashboard?email=${dto.email}" class="btn btn-secondary w-100 mt-2">Back to
+                <a href="redirectToSupplierDashboard" class="btn btn-secondary w-100 mt-2">Back to
                     Dashboard</a>
             </form>
         </div>

@@ -19,6 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -61,7 +64,8 @@ public class AdminController {
     }
 
     @PostMapping("/adminLogin")
-    public String checkPasswordForAdminLogin(@RequestParam String email, @RequestParam String password, Model model, HttpSession session) {
+    public String checkPasswordForAdminLogin(@RequestParam String email, @RequestParam String password,
+                                             Model model, HttpSession session, HttpServletResponse response,HttpServletRequest request) {
         log.info("checkPasswordForAdminLogin method in adminController");
         log.info("Email: {} password: {}" ,email , password);
         AdminDTO adminDTO=null;
@@ -69,7 +73,12 @@ public class AdminController {
             adminDTO= adminService.checkAdminLoginPassword(email, password);
             if (adminDTO != null) {
                 session.setAttribute("userRole", "ADMIN");
-                return "redirect:/redirectToAdminDashboard?email="+email;
+                session.setAttribute("adminEmail",email);
+                Cookie cookie = new Cookie("adminEmail", email);
+                cookie.setMaxAge(7 * 24 * 60 * 60);
+                cookie.setPath("/");
+                response.addCookie(cookie);
+                return getDashboard(session,model,request);
             }else {
                 model.addAttribute("errorMessage", "Account not present");
                 return "AdminLogin";
@@ -81,16 +90,30 @@ public class AdminController {
     }
 
     @GetMapping("/redirectToUpdateAdminProfile")
-    public String redirectToUpdate(@RequestParam("email") String email, Model model) {
+    public String redirectToUpdate(HttpSession session, Model model) {
         log.info("redirectTo update page in adminController");
+        String email = (String) session.getAttribute("adminEmail");
         AdminDTO adminDTO = adminService.getAdminDetailsByEmail(email);
         model.addAttribute("dto", adminDTO);
         return "UpdateAdminProfile";
     }
 
     @GetMapping("/redirectToAdminDashboard")
-    public String getDashboard(@RequestParam("email") String email, Model model) {
+    public String getDashboard(HttpSession session, Model model, HttpServletRequest request) {
         log.info("getDashboard method in admin controller");
+        String email = (String) session.getAttribute("adminEmail");
+        if (email == null) {
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie c : cookies) {
+                    if ("adminEmail".equals(c.getName())) {
+                        email = c.getValue();
+                        session.setAttribute("adminEmail", email);
+                        break;
+                    }
+                }
+            }
+        }
         AdminDTO adminDTO = adminService.getAdminDetailsByEmail(email);
         model.addAttribute("dto", adminDTO);
         int count=adminService.getSupplierCount();
@@ -110,7 +133,7 @@ public class AdminController {
             @RequestParam("email") String email,
             @RequestParam("phoneNumber") String phoneNumber,
             @RequestParam(value = "profilePicture", required = false) MultipartFile profilePicture,
-            Model model) {
+            Model model,HttpSession session,HttpServletRequest request) {
 
         log.info("updateAdminProfile method in adminController");
 
@@ -131,11 +154,11 @@ public class AdminController {
         }
         if (adminService.updateAdminProfileByEmail(email, adminName, phoneNumber, profilePath)) {
             log.info("profile updated");
-            return getDashboard(email, model);
+            return getDashboard(session,model,request);
         }
         model.addAttribute("errorMessage", "Invalid details");
 
-        return redirectToUpdate(email,model);
+        return redirectToUpdate(session,model);
     }
 
     @PostMapping("/forgotPassword")
@@ -180,32 +203,35 @@ public class AdminController {
     }
 
     @GetMapping("/adminLogout")
-    public String updateAdminLogout(@RequestParam("email")String email,Model model,HttpSession session)
+    public String updateAdminLogout(Model model,HttpSession session,HttpServletRequest request)
     {
         log.info("updateAdminLogout method in admin controller");
+        String email = (String) session.getAttribute("adminEmail");
         if(adminService.updateAdminLogoutTime(email))
         {
             log.info("logout time changed");
             session.invalidate();
             return "redirect:/redirectToIndex";
         }
-        return getDashboard(email,model);
+        return getDashboard(session,model,request);
     }
 
 
     @GetMapping("/redirectToManageProducts")
-    public String getManageProductPage(@RequestParam("email")String email,Model model)
+    public String getManageProductPage(HttpSession session,Model model)
     {
         log.info("getManageProductPage method in adminController");
+        String email = (String) session.getAttribute("adminEmail");
         AdminDTO adminDTO = adminService.getAdminDetailsByEmail(email);
         model.addAttribute("dto", adminDTO);
         return "ManageProducts";
     }
 
     @GetMapping("/supplierPaymentDetails")
-    public String getSupplierPaymentDetails(@RequestParam Long notificationId,@RequestParam String email, Model model)
+    public String getSupplierPaymentDetails(@RequestParam Long notificationId,HttpSession session, Model model)
     {
         log.info("getSupplierPaymentDetails method in supplier controller");
+        String email = (String) session.getAttribute("adminEmail");
         model.addAttribute("supplier",supplierService.getSupplierDetailsByNotificationId(notificationId));
         model.addAttribute("dto",adminService.getAdminDetailsByEmail(email));
         model.addAttribute("notificationId",notificationId);
@@ -216,37 +242,41 @@ public class AdminController {
     }
 
     @PostMapping("/payToSupplier")
-    public String payToSupplier(@RequestParam String email,@RequestParam String supplierEmail,@RequestParam Long notificationId,Model model)
+    public String payToSupplier(HttpSession session,@RequestParam String supplierEmail,@RequestParam Long notificationId,
+                                Model model,HttpServletRequest request)
     {
         log.info("pay to supplier method in supplier controller");
+        String email = (String) session.getAttribute("adminEmail");
         if(notificationService.markAsReadForPayment(notificationId,supplierEmail,email))
         {
-            return getDashboard(email,model);
+            return getDashboard(session,model,request);
         }
         model.addAttribute("errorMessage","Amount Not paid");
-        return getSupplierPaymentDetails(notificationId,email,model);
+        return getSupplierPaymentDetails(notificationId,session,model);
     }
 
     @PostMapping("/requestSupplierBankDetails")
-    public String requestForSupplierBankDetails(@RequestParam String adminEmail,@RequestParam String supplierEmail,@RequestParam Long notificationId,Model model)
+    public String requestForSupplierBankDetails(HttpSession session,@RequestParam String supplierEmail,@RequestParam Long notificationId,Model model)
     {
         log.info("requestForSupplierBankDetails method in admin Controller");
+        String email = (String) session.getAttribute("adminEmail");
         if(supplierService.requestForSupplierBankDetails(supplierEmail))
         {
-            model.addAttribute("dto",adminService.getAdminDetailsByEmail(adminEmail));
+            model.addAttribute("dto",adminService.getAdminDetailsByEmail(email));
             model.addAttribute("successMessage","Mail sent successfully");
         }else {
             model.addAttribute("errorMessage", "Mail not send");
         }
-        return getSupplierPaymentDetails(notificationId,adminEmail,model);
+        return getSupplierPaymentDetails(notificationId,session,model);
 
     }
 
     @GetMapping("/redirectToAdminPaymentHistory")
-    public String redirectToAdminPaymentHistory(@RequestParam String email,@RequestParam(defaultValue = "1") int page,
+    public String redirectToAdminPaymentHistory(HttpSession session,@RequestParam(defaultValue = "1") int page,
                                                 @RequestParam(defaultValue = "10") int size, Model model)
     {
         log.info("redirectToAdminPaymentHistory method in adminController");
+        String email = (String) session.getAttribute("adminEmail");
         List<PaymentDetailsDTO> list=notificationService.getAllPaymentDetailsForAdminHistory(page,size);
         model.addAttribute("paymentList",list);
         model.addAttribute("dto",adminService.getAdminDetailsByEmail(email));

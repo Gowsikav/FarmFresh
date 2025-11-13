@@ -34,15 +34,15 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ms-auto me-3">
                     <li class="nav-item">
-                        <a class="nav-link active" href="redirectToSupplierDashboard?email=${dto.email}"><i
+                        <a class="nav-link active" href="redirectToSupplierDashboard"><i
                                 class="fa-solid fa-user me-2"></i>Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="redirectToMilkCollection?email=${dto.email}"><i
+                        <a class="nav-link" href="redirectToMilkCollection"><i
                                 class="fa-solid fa-glass-water-droplet me-2"></i>Milk Collection</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="redirectToPaymentStatus?email=${dto.email}"><i
+                        <a class="nav-link" href="redirectToPaymentStatus"><i
                                 class="fa-solid fa-money-bill me-2"></i>Payment Status</a>
                     </li>
                     <li class="nav-item dropdown">
@@ -69,7 +69,7 @@
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item text-danger" href="supplierLogout?email=${dto.email}"><i
+                            <li><a class="dropdown-item text-danger" href="supplierLogout"><i
                                         class="fa-solid fa-right-from-bracket me-2"></i>Logout</a></li>
                         </ul>
                     </li>
@@ -162,7 +162,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <a href="redirectToUpdateSupplierProfile?email=${dto.email}" class="btn btn-primary">Update
+                    <a href="redirectToUpdateSupplierProfile" class="btn btn-primary">Update
                         Profile</a>
                 </div>
             </div>
@@ -226,7 +226,7 @@
                <div class="modal-footer">
                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                    <c:if test="${empty dto.supplierBankDetails}">
-                       <a href="redirectToUpdateSupplierBankDetails?email=${dto.email}" class="btn btn-primary">Fill Bank Details</a>
+                       <a href="redirectToUpdateSupplierBankDetails" class="btn btn-primary">Fill Bank Details</a>
                    </c:if>
                </div>
            </div>
