@@ -278,7 +278,7 @@ public class SupplierController {
     {
         log.info("supplier log out");
         session.invalidate();
-        return "index";
+        return "redirect:/redirectToIndex";
     }
 
     @GetMapping("redirectToUpdateSupplierBankDetails")
