@@ -33,19 +33,19 @@
                 <ul class="navbar-nav mb-2 mb-lg-0 align-items-center">
                     
                     <li class="nav-item">
-                        <a class="nav-link" href="redirectToAdminDashboard?email=${dto.email}"><i class="fa-solid fa-user-shield me-2"></i> Dashboard</a>
+                        <a class="nav-link" href="redirectToAdminDashboard"><i class="fa-solid fa-user-shield me-2"></i> Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="redirectToManageProducts?email=${dto.email}"><i class="fa-solid fa-box me-2"></i> Manage Products</a>
+                        <a class="nav-link active" href="redirectToManageProducts"><i class="fa-solid fa-box me-2"></i> Manage Products</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="redirectToProductsPrice?email=${dto.email}"><i class="fa-solid fa-tag me-2"></i> Products Price</a>
+                        <a class="nav-link" href="redirectToProductsPrice"><i class="fa-solid fa-tag me-2"></i> Products Price</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="redirectToMilkSuppliersList?email=${dto.email}&page=1&size=10"><i class="fa-solid fa-bottle-droplet me-2"></i> Milk Suppliers</a>
+                        <a class="nav-link" href="redirectToMilkSuppliersList?page=1&size=10"><i class="fa-solid fa-bottle-droplet me-2"></i> Milk Suppliers</a>
                     </li>
                     <li class="nav-item">
-                          <a class="nav-link" href="redirectToCollectMilk?email=${dto.email}"><i class="fa-solid fa-glass-water-droplet me-2"></i> Collect Milk</a>
+                          <a class="nav-link" href="redirectToCollectMilk"><i class="fa-solid fa-glass-water-droplet me-2"></i> Collect Milk</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#"><i class="fa-solid fa-users me-2"></i> Customers</a>
@@ -71,7 +71,7 @@
                                 <hr class="dropdown-divider">
                             </li>
                             <li>
-                                <a class="dropdown-item text-danger" href="adminLogout?email=${dto.email}"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a>
+                                <a class="dropdown-item text-danger" href="adminLogout"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a>
                             </li>
                         </ul>
                     </li>
@@ -111,7 +111,58 @@
   </div>
 </form>
 
+      <div class="modal fade" id="adminProfileModal" tabindex="-1" aria-labelledby="adminProfileModalLabel"
+           aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                  <div class="modal-header" style="background: linear-gradient(90deg, #2e7d32, #f9fbe7);">
+                      <h5 class="modal-title" id="adminProfileModalLabel">Admin Profile</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                      <div class="text-center mb-4">
+                          <c:choose>
+                              <c:when test="${empty dto.profilePath}">
+                                  <img src="images/dummy-profile.png" alt="Profile" class="rounded-circle" width="150"
+                                       height="150" style="object-fit: cover;">
+                              </c:when>
+                              <c:otherwise>
+                                  <img src="<c:url value='/uploads/${dto.profilePath}'/>" alt="Profile"
+                                       class="rounded-circle" width="150" height="150" style="object-fit: cover;">
+                              </c:otherwise>
+                          </c:choose>
+                      </div>
+                      <div class="card p-3 shadow-sm">
+                          <ul class="list-group list-group-flush">
 
+                              <div class="row mb-2">
+                                  <div class="col-sm-4 fw-bold">
+                                      <i class="fa-solid fa-user me-2"></i>Name:
+                                  </div>
+                                  <div class="col-sm-8 text-break">${dto.adminName}</div>
+                              </div>
+                              <div class="row mb-2">
+                                  <div class="col-sm-4 fw-bold">
+                                      <i class="fa-solid fa-envelope me-2"></i>Email:
+                                  </div>
+                                  <div class="col-sm-8 text-break">${dto.email}</div>
+                              </div>
+                              <div class="row mb-2">
+                                  <div class="col-sm-4 fw-bold">
+                                      <i class="fa-solid fa-phone me-2"></i>Phone:
+                                  </div>
+                                  <div class="col-sm-8">${dto.phoneNumber}</div>
+                              </div>
+                          </ul>
+                      </div>
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <a href="redirectToUpdateAdminProfile" class="btn btn-primary">Update Profile</a>
+                  </div>
+              </div>
+          </div>
+      </div>
 
 <!-- Product Cards -->
 <div class="row g-4 mt-4" id="product-list-container"></div>

@@ -32,7 +32,7 @@
                 <ul class="navbar-nav mb-2 mb-lg-0 align-items-center">
                 
                     <li class="nav-item">
-                        <a class="nav-link" href="redirectToAdminDashboard?email=${dto.email}">Dashboard</a>
+                        <a class="nav-link" href="redirectToAdminDashboard">Dashboard</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button"
@@ -47,7 +47,7 @@
                             </c:choose>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                            <li><a class="dropdown-item" href="adminLogout?email=${dto.email}">Logout</a></li>
+                            <li><a class="dropdown-item" href="adminLogout">Logout</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -92,7 +92,7 @@
                 </div>
                 
                 <button type="submit" class="btn btn-success w-100">Update Profile</button>
-                <a href="redirectToAdminDashboard?email=${dto.email}" class="btn btn-secondary w-100 mt-2">Back to Dashboard</a>
+                <a href="redirectToAdminDashboard" class="btn btn-secondary w-100 mt-2">Back to Dashboard</a>
             </form>
         </div>
     </main>

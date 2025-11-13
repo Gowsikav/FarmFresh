@@ -33,27 +33,27 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mb-2 mb-lg-0 align-items-center ms-lg-auto me-3">
                     <li class="nav-item">
-                        <a class="nav-link" href="redirectToAdminDashboard?email=${dto.email}"><i
+                        <a class="nav-link" href="redirectToAdminDashboard"><i
                                 class="fa-solid fa-user-shield me-2"></i> Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="redirectToManageProducts?email=${dto.email}"><i
+                        <a class="nav-link" href="redirectToManageProducts"><i
                                 class="fa-solid fa-box me-2"></i> Manage Products</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="redirectToProductsPrice?email=${dto.email}"><i
+                        <a class="nav-link" href="redirectToProductsPrice"><i
                                 class="fa-solid fa-tag me-2"></i> Products Price</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="redirectToMilkSuppliersList?email=${dto.email}&page=1&size=10"><i
+                        <a class="nav-link" href="redirectToMilkSuppliersList?page=1&size=10"><i
                                 class="fa-solid fa-bottle-droplet me-2"></i> Milk Suppliers</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="redirectToCollectMilk?email=${dto.email}"><i
+                        <a class="nav-link" href="redirectToCollectMilk"><i
                                 class="fa-solid fa-glass-water-droplet me-2"></i> Collect Milk</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="redirectToAdminPaymentHistory?email=${dto.email}&page=1&size=10"><i
+                        <a class="nav-link" href="redirectToAdminPaymentHistory?page=1&size=10"><i
                                 class="fa-solid fa-money-bill-transfer me-2"></i> Payment History</a>
                     </li>
                     <li class="nav-item">
@@ -124,7 +124,7 @@
                             <hr class="dropdown-divider">
                         </li>
                         <li>
-                            <a class="dropdown-item text-danger" href="adminLogout?email=${dto.email}"><i
+                            <a class="dropdown-item text-danger" href="adminLogout"><i
                                     class="fa-solid fa-right-from-bracket me-2"></i> Logout</a>
                         </li>
                     </ul>
@@ -327,7 +327,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <a href="redirectToUpdateAdminProfile?email=${dto.email}" class="btn btn-primary">Update
+                    <a href="redirectToUpdateAdminProfile" class="btn btn-primary">Update
                         Profile</a>
                 </div>
             </div>

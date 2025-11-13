@@ -32,26 +32,26 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mb-2 mb-lg-0 align-items-center ms-lg-auto me-3">
                     <li class="nav-item">
-                        <a class="nav-link" href="redirectToAdminDashboard?email=${dto.email}"><i
+                        <a class="nav-link" href="redirectToAdminDashboard"><i
                                 class="fa-solid fa-user-shield me-2"></i> Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="redirectToManageProducts?email=${dto.email}"><i
+                        <a class="nav-link" href="redirectToManageProducts"><i
                                 class="fa-solid fa-box me-2"></i> Manage Products</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="redirectToProductsPrice?email=${dto.email}"><i
+                        <a class="nav-link active" href="redirectToProductsPrice"><i
                                 class="fa-solid fa-tag me-2"></i> Products Price</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="redirectToMilkSuppliersList?email=${dto.email}&page=1&size=10"><i
+                        <a class="nav-link" href="redirectToMilkSuppliersList?page=1&size=10"><i
                                 class="fa-solid fa-bottle-droplet me-2"></i> Milk Suppliers</a>
                     </li>
                     <li class="nav-item">
-                          <a class="nav-link" href="redirectToCollectMilk?email=${dto.email}"><i class="fa-solid fa-glass-water-droplet me-2"></i> Collect Milk</a>
+                          <a class="nav-link" href="redirectToCollectMilk"><i class="fa-solid fa-glass-water-droplet me-2"></i> Collect Milk</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="redirectToAdminPaymentHistory?email=${dto.email}&page=1&size=10"><i
+                        <a class="nav-link" href="redirectToAdminPaymentHistory?page=1&size=10"><i
                                 class="fa-solid fa-money-bill-transfer me-2"></i> Payment History</a>
                     </li>
                     <li class="nav-item">
@@ -121,7 +121,7 @@
                                 <hr class="dropdown-divider">
                             </li>
                             <li>
-                                <a class="dropdown-item text-danger" href="adminLogout?email=${dto.email}"><i
+                                <a class="dropdown-item text-danger" href="adminLogout"><i
                                         class="fa-solid fa-right-from-bracket me-2"></i> Logout</a>
                             </li>
                         </ul>
@@ -179,7 +179,7 @@
                                 </button>
                                 <a href="#" class="btn btn-danger btn-sm" data-bs-toggle="modal"
                                     data-bs-target="#deleteConfirmModal"
-                                    data-delete-url="deleteProductPrice?productId=${product.productId}&adminEmail=${dto.email}">
+                                    data-delete-url="deleteProductPrice?productId=${product.productId}">
                                     <i class="fa-solid fa-trash"></i> Delete
                                 </a>
                             </td>
@@ -200,7 +200,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="addProductWithPrice?adminEmail=${dto.email}" method="post" id="productPriceForm">
+                    <form action="addProductWithPrice" method="post" id="productPriceForm">
                         <div class="mb-3">
                             <label for="productName" class="form-label">Product Name</label>
                             <input type="text" class="form-control" id="productName" name="productName" required>
@@ -245,7 +245,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="editProductForm" method="post" action="updateProductPrice?adminEmail=${dto.email}">
+                    <form id="editProductForm" method="post" action="updateProductPrice">
                         <input type="hidden" name="productId" id="editProductId">
                         <div class="mb-3">
                             <label for="editProductName">Product Name</label>
@@ -340,7 +340,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <a href="redirectToUpdateAdminProfile?email=${dto.email}" class="btn btn-primary">Update
+                    <a href="redirectToUpdateAdminProfile" class="btn btn-primary">Update
                         Profile</a>
                 </div>
             </div>

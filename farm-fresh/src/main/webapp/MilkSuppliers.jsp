@@ -32,28 +32,28 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mb-2 mb-lg-0 align-items-center ms-lg-auto me-3">
                     <li class="nav-item">
-                        <a class="nav-link" href="redirectToAdminDashboard?email=${dto.email}"><i
+                        <a class="nav-link" href="redirectToAdminDashboard"><i
                                 class="fa-solid fa-user-shield me-2"></i> Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="redirectToManageProducts?email=${dto.email}"><i
+                        <a class="nav-link" href="redirectToManageProducts"><i
                                 class="fa-solid fa-box me-2"></i> Manage Products</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="redirectToProductsPrice?email=${dto.email}"><i
+                        <a class="nav-link" href="redirectToProductsPrice"><i
                                 class="fa-solid fa-tag me-2"></i> Products Price</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active"
-                            href="redirectToMilkSuppliersList?email=${dto.email}&page=1&size=10"><i
+                            href="redirectToMilkSuppliersList?page=1&size=10"><i
                                 class="fa-solid fa-bottle-droplet me-2"></i> Milk Suppliers</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="redirectToCollectMilk?email=${dto.email}"><i
+                        <a class="nav-link" href="redirectToCollectMilk"><i
                                 class="fa-solid fa-glass-water-droplet me-2"></i> Collect Milk</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="redirectToAdminPaymentHistory?email=${dto.email}&page=1&size=10"><i
+                        <a class="nav-link" href="redirectToAdminPaymentHistory?page=1&size=10"><i
                                 class="fa-solid fa-money-bill-transfer me-2"></i> Payment History</a>
                     </li>
                     <li class="nav-item">
@@ -124,7 +124,7 @@
                                 <hr class="dropdown-divider">
                             </li>
                             <li>
-                                <a class="dropdown-item text-danger" href="adminLogout?email=${dto.email}"><i
+                                <a class="dropdown-item text-danger" href="adminLogout"><i
                                         class="fa-solid fa-right-from-bracket me-2"></i> Logout</a>
                             </li>
                         </ul>
@@ -261,7 +261,7 @@
 
                                         <a href="#" class="btn btn-danger btn-sm" data-bs-toggle="modal"
                                             data-bs-target="#deleteConfirmModal"
-                                            data-delete-url="deleteMilkSupplier?email=${supplier.email}&adminEmail=${dto.email}">
+                                            data-delete-url="deleteMilkSupplier?email=${supplier.email}">
                                             <i class="fa-solid fa-trash"></i> Delete
                                         </a>
 
@@ -274,12 +274,12 @@
                     <div>
                         <c:if test="${currentPage > 1}">
                             <a class="btn btn-outline-secondary"
-                                href="redirectToMilkSuppliersList?email=${dto.email}&page=${currentPage - 1}&size=${pageSize}">Previous</a>
+                                href="redirectToMilkSuppliersList?page=${currentPage - 1}&size=${pageSize}">Previous</a>
                         </c:if>
                         <span> Page ${currentPage} of ${totalPages} </span>
                         <c:if test="${currentPage < totalPages}">
                             <a class="btn btn-outline-secondary"
-                                href="redirectToMilkSuppliersList?email=${dto.email}&page=${currentPage + 1}&size=${pageSize}">Next</a>
+                                href="redirectToMilkSuppliersList?page=${currentPage + 1}&size=${pageSize}">Next</a>
                         </c:if>
                     </div>
                 </div>
@@ -339,7 +339,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     </c:if>
-                    <form action="addMilkSupplier?adminEmail=${dto.email}" method="post" id="supplierForm">
+                    <form action="addMilkSupplier" method="post" id="supplierForm">
                         <div class="mb-3">
                             <label for="firstName" class="form-label">First Name</label>
                             <input type="text" class="form-control" id="firstName" name="firstName"
@@ -561,7 +561,7 @@
                         aria-label="Close"></button>
                 </div>
                 <form id="editBankDetailsForm" method="post"
-                    action="updateSupplierBankDetailsByAdmin?adminEmail=${dto.email}">
+                    action="updateSupplierBankDetailsByAdmin">
                     <div class="modal-body px-4 py-3">
                         <input type="hidden" name="supplierId" id="editBankSupplierId">
                         <div class="row mb-3">
@@ -677,7 +677,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <a href="redirectToUpdateAdminProfile?email=${dto.email}" class="btn btn-primary">Update
+                    <a href="redirectToUpdateAdminProfile" class="btn btn-primary">Update
                         Profile</a>
                 </div>
             </div>

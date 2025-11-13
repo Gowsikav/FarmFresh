@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (notificationType === 'PAYMENT') {
              const email = notificationItem.dataset.adminEmail;
-            window.location.href = '/farm-fresh/supplierPaymentDetails?notificationId=' + notificationId+'&email='+email;
+            window.location.href = '/farm-fresh/supplierPaymentDetails?notificationId=' + notificationId;
             
         } else {
             markNotificationAsRead(notificationId, notificationItem);
