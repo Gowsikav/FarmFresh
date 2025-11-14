@@ -13,6 +13,8 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import javax.mail.internet.MimeMessage;
 import java.io.File;
@@ -28,6 +30,9 @@ public class EmailSenderImpl implements EmailSender{
 
     @Autowired
     private AdminRepository adminRepository;
+
+    @Autowired
+    private SpringTemplateEngine emailTemplateEngine;
 
     public EmailSenderImpl()
     {
@@ -164,33 +169,34 @@ public class EmailSenderImpl implements EmailSender{
     @Override
     public boolean mailForSupplierPayment(SupplierEntity supplier, PaymentDetailsEntity paymentDetails) {
         log.info("mailForSupplierPayment method in email sender");
+
         try {
             String subject = "Farm Fresh - Milk Supply Payment Confirmation";
 
-            String messageBody = "Dear " + supplier.getFirstName()+" "+supplier.getLastName() + ",\n\n"
-                    + "We are pleased to inform you that the payment for your milk supply has been successfully processed.\n\n"
-                    + "Below are the payment details:\n"
-                    + "---------------------------------------\n"
-                    + "Payment Date: " + paymentDetails.getPaymentDate() + "\n"
-                    + "Amount Paid: ₹" + paymentDetails.getTotalAmount() + "\n"
-                    + "Supply Period: " + paymentDetails.getPeriodStart() + " to " + paymentDetails.getPeriodEnd() + "\n"
-                    + "---------------------------------------\n\n"
-                    + "This payment covers the total amount for the milk supplied during the above period.\n\n"
-                    + "If you have any questions or concerns regarding this payment, please contact our accounts team at info@farmfresh.com.\n\n"
-                    + "Thank you for your consistent and quality milk supply.\n\n"
-                    + "Warm regards,\n"
-                    + "Farm Fresh Team";
+            Context context = new Context();
+            context.setVariable("firstName", supplier.getFirstName());
+            context.setVariable("lastName", supplier.getLastName());
+            context.setVariable("paymentDate", paymentDetails.getPaymentDate());
+            context.setVariable("amount", paymentDetails.getTotalAmount());
+            context.setVariable("periodStart", paymentDetails.getPeriodStart());
+            context.setVariable("periodEnd", paymentDetails.getPeriodEnd());
 
-            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-            simpleMailMessage.setTo(supplier.getEmail());
-            simpleMailMessage.setSubject(subject);
-            simpleMailMessage.setText(messageBody);
+            String htmlContent = emailTemplateEngine.process("supplier-payment-confirmation", context);
 
-            configuration.mailSender().send(simpleMailMessage);
-            log.info("Payment confirmation mail sent successfully to: {}", supplier.getEmail());
+            MimeMessage message = configuration.mailSender().createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setTo(supplier.getEmail());
+            helper.setSubject(subject);
+            helper.setText(htmlContent, true);
+
+            configuration.mailSender().send(message);
+
+            log.info("HTML payment confirmation email sent successfully");
             return true;
+
         } catch (Exception e) {
-            log.error("Error while sending payment confirmation email: {}", e.getMessage());
+            log.error("Error sending payment email: {}", e.getMessage());
             return false;
         }
     }

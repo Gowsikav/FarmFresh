@@ -18,6 +18,8 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
+import org.thymeleaf.spring5.SpringTemplateEngine;
+import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 
 import javax.sql.DataSource;
 import javax.validation.Validation;
@@ -119,4 +121,22 @@ public class FarmFreshConfiguration implements WebMvcConfigurer {
     public javax.validation.Validator validator() {
         return Validation.buildDefaultValidatorFactory().getValidator();
     }
+
+    @Bean
+    public SpringResourceTemplateResolver emailTemplateResolver() {
+        SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
+        templateResolver.setPrefix("/WEB-INF/templates/");
+        templateResolver.setSuffix(".html");
+        templateResolver.setTemplateMode("HTML");
+        templateResolver.setCharacterEncoding("UTF-8");
+        return templateResolver;
+    }
+
+    @Bean
+    public SpringTemplateEngine emailTemplateEngine() {
+        SpringTemplateEngine templateEngine = new SpringTemplateEngine();
+        templateEngine.setTemplateResolver(emailTemplateResolver());
+        return templateEngine;
+    }
+
 }
