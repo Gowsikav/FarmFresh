@@ -32,6 +32,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <zxing.qr-code.version>3.5.2</zxing.qr-code.version>
         <apache-poi.version>5.2.3</apache-poi.version>
+        <thymeleaf.version>3.1.1.RELEASE</thymeleaf.version>
     </properties>
     <dependencies>
         <dependency>
@@ -165,11 +166,15 @@
             <artifactId>poi</artifactId>
             <version>${apache-poi.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
             <version>${apache-poi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.thymeleaf</groupId>
+            <artifactId>thymeleaf-spring5</artifactId>
+            <version>${thymeleaf.version}</version>
         </dependency>
     </dependencies>
     <build>
