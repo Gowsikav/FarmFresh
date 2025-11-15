@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -204,10 +205,11 @@ public class PaymentNotificationServiceImpl implements PaymentNotificationServic
 
         AdminEntity adminEntity=adminRepository.getDetailsByEmail(adminEmail);
         SupplierEntity supplierEntity=supplierRepository.getSupplierByEmail(supplierEmail);
+        LocalDateTime createdDate= notification.getCreatedAt();
         if(adminEntity==null || supplierEntity==null)
             return false;
         PaymentDetailsEntity paymentDetailsEntity=paymentDetailsRepository.
-                getEntityBySupplierIdAndPaymentDate(notification.getPaymentDate(),supplierEntity.getSupplierId());
+                getEntityBySupplierIdAndPaymentDate(notification.getPaymentDate(),supplierEntity.getSupplierId(),createdDate);
         if(paymentDetailsEntity==null)
         {
             log.error("payment details not found");
@@ -222,7 +224,8 @@ public class PaymentNotificationServiceImpl implements PaymentNotificationServic
             if(notificationRepository.markAsReadForPayment(notification.getPaymentDate(),supplierEntity.getSupplierId()))
             {
                 log.info("Notification updated");
-                return emailSender.mailForSupplierPayment(supplierEntity,paymentDetailsEntity);
+                emailSender.mailForSupplierPayment(supplierEntity,paymentDetailsEntity);
+                return true;
             }
         }else {
             log.error("payment details not updated");
@@ -265,7 +268,8 @@ public class PaymentNotificationServiceImpl implements PaymentNotificationServic
             }
             list.add(paymentDetailsDTO);
         });
-        return emailSender.mailForAdminPaymentSummary(list);
+        emailSender.mailForAdminPaymentSummary(list);
+        return true;
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.xworkz.farmfresh.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -35,9 +34,6 @@ public class FarmFreshConfiguration implements WebMvcConfigurer {
     @Autowired
     private Environment environment;
 
-    @Value("${file.upload-dir}")
-    private String uploadDir;
-
     public FarmFreshConfiguration()
     {
         System.out.println("FarmFreshConfiguration constructor");
@@ -48,19 +44,19 @@ public class FarmFreshConfiguration implements WebMvcConfigurer {
         System.out.println("Configuring resource handlers...");
         registry.addResourceHandler("/images/**").addResourceLocations("/images/");
         registry.addResourceHandler("/productImages/**")
-                .addResourceLocations("file:///E:/farm-fresh/productImages/");
+                .addResourceLocations(environment.getProperty("product.images.path"));
         registry.addResourceHandler("/css/**").addResourceLocations("/css/");
         registry.addResourceHandler("/js/**").addResourceLocations("/js/");
         registry.addResourceHandler("/json/**").addResourceLocations("/json/");
 
         registry.addResourceHandler("swagger-ui.html")
-                .addResourceLocations("classpath:/META-INF/resources/");
+                .addResourceLocations(environment.getProperty("swagger.resource.location"));
 
         registry.addResourceHandler("/webjars/**")
-                .addResourceLocations("classpath:/META-INF/resources/webjars/");
+                .addResourceLocations(environment.getProperty("swagger.webjars.location"));
 
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:" + uploadDir + "/");
+                .addResourceLocations("file:" + environment.getProperty("file.upload-dir") + "/");
     }
 
     @Bean
@@ -125,10 +121,10 @@ public class FarmFreshConfiguration implements WebMvcConfigurer {
     @Bean
     public SpringResourceTemplateResolver emailTemplateResolver() {
         SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
-        templateResolver.setPrefix("/WEB-INF/templates/");
-        templateResolver.setSuffix(".html");
-        templateResolver.setTemplateMode("HTML");
-        templateResolver.setCharacterEncoding("UTF-8");
+        templateResolver.setPrefix(environment.getProperty("email.template.prefix"));
+        templateResolver.setSuffix(environment.getProperty("email.template.suffix"));
+        templateResolver.setTemplateMode(environment.getProperty("email.template.mode"));
+        templateResolver.setCharacterEncoding(environment.getProperty("email.template.encoding"));
         return templateResolver;
     }
 

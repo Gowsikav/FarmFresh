@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -86,7 +87,7 @@ public class ProductPriceServiceImpl implements ProductPriceService{
                 products.add(productPriceDTO.getProductName());
             }
         });
-        return products;
+        return products.stream().sorted().collect(Collectors.toList());
     }
 
     @Override

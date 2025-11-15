@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,15 +50,16 @@ public class PaymentDetailsRepositoryImpl implements PaymentDetailsRepository {
     }
 
     @Override
-    public PaymentDetailsEntity getEntityBySupplierIdAndPaymentDate(LocalDate paymentDate, Integer supplierId) {
+    public PaymentDetailsEntity getEntityBySupplierIdAndPaymentDate(LocalDate paymentDate, Integer supplierId, LocalDateTime createdDate) {
         log.info("getEntityBySupplierIdAndPaymentDate method in payment repo");
         EntityManager entityManager=null;
-        PaymentDetailsEntity paymentDetailsEntity=null;
+        PaymentDetailsEntity paymentDetailsEntity;
         try {
             entityManager=entityManagerFactory.createEntityManager();
-            paymentDetailsEntity=entityManager.createQuery("select a from PaymentDetailsEntity a where a.supplier.supplierId=:id and a.paymentDate=:paymentDate", PaymentDetailsEntity.class)
+            paymentDetailsEntity=entityManager.createQuery("select a from PaymentDetailsEntity a where a.supplier.supplierId=:id and a.paymentDate=:paymentDate and a.createdAt=:createdDate", PaymentDetailsEntity.class)
                     .setParameter("id",supplierId)
                     .setParameter("paymentDate",paymentDate)
+                    .setParameter("createdDate",LocalDate.from(createdDate))
                     .getSingleResult();
             return paymentDetailsEntity;
         }catch (PersistenceException e)
