@@ -78,12 +78,8 @@ public class SupplierServiceImpl implements SupplierService{
             log.info("supplier details saved");
             SupplierEntity supplier=supplierRepository.getSupplierByEmail(supplierEntity.getEmail());
             String qrcode=qrGeneratorService.generateSupplierQR(supplier.getSupplierId(),supplier.getEmail(),supplier.getPhoneNumber());
-            if(emailSender.mailForSupplierRegisterSuccess(supplierEntity.getEmail(),supplierEntity.getFirstName()+supplierEntity.getLastName(),qrcode))
-            {
-                log.info("Mail send to supplier");
-                return true;
-            }
-            log.error("Mail not send");
+            emailSender.mailForSupplierRegisterSuccess(supplierEntity.getEmail(),supplierEntity.getFirstName()+supplierEntity.getLastName(),qrcode);
+            return true;
         }
         log.error("details not saved");
         return false;
@@ -314,7 +310,8 @@ public class SupplierServiceImpl implements SupplierService{
 
         if(supplierRepository.updateSupplierDetailsBySupplier(supplierEntity))
         {
-            return emailSender.mailForSupplierBankDetails(supplierEntity.getEmail(), supplierBankDetailsEntity);
+            emailSender.mailForSupplierBankDetails(supplierEntity.getEmail(), supplierBankDetailsEntity);
+            return true;
         }
         return false;
     }
@@ -352,7 +349,8 @@ public class SupplierServiceImpl implements SupplierService{
 
         if(supplierRepository.updateSupplierDetailsBySupplier(supplierEntity))
         {
-            return emailSender.mailForSupplierBankDetails(supplierEntity.getEmail(), supplierBankDetailsEntity);
+             emailSender.mailForSupplierBankDetails(supplierEntity.getEmail(), supplierBankDetailsEntity);
+             return true;
         }
         return false;
     }
@@ -368,7 +366,8 @@ public class SupplierServiceImpl implements SupplierService{
     public boolean requestForSupplierBankDetails(String supplierEmail) {
         log.info("requestForSupplierBankDetails method in supplier service");
         SupplierEntity supplierEntity=supplierRepository.getSupplierByEmail(supplierEmail);
-        return emailSender.mailForBankDetailsRequest(supplierEntity);
+        emailSender.mailForBankDetailsRequest(supplierEntity);
+        return true;
     }
 
     @Override

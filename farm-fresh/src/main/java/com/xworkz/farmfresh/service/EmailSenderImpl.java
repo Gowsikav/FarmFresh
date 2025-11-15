@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
@@ -67,7 +68,8 @@ public class EmailSenderImpl implements EmailSender{
     }
 
     @Override
-    public boolean mailForSupplierRegisterSuccess(String email, String supplierName, String qrCodePath) {
+    @Async
+    public void mailForSupplierRegisterSuccess(String email, String supplierName, String qrCodePath) {
         log.info("mailForSupplierRegisterSuccess method");
 
         try {
@@ -94,11 +96,9 @@ public class EmailSenderImpl implements EmailSender{
 
             configuration.mailSender().send(mimeMessage);
             log.info("Registration email with QR sent to: {}", email);
-            return true;
 
         } catch (Exception e) {
             log.error("Error while sending registration success email: {}", e.getMessage(), e);
-            return false;
         }
     }
 
@@ -133,7 +133,8 @@ public class EmailSenderImpl implements EmailSender{
     }
 
     @Override
-    public boolean mailForSupplierBankDetails(String email, SupplierBankDetailsEntity bankDetails) {
+    @Async
+    public void mailForSupplierBankDetails(String email, SupplierBankDetailsEntity bankDetails) {
         log.info("mailForSupplierBankDetails method in email sender");
         try {
             String subject = "Farm Fresh - Bank Details Updated Successfully";
@@ -159,15 +160,14 @@ public class EmailSenderImpl implements EmailSender{
 
             configuration.mailSender().send(simpleMailMessage);
             log.info("Bank details update mail sent successfully to: {}", email);
-            return true;
         } catch (Exception e) {
             log.error("Error while sending bank details email: {}", e.getMessage());
-            return false;
         }
     }
 
     @Override
-    public boolean mailForSupplierPayment(SupplierEntity supplier, PaymentDetailsEntity paymentDetails) {
+    @Async
+    public void mailForSupplierPayment(SupplierEntity supplier, PaymentDetailsEntity paymentDetails) {
         log.info("mailForSupplierPayment method in email sender");
 
         try {
@@ -193,16 +193,15 @@ public class EmailSenderImpl implements EmailSender{
             configuration.mailSender().send(message);
 
             log.info("HTML payment confirmation email sent successfully");
-            return true;
 
         } catch (Exception e) {
             log.error("Error sending payment email: {}", e.getMessage());
-            return false;
         }
     }
 
     @Override
-    public boolean mailForBankDetailsRequest(SupplierEntity supplier) {
+    @Async
+    public void mailForBankDetailsRequest(SupplierEntity supplier) {
         log.info("mailForBankDetailsRequest method in EmailSender");
 
         try {
@@ -226,16 +225,15 @@ public class EmailSenderImpl implements EmailSender{
             configuration.mailSender().send(message);
 
             log.info("Bank details reminder email sent successfully to {}", supplier.getEmail());
-            return true;
 
         } catch (Exception e) {
             log.error("Error while sending bank details reminder email to {}", supplier.getEmail(), e);
-            return false;
         }
     }
 
     @Override
-    public boolean mailForAdminPaymentSummary(List<PaymentDetailsDTO> payments) {
+    @Async
+    public void mailForAdminPaymentSummary(List<PaymentDetailsDTO> payments) {
         log.info("mailForAdminPaymentSummary method in EmailSender");
 
         try {
@@ -274,10 +272,8 @@ public class EmailSenderImpl implements EmailSender{
                     log.info("Payment summary email sent to admin: {}", admin.getEmail());
                 }
             }
-            return true;
         } catch (Exception e) {
             log.error("Error while sending admin payment summary email: {}", e.getMessage(), e);
         }
-        return false;
     }
 }
