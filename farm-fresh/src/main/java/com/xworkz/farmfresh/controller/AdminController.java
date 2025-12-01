@@ -57,6 +57,13 @@ public class AdminController {
         log.info("AdminController constructor");
     }
 
+    @GetMapping("/redirectToIndex")
+    public String getHomePage()
+    {
+        System.out.println("redirected to Home page");
+        return "index";
+    }
+
     @GetMapping("/redirectToAdminLogin")
     public String getAdminLogin(Model model) {
         log.info("getAdminLogin method in AdminController");

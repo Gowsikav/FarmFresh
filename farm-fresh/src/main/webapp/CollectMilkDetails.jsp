@@ -50,9 +50,7 @@
                         <a class="nav-link" href="redirectToAdminPaymentHistory?page=1&size=10"><i
                                 class="fa-solid fa-money-bill-transfer me-2"></i> Payment History</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fa-solid fa-users me-2"></i> Customers</a>
-                    </li>
+
                     <!-- Notification dropdown -->
                   <li class="nav-item dropdown">
                       <a class="nav-link position-relative" href="#" id="notificationDropdown" role="button"
